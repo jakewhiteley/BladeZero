@@ -13,7 +13,7 @@ class BladeLoopsTest extends AbstractBladeTestCase
 
         $this->assertEquals(
             'foo bar',
-            $this->getCompiled('directives.loops.foreach', compact('data'))
+            $this->getCompiled('loops.foreach', compact('data'))
         );
     }
 
@@ -26,12 +26,12 @@ class BladeLoopsTest extends AbstractBladeTestCase
 
         $this->assertEquals(
             '<li>jake</li> <li>luke</li>',
-            $this->getCompiled('directives.loops.forelse', compact('users'))
+            $this->getCompiled('loops.forelse', compact('users'))
         );
 
         $this->assertEquals(
             'No users',
-            $this->getCompiled('directives.loops.forelse', ['users' => []])
+            $this->getCompiled('loops.forelse', ['users' => []])
         );
     }
 
@@ -39,7 +39,7 @@ class BladeLoopsTest extends AbstractBladeTestCase
     {
         $this->assertEquals(
             '0 1 2',
-            $this->getCompiled('directives.loops.for')
+            $this->getCompiled('loops.for')
         );
     }
 
@@ -47,7 +47,7 @@ class BladeLoopsTest extends AbstractBladeTestCase
     {
         $this->assertEquals(
             '0 2 3 5',
-            $this->getCompiled('directives.loops.continue')
+            $this->getCompiled('loops.continue')
         );
     }
 
@@ -58,7 +58,7 @@ class BladeLoopsTest extends AbstractBladeTestCase
     {
         $this->assertEquals(
             $result,
-            $this->getCompiled('directives.loops.empty', ['data' => $data])
+            $this->getCompiled('loops.empty', ['data' => $data])
         );
     }
 
@@ -66,7 +66,7 @@ class BladeLoopsTest extends AbstractBladeTestCase
     {
         $this->assertEquals(
             '0 1 2 3 4',
-            $this->getCompiled('directives.loops.while', ['foo' => 0])
+            $this->getCompiled('loops.while', ['foo' => 0])
         );
     }
 

@@ -18,47 +18,47 @@ class BladeConditionalsTest extends AbstractBladeTestCase
     {
         $this->assertEquals(
             'passed',
-            $this->getCompiled('directives.conditionals.if', ['foo' => true])
+            $this->getCompiled('conditionals.if', ['foo' => true])
         );
 
         $this->assertEquals(
             'passed',
-            $this->getCompiled('directives.conditionals.else', ['foo' => false])
+            $this->getCompiled('conditionals.else', ['foo' => false])
         );
 
-        $this->assertEmpty($this->getCompiled('directives.conditionals.if', ['foo' => false]));
+        $this->assertEmpty($this->getCompiled('conditionals.if', ['foo' => false]));
     }
 
     public function testElseIfDirective()
     {
         $this->assertEquals(
             'foo',
-            $this->getCompiled('directives.conditionals.elseif', ['foo' => true])
+            $this->getCompiled('conditionals.elseif', ['foo' => true])
         );
 
         $this->assertEquals(
             'bar',
-            $this->getCompiled('directives.conditionals.elseif', ['bar' => true])
+            $this->getCompiled('conditionals.elseif', ['bar' => true])
         );
 
-        $this->assertEmpty($this->getCompiled('directives.conditionals.elseif', []));
+        $this->assertEmpty($this->getCompiled('conditionals.elseif', []));
     }
 
     public function testSwitchDirectives()
     {
         $this->assertEquals(
             'the var was foo',
-            $this->getCompiled('directives.conditionals.switch', ['foo' => 'foo'])
+            $this->getCompiled('conditionals.switch', ['foo' => 'foo'])
         );
 
         $this->assertEquals(
             'the var was bar',
-            $this->getCompiled('directives.conditionals.switch', ['foo' => 'bar'])
+            $this->getCompiled('conditionals.switch', ['foo' => 'bar'])
         );
 
         $this->assertEquals(
             'the var was neither foo nor bar',
-            $this->getCompiled('directives.conditionals.switch', ['foo' => ''])
+            $this->getCompiled('conditionals.switch', ['foo' => ''])
         );
     }
 
@@ -66,12 +66,12 @@ class BladeConditionalsTest extends AbstractBladeTestCase
     {
         $this->assertEquals(
             'passed',
-            $this->getCompiled('directives.conditionals.unless', ['foo' => false])
+            $this->getCompiled('conditionals.unless', ['foo' => false])
         );
 
         $this->assertEquals(
             'failed',
-            $this->getCompiled('directives.conditionals.unless', ['foo' => true])
+            $this->getCompiled('conditionals.unless', ['foo' => true])
         );
     }
 
@@ -79,17 +79,17 @@ class BladeConditionalsTest extends AbstractBladeTestCase
     {
         $this->assertEquals(
             'passed',
-            $this->getCompiled('directives.conditionals.isset', ['foo' => 'foo'])
+            $this->getCompiled('conditionals.isset', ['foo' => 'foo'])
         );
 
         $this->assertEquals(
             '',
-            $this->getCompiled('directives.conditionals.isset', [])
+            $this->getCompiled('conditionals.isset', [])
         );
 
         $this->assertEquals(
             '',
-            $this->getCompiled('directives.conditionals.isset', ['foo' => null])
+            $this->getCompiled('conditionals.isset', ['foo' => null])
         );
     }
 
@@ -97,7 +97,7 @@ class BladeConditionalsTest extends AbstractBladeTestCase
     {
         $this->assertEquals(
             'has foo passed',
-            $this->getCompiled('directives.conditionals.hassection')
+            $this->getCompiled('conditionals.hassection')
         );
     }
 
@@ -105,7 +105,7 @@ class BladeConditionalsTest extends AbstractBladeTestCase
     {
         $this->assertEquals(
             'logged in logged in',
-            $this->getCompiled('directives.conditionals.auth')
+            $this->getCompiled('conditionals.auth')
         );
     }
 
@@ -113,7 +113,7 @@ class BladeConditionalsTest extends AbstractBladeTestCase
     {
         $this->assertEquals(
             'logged in is admin',
-            $this->getCompiled('directives.conditionals.authwithparams')
+            $this->getCompiled('conditionals.authwithparams')
         );
     }
 }

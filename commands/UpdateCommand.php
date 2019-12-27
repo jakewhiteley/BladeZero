@@ -19,7 +19,8 @@ class UpdateCommand extends Command
     const RAW_BASE = 'https://raw.githubusercontent.com/laravel/framework/';
 
     const TEST_FILES = [
-        '/Support/SupportStrTest.php'
+        '/Support/SupportStrTest.php',
+        '/View/ViewFileViewFinderTest.php'
     ];
 
     const SUPPORT_FILES = [
@@ -229,7 +230,7 @@ class UpdateCommand extends Command
     private function flushPreviousRelease()
     {
         $this->filesystem->remove([
-            $this->cwd . '/tests/View/',
+            $this->cwd . '/tests/Illuminate/',
         ]);
     }
 
@@ -238,10 +239,17 @@ class UpdateCommand extends Command
         $path = \str_replace(
             [
                 self::RAW_BASE . $this->release,
-                'Illuminate/'
+                'Illuminate/',
+                '/tests/'
             ],
-            '',
-            $url);
+            [
+                '',
+                '',
+                '/tests/Illuminate/'
+            ],
+            $url
+        );
+
 
         $this->filesystem->dumpFile(
             $this->cwd . $path,
@@ -259,6 +267,7 @@ class UpdateCommand extends Command
             'Illuminate\\Tests\\' => 'Rapier\\Tests\\',
             'Illuminate\\Support\\Arr' => 'Tightenco\\Collect\\Support\\Arr',
             'Illuminate\\' => 'Rapier\\',
+            'Rapier\\Tests\\' => 'Rapier\\Tests\\Illuminate\\',
 
             // Compiler amends
             '\Tightenco\Collect\Support\Arr::except(get_defined_vars(), [\'__data\', \'__path\']))->render()' => '\Tightenco\Collect\Support\Arr::except(get_defined_vars(), [\'__data\', \'__path\']))',
@@ -274,7 +283,8 @@ class UpdateCommand extends Command
             'auth()->guard()->check()' => '$__env->authHandler()',
 
             'use Symfony\Component\Debug\Exception\FatalThrowableError;' => '',
-            'FatalThrowableError' => 'Exception'
+            'FatalThrowableError' => 'Exception',
+            'Rapier\\View\\Factory' => 'Rapier\\Blade'
         ];
 
         return \str_replace(array_keys($rewrites), \array_values($rewrites), $response);

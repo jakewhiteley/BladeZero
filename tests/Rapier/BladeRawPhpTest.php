@@ -8,7 +8,7 @@ class BladeRawPhpTest extends AbstractBladeTestCase
     {
         $this->assertEquals(
             'foobar',
-            $this->getCompiled('directives.php.php')
+            $this->getCompiled('php.php')
         );
     }
 
@@ -16,7 +16,7 @@ class BladeRawPhpTest extends AbstractBladeTestCase
     {
         $this->assertEquals(
             'not set',
-            $this->getCompiled('directives.php.unset', ['foo' => 'foo'])
+            $this->getCompiled('php.unset', ['foo' => 'foo'])
         );
     }
 
@@ -24,7 +24,7 @@ class BladeRawPhpTest extends AbstractBladeTestCase
     {
         $this->assertEquals(
             'foo',
-            $this->getCompiled('directives.php.raw')
+            $this->getCompiled('php.raw')
         );
     }
 }

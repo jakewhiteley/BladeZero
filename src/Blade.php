@@ -2,6 +2,7 @@
 
 namespace Rapier;
 
+use InvalidArgumentException;
 use Rapier\Contracts\Support\Arrayable;
 use Rapier\Support\Str;
 use Rapier\Support\Traits\Macroable;
@@ -209,7 +210,7 @@ class Blade
             return '';
         }
 
-        return $this->make($view, $data, $mergeData)->render();
+        return $this->make($view, $data, $mergeData);
     }
 
     /**
@@ -233,7 +234,7 @@ class Blade
             foreach ($data as $key => $value) {
                 $result .= $this->make(
                     $view, ['key' => $key, $iterator => $value]
-                )->render();
+                );
             }
         }
 
@@ -243,7 +244,7 @@ class Blade
         else {
             $result = Str::startsWith($empty, 'raw|')
                 ? substr($empty, 4)
-                : $this->make($empty)->render();
+                : $this->make($empty);
         }
 
         return $result;

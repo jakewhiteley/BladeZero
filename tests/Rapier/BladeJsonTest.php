@@ -12,7 +12,7 @@ class BladeJsonTest extends AbstractBladeTestCase
 
         $this->assertEquals(
             '{"foo":"bar"}',
-            $this->getCompiled('directives.json.json', compact('data'))
+            $this->getCompiled('json.json', compact('data'))
         );
     }
 }

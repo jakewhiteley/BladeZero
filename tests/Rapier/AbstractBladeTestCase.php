@@ -16,8 +16,8 @@ abstract class AbstractBladeTestCase extends TestCase
     protected function setUp(): void
     {
         $this->compiler = new Blade(
-            dirname(__FILE__) . '/files',
-            dirname(__FILE__) . '/cache'
+            dirname(__FILE__) . '/fixtures/files/directives',
+            dirname(__FILE__) . '/fixtures/cache'
         );
 
         parent::setUp();
@@ -28,8 +28,8 @@ abstract class AbstractBladeTestCase extends TestCase
         $fs = new Filesystem();
 
         // clean cached files
-        $fs->remove(dirname(__FILE__) . '/cache/');
-        $fs->mkdir(dirname(__FILE__) . '/cache/');
+        $fs->remove(dirname(__FILE__) . '/fixtures/cache/');
+        $fs->mkdir(dirname(__FILE__) . '/fixtures/cache/');
 
         parent::tearDown();
     }

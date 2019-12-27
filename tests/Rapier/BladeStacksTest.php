@@ -8,7 +8,7 @@ class BladeStacksTest extends AbstractBladeTestCase
     {
         $this->assertEquals(
             'first second',
-            $this->getCompiled('directives.stacks.stack')
+            $this->getCompiled('stacks.stack')
         );
     }
 }

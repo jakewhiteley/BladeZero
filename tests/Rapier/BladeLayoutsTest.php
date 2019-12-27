@@ -8,7 +8,7 @@ class BladeLayoutsTest extends AbstractBladeTestCase
     {
         $this->assertEquals(
             'Page Title parent sidebar',
-            $this->getCompiled('directives.layouts.section-with-data')
+            $this->getCompiled('layouts.section-with-data')
         );
     }
 
@@ -16,7 +16,7 @@ class BladeLayoutsTest extends AbstractBladeTestCase
     {
         $this->assertEquals(
             'before parent sidebar',
-            $this->getCompiled('directives.layouts.parent')
+            $this->getCompiled('layouts.parent')
         );
     }
 
@@ -24,7 +24,7 @@ class BladeLayoutsTest extends AbstractBladeTestCase
     {
         $this->assertEquals(
             'overwritten',
-            $this->getCompiled('directives.layouts.overwrite')
+            $this->getCompiled('layouts.overwrite')
         );
     }
 
@@ -32,7 +32,7 @@ class BladeLayoutsTest extends AbstractBladeTestCase
     {
         $this->assertEquals(
             'first second',
-            $this->getCompiled('directives.layouts.append')
+            $this->getCompiled('layouts.append')
         );
     }
 }

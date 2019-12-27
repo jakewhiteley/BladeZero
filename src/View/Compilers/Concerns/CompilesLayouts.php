@@ -2,7 +2,7 @@
 
 namespace Rapier\View\Compilers\Concerns;
 
-use Rapier\View\Factory as ViewFactory;
+use Rapier\Blade as ViewFactory;
 
 trait CompilesLayouts
 {
