@@ -1,0 +1,16 @@
+#!/usr/bin/env php
+<?php
+
+
+require __DIR__.'/vendor/autoload.php';
+
+use Rapier\Commands\UpdateCommand;
+use Symfony\Component\Console\Application;
+
+$application = new Application();
+
+// ... register commands
+$command = new UpdateCommand();
+$application->add($command);
+$application->setDefaultCommand($command->getName());
+$application->run();
