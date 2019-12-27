@@ -4,7 +4,7 @@ namespace Rapier\View\Engines;
 
 use Exception;
 use Rapier\Contracts\View\Engine;
-use Symfony\Component\Debug\Exception\FatalThrowableError;
+
 use Throwable;
 
 class PhpEngine implements Engine
@@ -44,7 +44,7 @@ class PhpEngine implements Engine
         } catch (Exception $e) {
             $this->handleViewException($e, $obLevel);
         } catch (Throwable $e) {
-            $this->handleViewException(new FatalThrowableError($e), $obLevel);
+            $this->handleViewException(new Exception($e), $obLevel);
         }
 
         return ltrim(ob_get_clean());

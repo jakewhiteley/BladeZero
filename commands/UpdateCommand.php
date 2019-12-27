@@ -272,6 +272,9 @@ class UpdateCommand extends Command
             'auth()->guard("api")->guest()' => '! $__env->authHandler("api")',
             'auth()->guard("standard")->guest()' => '! $__env->authHandler("standard")',
             'auth()->guard()->check()' => '$__env->authHandler()',
+
+            'use Symfony\Component\Debug\Exception\FatalThrowableError;' => '',
+            'FatalThrowableError' => 'Exception'
         ];
 
         return \str_replace(array_keys($rewrites), \array_values($rewrites), $response);
