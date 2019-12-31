@@ -272,6 +272,8 @@ class UpdateCommand extends Command
             // Compiler amends
             '\Tightenco\Collect\Support\Arr::except(get_defined_vars(), [\'__data\', \'__path\']))->render()' => '\Tightenco\Collect\Support\Arr::except(get_defined_vars(), [\'__data\', \'__path\']))',
             "\Tightenco\Collect\Support\Arr::except(get_defined_vars(), [\'__data\', \'__path\']))->render()" => "\Tightenco\Collect\Support\Arr::except(get_defined_vars(), [\'__data\', \'__path\']))",
+            '\Rapier\Support\Facades\Blade::check' => '\$__env->getCompiler()->check',
+            '\$__env->getCompiler()->check(' . "\'custom\'" => '$__env->getCompiler()->check(' . "\'custom\'",
 
             // auth rewrites
             'auth()->guard{$guard}->check()' => '\$__env->authHandler{$guard}',

@@ -38,4 +38,16 @@ class BladeTest extends AbstractBladeTestCase
 
         $this->assertFalse($this->compiler->exists('Conditionals::isset'));
     }
+
+    public function testCustomIfStatements()
+    {
+        $this->compiler->if('env', function($env) {
+            return $env === 'test';
+        });
+
+        $this->assertEquals(
+            'is testing not production',
+            $this->getCompiled('general.customif')
+        );
+    }
 }

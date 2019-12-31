@@ -403,6 +403,18 @@ class Blade
     }
 
     /**
+     * Register an "if" statement directive.
+     *
+     * @param  string  $name
+     * @param  callable  $callback
+     * @return void
+     */
+    public function if($name, callable $callback): void
+    {
+        $this->bladeCompiler->if($name,  $callback);
+    }
+
+    /**
      * Register a valid view extension and its engine.
      *
      * @param string        $extension
@@ -466,6 +478,16 @@ class Blade
     public function getEngineResolver(): EngineResolver
     {
         return $this->engines;
+    }
+
+    /**
+     * Get the engine resolver instance.
+     *
+     * @return \Rapier\View\Compilers\BladeCompiler
+     */
+    public function getCompiler(): BladeCompiler
+    {
+        return $this->bladeCompiler;
     }
 
     /**
