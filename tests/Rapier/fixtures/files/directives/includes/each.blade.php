@@ -1,0 +1,1 @@
+@each('includes.partials.item', $projects, 'project', 'includes.partials.none')

@@ -1,0 +1,3 @@
+@isset($foo)
+  passed
+@endisset()
