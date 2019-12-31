@@ -282,6 +282,9 @@ class UpdateCommand extends Command
             'auth()->guard("standard")->guest()' => '! $__env->authHandler("standard")',
             'auth()->guard()->check()' => '$__env->authHandler()',
 
+            // inject rewrites
+            'app(\'{$service}\')' => '\$__env->injectHandler(\'{$service}\')',
+
             'use Symfony\Component\Debug\Exception\FatalThrowableError;' => '',
             'FatalThrowableError' => 'Exception',
             'Rapier\\View\\Factory' => 'Rapier\\Blade'
