@@ -5,7 +5,7 @@ namespace Rapier\Filesystem;
 use ErrorException;
 use FilesystemIterator;
 use Rapier\Contracts\Filesystem\FileNotFoundException;
-use Rapier\Support\Traits\Macroable;
+use Tightenco\Collect\Support\Traits\Macroable;
 use Symfony\Component\Finder\Finder;
 
 class Filesystem

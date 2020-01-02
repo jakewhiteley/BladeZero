@@ -2,7 +2,7 @@
 
 namespace Rapier\Support;
 
-use Rapier\Support\Traits\Macroable;
+use Tightenco\Collect\Support\Traits\Macroable;
 use Ramsey\Uuid\Codec\TimestampFirstCombCodec;
 use Ramsey\Uuid\Generator\CombGenerator;
 use Ramsey\Uuid\Uuid;

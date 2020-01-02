@@ -146,7 +146,7 @@ class BladeCompiler extends Compiler implements CompilerInterface
      * Get the open and closing PHP tag tokens from the given string.
      *
      * @param  string  $contents
-     * @return \Rapier\Support\Collection
+     * @return \Tightenco\Collect\Support\Collection
      */
     protected function getOpenAndClosingPhpTokens($contents)
     {
@@ -473,7 +473,7 @@ class BladeCompiler extends Compiler implements CompilerInterface
      */
     public function component($path, $alias = null)
     {
-        $alias = $alias ?: \Tightenco\Collect\Support\Arr::last(explode('.', $path));
+        $alias = $alias ?: Arr::last(explode('.', $path));
 
         $this->directive($alias, function ($expression) use ($path) {
             return $expression
@@ -495,7 +495,7 @@ class BladeCompiler extends Compiler implements CompilerInterface
      */
     public function include($path, $alias = null)
     {
-        $alias = $alias ?: \Tightenco\Collect\Support\Arr::last(explode('.', $path));
+        $alias = $alias ?: Arr::last(explode('.', $path));
 
         $this->directive($alias, function ($expression) use ($path) {
             $expression = $this->stripParentheses($expression) ?: '[]';

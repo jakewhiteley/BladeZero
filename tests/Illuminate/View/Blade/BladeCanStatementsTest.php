@@ -11,9 +11,9 @@ breeze
 @elsecan(\'delete\', [$post])
 sneeze
 @endcan';
-        $expected = '<?php if (app(\\Rapier\\Contracts\\Auth\\Access\\Gate::class)->check(\'update\', [$post])): ?>
+        $expected = '<?php if ($__env->canHandler(\'update\', [$post])): ?>
 breeze
-<?php elseif (app(\\Rapier\\Contracts\\Auth\\Access\\Gate::class)->check(\'delete\', [$post])): ?>
+<?php elseif ($__env->canHandler(\'delete\', [$post])): ?>
 sneeze
 <?php endif; ?>';
         $this->assertEquals($expected, $this->compiler->compileString($string));

@@ -24,7 +24,7 @@ trait ManagesLoops
     {
         $length = is_array($data) || $data instanceof Countable ? count($data) : null;
 
-        $parent = \Tightenco\Collect\Support\Arr::last($this->loopsStack);
+        $parent = Arr::last($this->loopsStack);
 
         $this->loopsStack[] = [
             'iteration' => 0,
@@ -77,7 +77,7 @@ trait ManagesLoops
      */
     public function getLastLoop()
     {
-        if ($last = \Tightenco\Collect\Support\Arr::last($this->loopsStack)) {
+        if ($last = Arr::last($this->loopsStack)) {
             return (object) $last;
         }
     }

@@ -3,7 +3,7 @@
 namespace Rapier\View\Concerns;
 
 use Tightenco\Collect\Support\Arr;
-use Rapier\Support\HtmlString;
+use Tightenco\Collect\Support\HtmlString;
 
 trait ManagesComponents
 {
@@ -78,7 +78,7 @@ trait ManagesComponents
     {
         $name = array_pop($this->componentStack);
 
-        return $this->make($name, $this->componentData($name))->render();
+        return $this->make($name, $this->componentData($name));
     }
 
     /**
