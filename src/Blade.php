@@ -3,19 +3,19 @@
 namespace Rapier;
 
 use InvalidArgumentException;
-use Rapier\Contracts\Support\Arrayable;
-use Rapier\Support\Str;
-use Rapier\Support\Traits\Macroable;
-use Rapier\View\Engines\FileEngine;
-use Rapier\View\Engines\PhpEngine;
 use Rapier\Filesystem\Filesystem;
+use Rapier\Support\Str;
 use Rapier\View\Compilers\BladeCompiler;
 use Rapier\View\Engines\CompilerEngine;
 use Rapier\View\Engines\EngineResolver;
+use Rapier\View\Engines\FileEngine;
+use Rapier\View\Engines\PhpEngine;
 use Rapier\View\FileViewFinder;
 use Rapier\View\ViewFinderInterface;
 use Rapier\View\ViewName;
+use Tightenco\Collect\Contracts\Support\Arrayable;
 use Tightenco\Collect\Support\Arr;
+use Tightenco\Collect\Support\Traits\Macroable;
 
 class Blade
 {
@@ -104,7 +104,7 @@ class Blade
      */
     public function file($path, array $data = [], array $mergeData = []): string
     {
-        $data = array_merge($this->getShared(), $mergeData, $data);
+        $data = array_merge($this->getShared(), $mergeData, $this->parseData($data));
 
         return $this->render($path, $data);
     }
@@ -127,7 +127,7 @@ class Blade
         // Next, we will create the view instance and call the view creator for the view
         // which can set any data, etc. Then we will return the view instance back to
         // the caller for rendering or performing other view manipulations on this.
-        $data = array_merge($this->getShared(), $mergeData, $data);
+        $data = array_merge($this->getShared(), $mergeData, $this->parseData($data));
 
         return $this->render($path, $data);
     }
@@ -191,7 +191,7 @@ class Blade
             throw new InvalidArgumentException('None of the views in the given array exist.');
         }
 
-        return $this->make($view, $data, $mergeData);
+        return $this->make($view, $this->parseData($data), $mergeData);
     }
 
     /**
@@ -210,7 +210,7 @@ class Blade
             return '';
         }
 
-        return $this->make($view, $data, $mergeData);
+        return $this->make($view, $this->parseData($data), $mergeData);
     }
 
     /**
@@ -405,13 +405,25 @@ class Blade
     /**
      * Register an "if" statement directive.
      *
-     * @param  string  $name
-     * @param  callable  $callback
+     * @param string   $name
+     * @param callable $callback
      * @return void
      */
     public function if($name, callable $callback): void
     {
-        $this->bladeCompiler->if($name,  $callback);
+        $this->bladeCompiler->if($name, $callback);
+    }
+
+    /**
+     * Register a component alias directive.
+     *
+     * @param string      $path
+     * @param string|null $alias
+     * @return void
+     */
+    public function component($path, $alias = null)
+    {
+        $this->bladeCompiler->component($path, $alias);
     }
 
     /**
@@ -530,7 +542,6 @@ class Blade
     {
         $this->getFinder()->flush();
     }
-
 
     /**
      * Get an item from the shared data.

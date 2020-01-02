@@ -20,11 +20,12 @@ class UpdateCommand extends Command
 
     const TEST_FILES = [
         '/Support/SupportStrTest.php',
-        '/View/ViewFileViewFinderTest.php'
+        '/View/ViewFileViewFinderTest.php',
+        '/View/ViewEngineResolverTest.php',
+        '/Support/SupportPluralizerTest.php',
     ];
 
     const SUPPORT_FILES = [
-        '/Support/Traits/Macroable.php',
         '/Support/Str.php',
         '/Support/Pluralizer.php',
         '/Support/HigherOrderTapProxy.php',
@@ -60,7 +61,6 @@ class UpdateCommand extends Command
         '/View/Engines/EngineResolver.php',
         '/View/Engines/FileEngine.php',
         '/View/Engines/PhpEngine.php',
-        '/Contracts/Support/Arrayable.php',
     ];
 
     const FS_FILES = [
@@ -69,7 +69,6 @@ class UpdateCommand extends Command
     ];
 
     protected static $defaultName = 'update';
-
 
     /**
      * @var \Symfony\Component\Filesystem\Filesystem
@@ -106,9 +105,9 @@ class UpdateCommand extends Command
         $this
             ->addOption(
                 'release',
-                null,
+                'r',
                 InputOption::VALUE_REQUIRED,
-                'The Laravel/framework version to update to'
+                'The Laravel/Framework version to update to'
             );
     }
 
@@ -133,7 +132,7 @@ class UpdateCommand extends Command
     private function getSupport()
     {
         foreach (self::SUPPORT_FILES as $file) {
-            $files[] = self::RAW_BASE . $this->release . '/src/Illuminate'. $file;
+            $files[] = self::RAW_BASE . $this->release . '/src/Illuminate' . $file;
         }
 
         $this->downloadFiles($files, 'support');
@@ -142,7 +141,7 @@ class UpdateCommand extends Command
     private function getViews()
     {
         foreach (self::VIEW_FILES as $file) {
-            $files[] = self::RAW_BASE . $this->release . '/src/Illuminate'. $file;
+            $files[] = self::RAW_BASE . $this->release . '/src/Illuminate' . $file;
         }
 
         $this->downloadFiles($files, 'view');
@@ -151,7 +150,7 @@ class UpdateCommand extends Command
     private function getFilesystem()
     {
         foreach (self::FS_FILES as $file) {
-            $files[] = self::RAW_BASE . $this->release . '/src/Illuminate'. $file;
+            $files[] = self::RAW_BASE . $this->release . '/src/Illuminate' . $file;
         }
 
         $this->downloadFiles($files, 'Filesystem');
@@ -183,7 +182,7 @@ class UpdateCommand extends Command
             $this->endSection();
 
             foreach (self::TEST_FILES as $file) {
-                $links[] = self::RAW_BASE . $this->release . '/tests'. $file;
+                $links[] = self::RAW_BASE . $this->release . '/tests' . $file;
             }
 
             $this->downloadFiles(array_values(\array_filter($links)), 'test');
@@ -205,16 +204,16 @@ class UpdateCommand extends Command
 
         $multiCurl = new MultiCurl();
 
-        $multiCurl->success(function($instance) {
+        $multiCurl->success(function ($instance) {
             $this->copyRawFile($instance->url, $instance->response);
         });
 
-        $multiCurl->error(function($instance) {
+        $multiCurl->error(function ($instance) {
             $this->output->writeln("<comment>Error: call to {$instance->url} was unsuccessful.\n{$instance->errorCode} : {$instance->errorMessage}</comment>");
             exit;
         });
 
-        $multiCurl->complete(function() use (&$total) {
+        $multiCurl->complete(function () use (&$total) {
             if (--$total === 0) {
                 $this->endSection();
             }
@@ -240,12 +239,12 @@ class UpdateCommand extends Command
             [
                 self::RAW_BASE . $this->release,
                 'Illuminate/',
-                '/tests/'
+                '/tests/',
             ],
             [
                 '',
                 '',
-                '/tests/Illuminate/'
+                '/tests/Illuminate/',
             ],
             $url
         );
@@ -262,18 +261,26 @@ class UpdateCommand extends Command
     private function convertNamespace($response)
     {
         $rewrites = [
+            // Namepsace conversions
             '\\Illuminate\\Support\\Arr::' => '\\Tightenco\\Collect\\Support\\Arr::',
             ' Arr::' => ' \\Tightenco\\Collect\\Support\\Arr::',
             'Illuminate\\Tests\\' => 'Rapier\\Tests\\',
             'Illuminate\\Support\\Arr' => 'Tightenco\\Collect\\Support\\Arr',
             'Illuminate\\' => 'Rapier\\',
             'Rapier\\Tests\\' => 'Rapier\\Tests\\Illuminate\\',
+            '\\Rapier\\Support\\Collection' => '\\Tightenco\\Collect\\Support\\Collection',
+            'Rapier\\Support\\HtmlString' => 'Tightenco\\Collect\\Support\\HtmlString',
+            'Rapier\\Contracts\\Support\\Arrayable' => 'Tightenco\\Collect\\Support\\Arrayable',
+            'Rapier\\Support\\Traits\\Macroable' => 'Tightenco\\Collect\\Support\\Traits\\Macroable',
+            '\\Tightenco\\Collect\\Support\\Arr::last' => 'Arr::last',
+            'Rapier\\View\\Factory' => 'Rapier\\Blade',
 
             // Compiler amends
             '\Tightenco\Collect\Support\Arr::except(get_defined_vars(), [\'__data\', \'__path\']))->render()' => '\Tightenco\Collect\Support\Arr::except(get_defined_vars(), [\'__data\', \'__path\']))',
             "\Tightenco\Collect\Support\Arr::except(get_defined_vars(), [\'__data\', \'__path\']))->render()" => "\Tightenco\Collect\Support\Arr::except(get_defined_vars(), [\'__data\', \'__path\']))",
             '\Rapier\Support\Facades\Blade::check' => '\$__env->getCompiler()->check',
             '\$__env->getCompiler()->check(' . "\'custom\'" => '$__env->getCompiler()->check(' . "\'custom\'",
+            '$this->componentData($name))->render()' => '$this->componentData($name))',
 
             // auth rewrites
             'auth()->guard{$guard}->check()' => '\$__env->authHandler{$guard}',
@@ -284,12 +291,19 @@ class UpdateCommand extends Command
             'auth()->guard("standard")->guest()' => '! $__env->authHandler("standard")',
             'auth()->guard()->check()' => '$__env->authHandler()',
 
+            // can rewrites
+            'app(\\Rapier\\\\Contracts\\\\Auth\\\\Access\\\\Gate::class)->check{$expression}' => '\$__env->canHandler{$expression}',
+            'app(\\Rapier\\\\Contracts\\\\Auth\\\\Access\\\\Gate::class)->denies{$expression}' => '! \$__env->canHandler{$expression}',
+            'app(\\Rapier\\\\Contracts\\\\Auth\\\\Access\\\\Gate::class)->any{$expression}' => '\$__env->canHandlerAny{$expression}',
+            'app(\\\\Rapier\\\\Contracts\\\\Auth\\\\Access\\\\Gate::class)->check(' => '$__env->canHandler(',
+            'app(\\\\Rapier\\\\Contracts\\\\Auth\\\\Access\\\\Gate::class)->any(' => '$__env->canHandlerAny(',
+            'app(\\\\Rapier\\\\Contracts\\\\Auth\\\\Access\\\\Gate::class)->denies(' => '! $__env->canHandler(',
+
             // inject rewrites
             'app(\'{$service}\')' => '\$__env->injectHandler(\'{$service}\')',
 
             'use Symfony\Component\Debug\Exception\FatalThrowableError;' => '',
             'FatalThrowableError' => 'Exception',
-            'Rapier\\View\\Factory' => 'Rapier\\Blade'
         ];
 
         return \str_replace(array_keys($rewrites), \array_values($rewrites), $response);

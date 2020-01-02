@@ -15,6 +15,11 @@ trait ProvidesHandlers
     private $injectHandler;
 
     /**
+     * @var callable
+     */
+    private $canHandler;
+
+    /**
      * Set handler to resolve @auth directives.
      *
      * @param callable $handler
@@ -22,6 +27,16 @@ trait ProvidesHandlers
     public function setAuthHandler(callable $handler): void
     {
         $this->authHandler = $handler;
+    }
+
+    /**
+     * Set handler to resolve @can directives.
+     *
+     * @param callable $handler
+     */
+    public function setCanHandler(callable $handler): void
+    {
+        $this->canHandler = $handler;
     }
 
     /**
@@ -48,6 +63,32 @@ trait ProvidesHandlers
     }
 
     /**
+     * @param       $abilities
+     * @param array $arguments
+     * @return bool
+     */
+    public function canHandler($abilities, $arguments = []): bool
+    {
+        if ($this->canHandler === null) {
+            $this->canHandler = [$this, 'defaultCanHandler'];
+        }
+
+        return \call_user_func($this->canHandler, $abilities, $arguments);
+    }
+
+    /**
+     * @param       $abilities
+     * @param array $arguments
+     * @return bool
+     */
+    public function canHandlerAny($abilities, $arguments = []): bool
+    {
+        return collect($abilities)->contains(function ($ability) use ($arguments) {
+            return $this->canHandler($ability, $arguments);
+        });
+    }
+
+    /**
      * @param string $service
      * @return mixed
      */
@@ -61,12 +102,24 @@ trait ProvidesHandlers
     }
 
     /**
-     * Default Auth handler.
+     * Default auth handler.
      *
      * @param string|null $guard
      * @return bool
      */
     protected function defaultAuthHandler(string $guard = null): bool
+    {
+        return false;
+    }
+
+    /**
+     * Default can handler.
+     *
+     * @param string|array $abilities
+     * @param string|array $arguments
+     * @return bool
+     */
+    protected function defaultCanHandler($abilities, $arguments = []): bool
     {
         return false;
     }
