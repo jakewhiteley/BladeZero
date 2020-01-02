@@ -16,7 +16,7 @@ abstract class AbstractBladeTestCase extends TestCase
     protected function setUp(): void
     {
         $this->compiler = new Blade(
-            dirname(__FILE__) . '/fixtures/files/directives',
+            dirname(__FILE__) . '/fixtures/files',
             dirname(__FILE__) . '/fixtures/cache'
         );
 

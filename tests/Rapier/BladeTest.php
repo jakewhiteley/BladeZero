@@ -2,6 +2,8 @@
 
 namespace Rapier\Tests\Rapier;
 
+use InvalidArgumentException;
+
 class BladeTest extends AbstractBladeTestCase
 {
     public function testLocationsCanBeAdded()
@@ -17,21 +19,21 @@ class BladeTest extends AbstractBladeTestCase
 
         $this->compiler->addNamespace(
             'Conditionals',
-            dirname(__FILE__) . '/fixtures/files/directives/conditionals'
+            dirname(__FILE__) . '/fixtures/files/conditionals'
         );
 
         $this->assertTrue($this->compiler->exists('Conditionals::isset'));
 
         $this->compiler->prependNamespace(
             'json',
-            dirname(__FILE__) . '/fixtures/files/directives/json'
+            dirname(__FILE__) . '/fixtures/files/json'
         );
 
         $this->assertTrue($this->compiler->exists('json::json'));
 
         $this->compiler->replaceNamespace(
             'Conditionals',
-            dirname(__FILE__) . '/fixtures/files/directives/json'
+            dirname(__FILE__) . '/fixtures/files/json'
         );
 
         $this->compiler->flushFinderCache();
@@ -49,5 +51,77 @@ class BladeTest extends AbstractBladeTestCase
             'is testing not production',
             $this->getCompiled('general.customif')
         );
+    }
+
+    public function testComponentAliasing()
+    {
+        $this->compiler->component('components.alert', 'alert');
+
+        $this->assertEquals(
+            'title<div>foo</div>',
+            $this->getCompiled('general.components')
+        );
+    }
+
+    public function testDefaultCanHandler()
+    {
+        $this->assertEquals(
+            'failed',
+            $this->getCompiled('auth.cannot')
+        );
+    }
+
+    public function testAuthCanHandler()
+    {
+        $this->assertEquals(
+            'guest guest',
+            $this->getCompiled('conditionals.auth')
+        );
+    }
+
+    public function testPhpFilesCanBeRendered()
+    {
+        $this->assertEquals(
+            'php file',
+            $this->getCompiled('general.foo')
+        );
+    }
+
+    public function testHtmlFilesCanBeRendered()
+    {
+        $this->assertEquals(
+            'HTML file',
+            $this->getCompiled('general.html')
+        );
+    }
+
+    public function testExceptionThrownIfUnknownExtensionRendered()
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->getCompiled('general.xml');
+    }
+
+    /**
+     * @depends testExceptionThrownIfUnknownExtensionRendered
+     */
+    public function testExceptionThrownIfExtensionNotAddedYet()
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->compiler->getEngineFromPath(dirname(__FILE__) . '/fixtures/files/general/xml.xml');
+    }
+
+    /**
+     * @depends testExceptionThrownIfExtensionNotAddedYet
+     */
+    public function testNewExtensionsCanBeAdded()
+    {
+        $this->compiler->addExtension('xml', 'file');
+
+        $this->assertEquals(
+            '<foo>bar</foo>',
+            $this->getCompiled('general.xml')
+        );
+
+        $this->assertArrayHasKey('xml', $this->compiler->getExtensions());
     }
 }
