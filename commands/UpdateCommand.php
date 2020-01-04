@@ -1,6 +1,6 @@
 <?php
 
-namespace Rapier\Commands;
+namespace Unseenco\Blade\Commands;
 
 use Curl\Curl;
 use Curl\MultiCurl;
@@ -264,21 +264,21 @@ class UpdateCommand extends Command
             // Namepsace conversions
             '\\Illuminate\\Support\\Arr::' => '\\Tightenco\\Collect\\Support\\Arr::',
             ' Arr::' => ' \\Tightenco\\Collect\\Support\\Arr::',
-            'Illuminate\\Tests\\' => 'Rapier\\Tests\\',
+            'Illuminate\\Tests\\' => 'Unseenco\\Blade\\Tests\\',
             'Illuminate\\Support\\Arr' => 'Tightenco\\Collect\\Support\\Arr',
-            'Illuminate\\' => 'Rapier\\',
-            'Rapier\\Tests\\' => 'Rapier\\Tests\\Illuminate\\',
-            '\\Rapier\\Support\\Collection' => '\\Tightenco\\Collect\\Support\\Collection',
-            'Rapier\\Support\\HtmlString' => 'Tightenco\\Collect\\Support\\HtmlString',
-            'Rapier\\Contracts\\Support\\Arrayable' => 'Tightenco\\Collect\\Support\\Arrayable',
-            'Rapier\\Support\\Traits\\Macroable' => 'Tightenco\\Collect\\Support\\Traits\\Macroable',
+            'Illuminate\\' => 'Unseenco\\Blade\\',
+            'Unseenco\\Blade\\Tests\\' => 'Unseenco\\Blade\\Tests\\Illuminate\\',
+            '\\Unseenco\\Blade\\Support\\Collection' => '\\Tightenco\\Collect\\Support\\Collection',
+            'Unseenco\\Blade\\Support\\HtmlString' => 'Tightenco\\Collect\\Support\\HtmlString',
+            'Unseenco\\Blade\\Contracts\\Support\\Arrayable' => 'Tightenco\\Collect\\Support\\Arrayable',
+            'Unseenco\\Blade\\Support\\Traits\\Macroable' => 'Tightenco\\Collect\\Support\\Traits\\Macroable',
             '\\Tightenco\\Collect\\Support\\Arr::last' => 'Arr::last',
-            'Rapier\\View\\Factory' => 'Rapier\\Blade',
+            'Unseenco\\Blade\\View\\Factory' => 'Unseenco\\Blade\\Blade',
 
             // Compiler amends
             '\Tightenco\Collect\Support\Arr::except(get_defined_vars(), [\'__data\', \'__path\']))->render()' => '\Tightenco\Collect\Support\Arr::except(get_defined_vars(), [\'__data\', \'__path\']))',
             "\Tightenco\Collect\Support\Arr::except(get_defined_vars(), [\'__data\', \'__path\']))->render()" => "\Tightenco\Collect\Support\Arr::except(get_defined_vars(), [\'__data\', \'__path\']))",
-            '\Rapier\Support\Facades\Blade::check' => '\$__env->getCompiler()->check',
+            '\Unseenco\Support\Facades\Blade::check' => '\$__env->getCompiler()->check',
             '\$__env->getCompiler()->check(' . "\'custom\'" => '$__env->getCompiler()->check(' . "\'custom\'",
             '$this->componentData($name))->render()' => '$this->componentData($name))',
 
@@ -292,12 +292,12 @@ class UpdateCommand extends Command
             'auth()->guard()->check()' => '$__env->authHandler()',
 
             // can rewrites
-            'app(\\Rapier\\\\Contracts\\\\Auth\\\\Access\\\\Gate::class)->check{$expression}' => '\$__env->canHandler{$expression}',
-            'app(\\Rapier\\\\Contracts\\\\Auth\\\\Access\\\\Gate::class)->denies{$expression}' => '! \$__env->canHandler{$expression}',
-            'app(\\Rapier\\\\Contracts\\\\Auth\\\\Access\\\\Gate::class)->any{$expression}' => '\$__env->canHandlerAny{$expression}',
-            'app(\\\\Rapier\\\\Contracts\\\\Auth\\\\Access\\\\Gate::class)->check(' => '$__env->canHandler(',
-            'app(\\\\Rapier\\\\Contracts\\\\Auth\\\\Access\\\\Gate::class)->any(' => '$__env->canHandlerAny(',
-            'app(\\\\Rapier\\\\Contracts\\\\Auth\\\\Access\\\\Gate::class)->denies(' => '! $__env->canHandler(',
+            'app(\\Unseenco\\Blade\\Contracts\\\\Auth\\\\Access\\\\Gate::class)->check{$expression}' => '\$__env->canHandler{$expression}',
+            'app(\\Unseenco\\Blade\\Contracts\\\\Auth\\\\Access\\\\Gate::class)->denies{$expression}' => '! \$__env->canHandler{$expression}',
+            'app(\\Unseenco\\Blade\\Contracts\\\\Auth\\\\Access\\\\Gate::class)->any{$expression}' => '\$__env->canHandlerAny{$expression}',
+            'app(\\\\Unseenco\\Blade\\Contracts\\\\Auth\\\\Access\\\\Gate::class)->check(' => '$__env->canHandler(',
+            'app(\\\\Unseenco\\Blade\\Contracts\\\\Auth\\\\Access\\\\Gate::class)->any(' => '$__env->canHandlerAny(',
+            'app(\\\\Unseenco\\Blade\\Contracts\\\\Auth\\\\Access\\\\Gate::class)->denies(' => '! $__env->canHandler(',
 
             // inject rewrites
             'app(\'{$service}\')' => '\$__env->injectHandler(\'{$service}\')',

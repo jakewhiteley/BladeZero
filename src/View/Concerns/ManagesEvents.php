@@ -1,10 +1,10 @@
 <?php
 
-namespace Rapier\View\Concerns;
+namespace Unseenco\Blade\View\Concerns;
 
 use Closure;
-use Rapier\Contracts\View\View as ViewContract;
-use Rapier\Support\Str;
+use Unseenco\Blade\Contracts\View\View as ViewContract;
+use Unseenco\Blade\Support\Str;
 
 trait ManagesEvents
 {
@@ -171,7 +171,7 @@ trait ManagesEvents
     /**
      * Call the composer for a given view.
      *
-     * @param  \Rapier\Contracts\View\View  $view
+     * @param  \Unseenco\Blade\Contracts\View\View  $view
      * @return void
      */
     public function callComposer(ViewContract $view)
@@ -182,7 +182,7 @@ trait ManagesEvents
     /**
      * Call the creator for a given view.
      *
-     * @param  \Rapier\Contracts\View\View  $view
+     * @param  \Unseenco\Blade\Contracts\View\View  $view
      * @return void
      */
     public function callCreator(ViewContract $view)

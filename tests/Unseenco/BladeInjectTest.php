@@ -1,6 +1,6 @@
 <?php
 
-namespace Rapier\Tests\Rapier;
+namespace Unseenco\Blade\Tests\Unseenco\Blade;
 
 class BladeInjectTestTest extends AbstractBladeTestCase
 {

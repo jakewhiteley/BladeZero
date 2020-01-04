@@ -1,6 +1,6 @@
 <?php
 
-namespace Rapier\Support;
+namespace Unseenco\Blade\Support;
 
 use Tightenco\Collect\Support\Traits\Macroable;
 use Ramsey\Uuid\Codec\TimestampFirstCombCodec;

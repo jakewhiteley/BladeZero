@@ -1,9 +1,9 @@
 <?php
 
-namespace Rapier\Tests\Illuminate\View;
+namespace Unseenco\Blade\Tests\Illuminate\View;
 
-use Rapier\Filesystem\Filesystem;
-use Rapier\View\FileViewFinder;
+use Unseenco\Blade\Filesystem\Filesystem;
+use Unseenco\Blade\View\FileViewFinder;
 use InvalidArgumentException;
 use Mockery as m;
 use PHPUnit\Framework\TestCase;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Rapier\View\Concerns;
+namespace Unseenco\Blade\View\Concerns;
 
 use Tightenco\Collect\Support\Arr;
 use Tightenco\Collect\Support\HtmlString;

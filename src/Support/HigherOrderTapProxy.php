@@ -1,6 +1,6 @@
 <?php
 
-namespace Rapier\Support;
+namespace Unseenco\Blade\Support;
 
 class HigherOrderTapProxy
 {

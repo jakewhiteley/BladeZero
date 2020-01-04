@@ -1,49 +1,49 @@
 <?php
 
-namespace Rapier;
+namespace Unseenco\Blade;
 
 use InvalidArgumentException;
-use Rapier\Filesystem\Filesystem;
-use Rapier\Support\Str;
-use Rapier\View\Compilers\BladeCompiler;
-use Rapier\View\Engines\CompilerEngine;
-use Rapier\View\Engines\EngineResolver;
-use Rapier\View\Engines\FileEngine;
-use Rapier\View\Engines\PhpEngine;
-use Rapier\View\FileViewFinder;
-use Rapier\View\ViewFinderInterface;
-use Rapier\View\ViewName;
 use Tightenco\Collect\Contracts\Support\Arrayable;
 use Tightenco\Collect\Support\Arr;
 use Tightenco\Collect\Support\Traits\Macroable;
+use Unseenco\Blade\Filesystem\Filesystem;
+use Unseenco\Blade\Support\Str;
+use Unseenco\Blade\View\Compilers\BladeCompiler;
+use Unseenco\Blade\View\Engines\CompilerEngine;
+use Unseenco\Blade\View\Engines\EngineResolver;
+use Unseenco\Blade\View\Engines\FileEngine;
+use Unseenco\Blade\View\Engines\PhpEngine;
+use Unseenco\Blade\View\FileViewFinder;
+use Unseenco\Blade\View\ViewFinderInterface;
+use Unseenco\Blade\View\ViewName;
 
 class Blade
 {
-    use Macroable,
-        View\Concerns\ManagesComponents,
-        View\Concerns\ManagesLayouts,
-        View\Concerns\ManagesLoops,
-        View\Concerns\ManagesStacks,
-        View\Concerns\ManagesTranslations,
-        View\Concerns\ProvidesHandlers;
+    use Macroable;
+    use View\Concerns\ManagesComponents;
+    use View\Concerns\ManagesLayouts;
+    use View\Concerns\ManagesLoops;
+    use View\Concerns\ManagesStacks;
+    use View\Concerns\ManagesTranslations;
+    use View\Concerns\ProvidesHandlers;
 
     /**
-     * @var \Rapier\Filesystem\Filesystem
+     * @var \Unseenco\Blade\Filesystem\Filesystem
      */
     protected $files;
 
     /**
-     * @var \Rapier\View\Engines\EngineResolver
+     * @var \Unseenco\Blade\View\Engines\EngineResolver
      */
     protected $engines;
 
     /**
-     * @var \Rapier\View\FileViewFinder
+     * @var \Unseenco\Blade\View\FileViewFinder
      */
     protected $finder;
 
     /**
-     * @var \Rapier\View\Compilers\BladeCompiler
+     * @var \Unseenco\Blade\View\Compilers\BladeCompiler
      */
     protected $bladeCompiler;
 
@@ -271,7 +271,7 @@ class Blade
      * Get the appropriate view engine for the given path.
      *
      * @param string $path
-     * @return \Rapier\Contracts\View\Engine
+     * @return \Unseenco\Blade\Contracts\View\Engine
      *
      * @throws \InvalidArgumentException
      */
@@ -485,7 +485,7 @@ class Blade
     /**
      * Get the engine resolver instance.
      *
-     * @return \Rapier\View\Engines\EngineResolver
+     * @return \Unseenco\Blade\View\Engines\EngineResolver
      */
     public function getEngineResolver(): EngineResolver
     {
@@ -495,7 +495,7 @@ class Blade
     /**
      * Get the engine resolver instance.
      *
-     * @return \Rapier\View\Compilers\BladeCompiler
+     * @return \Unseenco\Blade\View\Compilers\BladeCompiler
      */
     public function getCompiler(): BladeCompiler
     {
@@ -505,7 +505,7 @@ class Blade
     /**
      * Get the view finder instance.
      *
-     * @return \Rapier\View\ViewFinderInterface
+     * @return \Unseenco\Blade\View\ViewFinderInterface
      */
     public function getFinder(): ViewFinderInterface
     {
@@ -525,7 +525,7 @@ class Blade
     /**
      * Set the view finder instance.
      *
-     * @param \Rapier\View\ViewFinderInterface $finder
+     * @param \Unseenco\Blade\View\ViewFinderInterface $finder
      * @return void
      */
     public function setFinder(ViewFinderInterface $finder)

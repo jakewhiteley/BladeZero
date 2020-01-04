@@ -1,6 +1,6 @@
 <?php
 
-namespace Rapier\View\Engines;
+namespace Unseenco\Blade\View\Engines;
 
 use Closure;
 use InvalidArgumentException;
@@ -41,7 +41,7 @@ class EngineResolver
      * Resolve an engine instance by name.
      *
      * @param  string  $engine
-     * @return \Rapier\Contracts\View\Engine
+     * @return \Unseenco\Blade\Contracts\View\Engine
      *
      * @throws \InvalidArgumentException
      */

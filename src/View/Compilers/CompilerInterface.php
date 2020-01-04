@@ -1,6 +1,6 @@
 <?php
 
-namespace Rapier\View\Compilers;
+namespace Unseenco\Blade\View\Compilers;
 
 interface CompilerInterface
 {

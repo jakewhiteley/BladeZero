@@ -1,6 +1,6 @@
 <?php
 
-namespace Rapier\View\Concerns;
+namespace Unseenco\Blade\View\Concerns;
 
 trait ManagesTranslations
 {

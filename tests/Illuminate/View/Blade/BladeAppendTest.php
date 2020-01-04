@@ -1,6 +1,6 @@
 <?php
 
-namespace Rapier\Tests\Illuminate\View\Blade;
+namespace Unseenco\Blade\Tests\Illuminate\View\Blade;
 
 class BladeAppendTest extends AbstractBladeTestCase
 {

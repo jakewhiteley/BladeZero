@@ -1,6 +1,6 @@
 <?php
 
-namespace Rapier\View\Compilers\Concerns;
+namespace Unseenco\Blade\View\Compilers\Concerns;
 
 trait CompilesComponents
 {

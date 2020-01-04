@@ -1,6 +1,6 @@
 <?php
 
-namespace Rapier\View\Compilers\Concerns;
+namespace Unseenco\Blade\View\Compilers\Concerns;
 
 trait CompilesAuthorizations
 {
@@ -12,7 +12,7 @@ trait CompilesAuthorizations
      */
     protected function compileCan($expression)
     {
-        return "<?php if (\$__env->canHandler{$expression}): ?>";
+        return "<?php if (app(\Unseenco\Blade\\Contracts\\Auth\\Access\\Gate::class)->check{$expression}): ?>";
     }
 
     /**
@@ -23,7 +23,7 @@ trait CompilesAuthorizations
      */
     protected function compileCannot($expression)
     {
-        return "<?php if (! \$__env->canHandler{$expression}): ?>";
+        return "<?php if (app(\Unseenco\Blade\\Contracts\\Auth\\Access\\Gate::class)->denies{$expression}): ?>";
     }
 
     /**
@@ -34,7 +34,7 @@ trait CompilesAuthorizations
      */
     protected function compileCanany($expression)
     {
-        return "<?php if (\$__env->canHandlerAny{$expression}): ?>";
+        return "<?php if (app(\Unseenco\Blade\\Contracts\\Auth\\Access\\Gate::class)->any{$expression}): ?>";
     }
 
     /**
@@ -45,7 +45,7 @@ trait CompilesAuthorizations
      */
     protected function compileElsecan($expression)
     {
-        return "<?php elseif (\$__env->canHandler{$expression}): ?>";
+        return "<?php elseif (app(\Unseenco\Blade\\Contracts\\Auth\\Access\\Gate::class)->check{$expression}): ?>";
     }
 
     /**
@@ -56,7 +56,7 @@ trait CompilesAuthorizations
      */
     protected function compileElsecannot($expression)
     {
-        return "<?php elseif (! \$__env->canHandler{$expression}): ?>";
+        return "<?php elseif (app(\Unseenco\Blade\\Contracts\\Auth\\Access\\Gate::class)->denies{$expression}): ?>";
     }
 
     /**
@@ -67,7 +67,7 @@ trait CompilesAuthorizations
      */
     protected function compileElsecanany($expression)
     {
-        return "<?php elseif (\$__env->canHandlerAny{$expression}): ?>";
+        return "<?php elseif (app(\Unseenco\Blade\\Contracts\\Auth\\Access\\Gate::class)->any{$expression}): ?>";
     }
 
     /**

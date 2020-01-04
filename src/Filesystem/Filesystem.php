@@ -1,10 +1,10 @@
 <?php
 
-namespace Rapier\Filesystem;
+namespace Unseenco\Blade\Filesystem;
 
 use ErrorException;
 use FilesystemIterator;
-use Rapier\Contracts\Filesystem\FileNotFoundException;
+use Unseenco\Blade\Contracts\Filesystem\FileNotFoundException;
 use Tightenco\Collect\Support\Traits\Macroable;
 use Symfony\Component\Finder\Finder;
 
@@ -41,7 +41,7 @@ class Filesystem
      * @param  bool  $lock
      * @return string
      *
-     * @throws \Rapier\Contracts\Filesystem\FileNotFoundException
+     * @throws \Unseenco\Blade\Contracts\Filesystem\FileNotFoundException
      */
     public function get($path, $lock = false)
     {
@@ -87,7 +87,7 @@ class Filesystem
      * @param  string  $path
      * @return mixed
      *
-     * @throws \Rapier\Contracts\Filesystem\FileNotFoundException
+     * @throws \Unseenco\Blade\Contracts\Filesystem\FileNotFoundException
      */
     public function getRequire($path)
     {

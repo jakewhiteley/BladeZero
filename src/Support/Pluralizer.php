@@ -1,6 +1,6 @@
 <?php
 
-namespace Rapier\Support;
+namespace Unseenco\Blade\Support;
 
 use Doctrine\Common\Inflector\Inflector;
 

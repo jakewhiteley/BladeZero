@@ -1,6 +1,6 @@
 <?php
 
-namespace Rapier\Contracts\View;
+namespace Unseenco\Blade\Contracts\View;
 
 interface Engine
 {

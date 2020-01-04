@@ -1,6 +1,6 @@
 <?php
 
-namespace Rapier\Tests\Illuminate\View\Blade;
+namespace Unseenco\Blade\Tests\Illuminate\View\Blade;
 
 class BladeCannotStatementsTest extends AbstractBladeTestCase
 {
@@ -11,9 +11,9 @@ breeze
 @elsecannot(\'delete\', [$post])
 sneeze
 @endcannot';
-        $expected = '<?php if (! $__env->canHandler(\'update\', [$post])): ?>
+        $expected = '<?php if (app(\\Unseenco\Blade\\Contracts\\Auth\\Access\\Gate::class)->denies(\'update\', [$post])): ?>
 breeze
-<?php elseif (! $__env->canHandler(\'delete\', [$post])): ?>
+<?php elseif (app(\\Unseenco\Blade\\Contracts\\Auth\\Access\\Gate::class)->denies(\'delete\', [$post])): ?>
 sneeze
 <?php endif; ?>';
         $this->assertEquals($expected, $this->compiler->compileString($string));

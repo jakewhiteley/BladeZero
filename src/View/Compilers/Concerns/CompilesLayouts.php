@@ -1,8 +1,8 @@
 <?php
 
-namespace Rapier\View\Compilers\Concerns;
+namespace Unseenco\Blade\View\Compilers\Concerns;
 
-use Rapier\Blade as ViewFactory;
+use Unseenco\Blade\Blade as ViewFactory;
 
 trait CompilesLayouts
 {

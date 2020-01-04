@@ -1,8 +1,8 @@
 <?php
 
-namespace Rapier\View\Compilers;
+namespace Unseenco\Blade\View\Compilers;
 
-use Rapier\Filesystem\Filesystem;
+use Unseenco\Blade\Filesystem\Filesystem;
 use InvalidArgumentException;
 
 abstract class Compiler
@@ -10,7 +10,7 @@ abstract class Compiler
     /**
      * The Filesystem instance.
      *
-     * @var \Rapier\Filesystem\Filesystem
+     * @var \Unseenco\Blade\Filesystem\Filesystem
      */
     protected $files;
 
@@ -24,7 +24,7 @@ abstract class Compiler
     /**
      * Create a new compiler instance.
      *
-     * @param  \Rapier\Filesystem\Filesystem  $files
+     * @param  \Unseenco\Blade\Filesystem\Filesystem  $files
      * @param  string  $cachePath
      * @return void
      *

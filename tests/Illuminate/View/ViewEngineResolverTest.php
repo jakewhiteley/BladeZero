@@ -1,8 +1,8 @@
 <?php
 
-namespace Rapier\Tests\Illuminate\View;
+namespace Unseenco\Blade\Tests\Illuminate\View;
 
-use Rapier\View\Engines\EngineResolver;
+use Unseenco\Blade\View\Engines\EngineResolver;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use stdClass;

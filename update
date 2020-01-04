@@ -3,7 +3,7 @@
 
 require __DIR__.'/vendor/autoload.php';
 
-use Rapier\Commands\UpdateCommand;
+use Unseenco\Blade\Commands\UpdateCommand;
 use Symfony\Component\Console\Application;
 
 $application = new Application();

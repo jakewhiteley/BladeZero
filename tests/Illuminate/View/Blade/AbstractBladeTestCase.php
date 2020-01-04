@@ -1,16 +1,16 @@
 <?php
 
-namespace Rapier\Tests\Illuminate\View\Blade;
+namespace Unseenco\Blade\Tests\Illuminate\View\Blade;
 
-use Rapier\Filesystem\Filesystem;
-use Rapier\View\Compilers\BladeCompiler;
+use Unseenco\Blade\Filesystem\Filesystem;
+use Unseenco\Blade\View\Compilers\BladeCompiler;
 use Mockery as m;
 use PHPUnit\Framework\TestCase;
 
 abstract class AbstractBladeTestCase extends TestCase
 {
     /**
-     * @var \Rapier\View\Compilers\BladeCompiler
+     * @var \Unseenco\Blade\View\Compilers\BladeCompiler
      */
     protected $compiler;
 

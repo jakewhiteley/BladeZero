@@ -1,17 +1,17 @@
 <?php
 
-namespace Rapier\View\Engines;
+namespace Unseenco\Blade\View\Engines;
 
 use ErrorException;
 use Exception;
-use Rapier\View\Compilers\CompilerInterface;
+use Unseenco\Blade\View\Compilers\CompilerInterface;
 
 class CompilerEngine extends PhpEngine
 {
     /**
      * The Blade compiler instance.
      *
-     * @var \Rapier\View\Compilers\CompilerInterface
+     * @var \Unseenco\Blade\View\Compilers\CompilerInterface
      */
     protected $compiler;
 
@@ -25,7 +25,7 @@ class CompilerEngine extends PhpEngine
     /**
      * Create a new Blade view engine instance.
      *
-     * @param  \Rapier\View\Compilers\CompilerInterface  $compiler
+     * @param  \Unseenco\Blade\View\Compilers\CompilerInterface  $compiler
      * @return void
      */
     public function __construct(CompilerInterface $compiler)
@@ -93,7 +93,7 @@ class CompilerEngine extends PhpEngine
     /**
      * Get the compiler implementation.
      *
-     * @return \Rapier\View\Compilers\CompilerInterface
+     * @return \Unseenco\Blade\View\Compilers\CompilerInterface
      */
     public function getCompiler()
     {

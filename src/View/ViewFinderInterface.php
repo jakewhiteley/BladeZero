@@ -1,6 +1,6 @@
 <?php
 
-namespace Rapier\View;
+namespace Unseenco\Blade\View;
 
 interface ViewFinderInterface
 {

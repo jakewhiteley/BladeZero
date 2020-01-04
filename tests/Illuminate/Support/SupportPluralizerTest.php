@@ -1,8 +1,8 @@
 <?php
 
-namespace Rapier\Tests\Illuminate\Support;
+namespace Unseenco\Blade\Tests\Illuminate\Support;
 
-use Rapier\Support\Str;
+use Unseenco\Blade\Support\Str;
 use PHPUnit\Framework\TestCase;
 
 class SupportPluralizerTest extends TestCase

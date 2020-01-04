@@ -1,8 +1,8 @@
 <?php
 
-namespace Rapier\View;
+namespace Unseenco\Blade\View;
 
-use Rapier\Filesystem\Filesystem;
+use Unseenco\Blade\Filesystem\Filesystem;
 use InvalidArgumentException;
 
 class FileViewFinder implements ViewFinderInterface
@@ -10,7 +10,7 @@ class FileViewFinder implements ViewFinderInterface
     /**
      * The filesystem instance.
      *
-     * @var \Rapier\Filesystem\Filesystem
+     * @var \Unseenco\Blade\Filesystem\Filesystem
      */
     protected $files;
 
@@ -45,7 +45,7 @@ class FileViewFinder implements ViewFinderInterface
     /**
      * Create a new file view loader instance.
      *
-     * @param  \Rapier\Filesystem\Filesystem  $files
+     * @param  \Unseenco\Blade\Filesystem\Filesystem  $files
      * @param  array  $paths
      * @param  array|null  $extensions
      * @return void
@@ -270,7 +270,7 @@ class FileViewFinder implements ViewFinderInterface
     /**
      * Get the filesystem instance.
      *
-     * @return \Rapier\Filesystem\Filesystem
+     * @return \Unseenco\Blade\Filesystem\Filesystem
      */
     public function getFilesystem()
     {

@@ -1,15 +1,15 @@
 <?php
 
-namespace Rapier\Tests\Rapier;
+namespace Unseenco\Blade\Tests\Unseenco\Blade;
 
 use PHPUnit\Framework\TestCase;
-use Rapier\Blade;
+use Unseenco\Blade\Blade;
 use Symfony\Component\Filesystem\Filesystem;
 
 abstract class AbstractBladeTestCase extends TestCase
 {
     /**
-     * @var \Rapier\Blade
+     * @var \Unseenco\Blade\Blade
      */
     protected $compiler;
 

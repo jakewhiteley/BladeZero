@@ -1,8 +1,8 @@
 <?php
 
-namespace Rapier\View\Engines;
+namespace Unseenco\Blade\View\Engines;
 
-use Rapier\Contracts\View\Engine;
+use Unseenco\Blade\Contracts\View\Engine;
 
 class FileEngine implements Engine
 {

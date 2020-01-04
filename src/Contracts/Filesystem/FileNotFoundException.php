@@ -1,6 +1,6 @@
 <?php
 
-namespace Rapier\Contracts\Filesystem;
+namespace Unseenco\Blade\Contracts\Filesystem;
 
 use Exception;
 

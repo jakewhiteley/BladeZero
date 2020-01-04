@@ -1,6 +1,6 @@
 <?php
 
-namespace Rapier\View\Engines;
+namespace Unseenco\Blade\View\Engines;
 
 abstract class Engine
 {

@@ -1,6 +1,6 @@
 <?php
 
-use Rapier\Support\HigherOrderTapProxy;
+use Unseenco\Blade\Support\HigherOrderTapProxy;
 
 if (!function_exists('last')) {
     /**

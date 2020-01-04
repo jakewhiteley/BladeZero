@@ -1,8 +1,8 @@
 <?php
 
-namespace Rapier\View\Concerns;
+namespace Unseenco\Blade\View\Concerns;
 
-use Rapier\Contracts\View\View;
+use Unseenco\Blade\Contracts\View\View;
 use InvalidArgumentException;
 
 trait ManagesLayouts
