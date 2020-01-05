@@ -1,6 +1,6 @@
 <?php
 
-namespace Unseenco\Blade\Tests\Unseenco\Blade;
+namespace Unseenco\Blade\Tests\Unseenco;
 
 use PHPUnit\Framework\TestCase;
 use Unseenco\Blade\Blade;

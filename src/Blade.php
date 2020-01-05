@@ -421,9 +421,33 @@ class Blade
      * @param string|null $alias
      * @return void
      */
-    public function component($path, $alias = null)
+    public function component($path, $alias = null): void
     {
         $this->bladeCompiler->component($path, $alias);
+    }
+
+    /**
+     * Register a handler for custom directives.
+     *
+     * @param string   $name
+     * @param callable $handler
+     * @return void
+     */
+    public function directive($name, callable $handler): void
+    {
+        $this->bladeCompiler->directive($name, $handler);
+    }
+
+    /**
+     * Register an include alias directive.
+     *
+     * @param string      $path
+     * @param string|null $alias
+     * @return void
+     */
+    public function include($path, $alias = null): void
+    {
+        $this->bladeCompiler->include($path, $alias);
     }
 
     /**

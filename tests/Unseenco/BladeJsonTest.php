@@ -1,6 +1,6 @@
 <?php
 
-namespace Unseenco\Blade\Tests\Unseenco\Blade;
+namespace Unseenco\Blade\Tests\Unseenco;
 
 class BladeJsonTest extends AbstractBladeTestCase
 {

@@ -26,7 +26,8 @@
         "symfony/css-selector": "^5.0",
         "symfony/dom-crawler": "^5.0",
         "symfony/filesystem": "^5.0",
-        "moontoast/math": "^1.1"
+        "moontoast/math": "^1.1",
+        "ramsey/uuid": "^3.9"
     },
     "autoload": {
         "files": [

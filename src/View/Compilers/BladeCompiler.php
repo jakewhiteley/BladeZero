@@ -431,20 +431,20 @@ class BladeCompiler extends Compiler implements CompilerInterface
 
         $this->directive($name, function ($expression) use ($name) {
             return $expression !== ''
-                    ? "<?php if (\Unseenco\Blade\Support\Facades\Blade::check('{$name}', {$expression})): ?>"
-                    : "<?php if (\Unseenco\Blade\Support\Facades\Blade::check('{$name}')): ?>";
+                    ? "<?php if (\$__env->getCompiler()->check('{$name}', {$expression})): ?>"
+                    : "<?php if (\$__env->getCompiler()->check('{$name}')): ?>";
         });
 
         $this->directive('unless'.$name, function ($expression) use ($name) {
             return $expression !== ''
-                ? "<?php if (! \Unseenco\Blade\Support\Facades\Blade::check('{$name}', {$expression})): ?>"
-                : "<?php if (! \Unseenco\Blade\Support\Facades\Blade::check('{$name}')): ?>";
+                ? "<?php if (! \$__env->getCompiler()->check('{$name}', {$expression})): ?>"
+                : "<?php if (! \$__env->getCompiler()->check('{$name}')): ?>";
         });
 
         $this->directive('else'.$name, function ($expression) use ($name) {
             return $expression !== ''
-                ? "<?php elseif (\Unseenco\Blade\Support\Facades\Blade::check('{$name}', {$expression})): ?>"
-                : "<?php elseif (\Unseenco\Blade\Support\Facades\Blade::check('{$name}')): ?>";
+                ? "<?php elseif (\$__env->getCompiler()->check('{$name}', {$expression})): ?>"
+                : "<?php elseif (\$__env->getCompiler()->check('{$name}')): ?>";
         });
 
         $this->directive('end'.$name, function () {

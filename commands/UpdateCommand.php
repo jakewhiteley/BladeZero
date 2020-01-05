@@ -266,6 +266,8 @@ class UpdateCommand extends Command
             ' Arr::' => ' \\Tightenco\\Collect\\Support\\Arr::',
             'Illuminate\\Tests\\' => 'Unseenco\\Blade\\Tests\\',
             'Illuminate\\Support\\Arr' => 'Tightenco\\Collect\\Support\\Arr',
+
+            '\\Illuminate\\\\' => '\\Unseenco\\\\Blade\\\\',
             'Illuminate\\' => 'Unseenco\\Blade\\',
             'Unseenco\\Blade\\Tests\\' => 'Unseenco\\Blade\\Tests\\Illuminate\\',
             '\\Unseenco\\Blade\\Support\\Collection' => '\\Tightenco\\Collect\\Support\\Collection',
@@ -278,7 +280,7 @@ class UpdateCommand extends Command
             // Compiler amends
             '\Tightenco\Collect\Support\Arr::except(get_defined_vars(), [\'__data\', \'__path\']))->render()' => '\Tightenco\Collect\Support\Arr::except(get_defined_vars(), [\'__data\', \'__path\']))',
             "\Tightenco\Collect\Support\Arr::except(get_defined_vars(), [\'__data\', \'__path\']))->render()" => "\Tightenco\Collect\Support\Arr::except(get_defined_vars(), [\'__data\', \'__path\']))",
-            '\Unseenco\Support\Facades\Blade::check' => '\$__env->getCompiler()->check',
+            '\Unseenco\Blade\Support\Facades\Blade::check' => '\$__env->getCompiler()->check',
             '\$__env->getCompiler()->check(' . "\'custom\'" => '$__env->getCompiler()->check(' . "\'custom\'",
             '$this->componentData($name))->render()' => '$this->componentData($name))',
 
@@ -292,12 +294,12 @@ class UpdateCommand extends Command
             'auth()->guard()->check()' => '$__env->authHandler()',
 
             // can rewrites
-            'app(\\Unseenco\\Blade\\Contracts\\\\Auth\\\\Access\\\\Gate::class)->check{$expression}' => '\$__env->canHandler{$expression}',
-            'app(\\Unseenco\\Blade\\Contracts\\\\Auth\\\\Access\\\\Gate::class)->denies{$expression}' => '! \$__env->canHandler{$expression}',
-            'app(\\Unseenco\\Blade\\Contracts\\\\Auth\\\\Access\\\\Gate::class)->any{$expression}' => '\$__env->canHandlerAny{$expression}',
-            'app(\\\\Unseenco\\Blade\\Contracts\\\\Auth\\\\Access\\\\Gate::class)->check(' => '$__env->canHandler(',
-            'app(\\\\Unseenco\\Blade\\Contracts\\\\Auth\\\\Access\\\\Gate::class)->any(' => '$__env->canHandlerAny(',
-            'app(\\\\Unseenco\\Blade\\Contracts\\\\Auth\\\\Access\\\\Gate::class)->denies(' => '! $__env->canHandler(',
+            'app(\\Unseenco\\\\Blade\\\\Contracts\\\\Auth\\\\Access\\\\Gate::class)->check{$expression}' => '\$__env->canHandler{$expression}',
+            'app(\\Unseenco\\\\Blade\\\\Contracts\\\\Auth\\\\Access\\\\Gate::class)->denies{$expression}' => '! \$__env->canHandler{$expression}',
+            'app(\\Unseenco\\\\Blade\\\\Contracts\\\\Auth\\\\Access\\\\Gate::class)->any{$expression}' => '\$__env->canHandlerAny{$expression}',
+            'app(\\\\Unseenco\\\Blade\\\\Contracts\\\\Auth\\\\Access\\\\Gate::class)->check(' => '$__env->canHandler(',
+            'app(\\\\Unseenco\\\Blade\\\\Contracts\\\\Auth\\\\Access\\\\Gate::class)->any(' => '$__env->canHandlerAny(',
+            'app(\\\\Unseenco\\\Blade\\\\Contracts\\\\Auth\\\\Access\\\\Gate::class)->denies(' => '! $__env->canHandler(',
 
             // inject rewrites
             'app(\'{$service}\')' => '\$__env->injectHandler(\'{$service}\')',

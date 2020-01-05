@@ -1,6 +1,6 @@
 <?php
 
-namespace Unseenco\Blade\Tests\Unseenco\Blade;
+namespace Unseenco\Blade\Tests\Unseenco;
 
 use InvalidArgumentException;
 
@@ -60,6 +60,28 @@ class BladeTest extends AbstractBladeTestCase
         $this->assertEquals(
             'title<div>foo</div>',
             $this->getCompiled('general.components')
+        );
+    }
+
+    public function testCustomDirectives()
+    {
+        $this->compiler->directive('foo', function($expression) {
+            return "<?php echo 'foo' . $expression; ?>";
+        });
+
+        $this->assertEquals(
+            'foobar',
+            $this->getCompiled('general.directives')
+        );
+    }
+
+    public function testIncludeAliasing()
+    {
+        $this->compiler->include('php.raw', 'foo');
+
+        $this->assertEquals(
+            'foo',
+            $this->getCompiled('general.include')
         );
     }
 
