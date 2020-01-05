@@ -5,8 +5,12 @@
     "license": "MIT",
     "authors": [
         {
+            "name": "Taylor Otwell",
+            "email": "taylor@laravel.com"
+        },
+        {
             "name": "Jake Whiteley",
-            "email": "jake@craftedbygc.com"
+            "email": "jakebwhiteley@gmail.com"
         }
     ],
     "suggest": {
