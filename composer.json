@@ -15,14 +15,15 @@
     ],
     "suggest": {
         "ramsey/uuid": "If you want to use Unseenco\\Blade\\Support\\Str uuid methods in your application.",
+        "doctrine/inflector": "If you want to use Unseenco\\Blade\\Support\\Str pluralize methods in your application.",
         "ext-mbstring": "If you want to use Unseenco\\Blade\\Support\\Str in your application."
     },
     "require": {
         "tightenco/collect": "^6.7",
-        "doctrine/inflector": "^1.3",
         "symfony/finder": "^5.0"
     },
     "require-dev": {
+        "doctrine/inflector": "^1.3",
         "mockery/mockery": "^1.2.3",
         "phpunit/phpunit": "^8.3",
         "symfony/console": "^5.0",

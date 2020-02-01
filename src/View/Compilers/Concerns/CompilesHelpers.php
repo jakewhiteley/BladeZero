@@ -11,7 +11,7 @@ trait CompilesHelpers
      */
     protected function compileCsrf()
     {
-        return '<?php echo csrf_field(); ?>';
+        return '<?php echo \'<input type="hidden" name="_token" value="\'.$__env->getCsrfToken().\'">\'; ?>';
     }
 
     /**

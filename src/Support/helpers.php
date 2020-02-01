@@ -48,3 +48,16 @@ if (! function_exists('tap')) {
         return $value;
     }
 }
+
+if (! function_exists('method_field')) {
+    /**
+     * Generate a form field to spoof the HTTP verb used by forms.
+     *
+     * @param  string  $method
+     * @return \Tightenco\Collect\Support\HtmlString
+     */
+    function method_field($method)
+    {
+        return new Tightenco\Collect\Support\HtmlString('<input type="hidden" name="_method" value="'.$method.'">');
+    }
+}

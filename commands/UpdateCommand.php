@@ -283,6 +283,7 @@ class UpdateCommand extends Command
             '\Unseenco\Blade\Support\Facades\Blade::check' => '\$__env->getCompiler()->check',
             '\$__env->getCompiler()->check(' . "\'custom\'" => '$__env->getCompiler()->check(' . "\'custom\'",
             '$this->componentData($name))->render()' => '$this->componentData($name))',
+            'csrf_field();' => "\'" . '<input type="hidden" name="_token" value="' . "\'." . '$__env->getCsrfToken()' . ".\'" . '">' . "\';",
 
             // auth rewrites
             'auth()->guard{$guard}->check()' => '\$__env->authHandler{$guard}',
@@ -293,12 +294,24 @@ class UpdateCommand extends Command
             'auth()->guard("standard")->guest()' => '! $__env->authHandler("standard")',
             'auth()->guard()->check()' => '$__env->authHandler()',
 
+            // error rewrites
+            '$__errorArgs = [\'.$expression.\'];' => '',
+            "\$__bag = \$errors->getBag(\$__errorArgs[1] ?? \'default\');" => '',
+            "unset(\$__errorArgs, \$__bag);" => '',
+            "\$__bag->has(\$__errorArgs[0])" => '$__env->errorHandler(\'.$expression.\')',
+            "\$__bag->first(\$__errorArgs[0])" => '$__env->errorHandler(\'.$expression.\')',
+
+            "<?php \$__errorArgs = [\'email\'];\n\nif (\$__env->errorHandler('.\$expression.')) :" => "<?php \n\nif (\$__env->errorHandler(\'email\')) :",
+            "if (\$__env->errorHandler(\'email\')) :\nif (isset(\$message)) { \$__messageOriginal = \$message; }\n\$message = \$__env->errorHandler('.\$expression.');" => "if (\$__env->errorHandler(\'email\')) :\nif (isset(\$message)) { \$__messageOriginal = \$message; }\n\$message = \$__env->errorHandler(\'email\');",
+            "<?php \$__errorArgs = [\'email\', \'customBag\'];\n\nif (\$__env->errorHandler('.\$expression.')) :\nif (isset(\$message)) { \$__messageOriginal = \$message; }\n\$message = \$__env->errorHandler('.\$expression.');" => "<?php \n\nif (\$__env->errorHandler(\'email\', \'customBag\')) :\nif (isset(\$message)) { \$__messageOriginal = \$message; }\n\$message = \$__env->errorHandler(\'email\', \'customBag\');",
+
+
             // can rewrites
             'app(\\Unseenco\\\\Blade\\\\Contracts\\\\Auth\\\\Access\\\\Gate::class)->check{$expression}' => '\$__env->canHandler{$expression}',
             'app(\\Unseenco\\\\Blade\\\\Contracts\\\\Auth\\\\Access\\\\Gate::class)->denies{$expression}' => '! \$__env->canHandler{$expression}',
-            'app(\\Unseenco\\\\Blade\\\\Contracts\\\\Auth\\\\Access\\\\Gate::class)->any{$expression}' => '\$__env->canHandlerAny{$expression}',
+            'app(\\Unseenco\\\\Blade\\\\Contracts\\\\Auth\\\\Access\\\\Gate::class)->any{$expression}' => '\$__env->canAnyHandler{$expression}',
             'app(\\\\Unseenco\\\Blade\\\\Contracts\\\\Auth\\\\Access\\\\Gate::class)->check(' => '$__env->canHandler(',
-            'app(\\\\Unseenco\\\Blade\\\\Contracts\\\\Auth\\\\Access\\\\Gate::class)->any(' => '$__env->canHandlerAny(',
+            'app(\\\\Unseenco\\\Blade\\\\Contracts\\\\Auth\\\\Access\\\\Gate::class)->any(' => '$__env->canAnyHandler(',
             'app(\\\\Unseenco\\\Blade\\\\Contracts\\\\Auth\\\\Access\\\\Gate::class)->denies(' => '! $__env->canHandler(',
 
             // inject rewrites

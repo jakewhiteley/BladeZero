@@ -101,6 +101,30 @@ class BladeTest extends AbstractBladeTestCase
         );
     }
 
+    public function testDefaultErrorHandler()
+    {
+        $this->assertEquals(
+            '',
+            $this->getCompiled('errors.default')
+        );
+    }
+
+    public function testCustomErrorHandler()
+    {
+        $this->compiler->setErrorHandler(function(string $error) {
+            if ($error == 'foo') {
+                return 'foo $message';
+            }
+
+            return false;
+        });
+
+        $this->assertEquals(
+            'foo $message',
+            $this->getCompiled('errors.default')
+        );
+    }
+
     public function testPhpFilesCanBeRendered()
     {
         $this->assertEquals(

@@ -2,6 +2,9 @@
 
 namespace Unseenco\Blade\View\Concerns;
 
+
+use Unseenco\Blade\Support\Str;
+
 trait ProvidesHandlers
 {
     /**
@@ -18,6 +21,26 @@ trait ProvidesHandlers
      * @var callable
      */
     private $canHandler;
+
+    /**
+     * @var callable
+     */
+    private $errorHandler;
+
+    /**
+     * @var callable
+     */
+    private $csrfHandler;
+
+    /**
+     * Set handler to generate csrf tokens.
+     *
+     * @param callable $handler
+     */
+    public function setCsrfHandler(callable $handler): void
+    {
+        $this->csrfHandler = $handler;
+    }
 
     /**
      * Set handler to resolve @auth directives.
@@ -47,6 +70,30 @@ trait ProvidesHandlers
     public function setInjectHandler(callable $handler): void
     {
         $this->injectHandler = $handler;
+    }
+
+    /**
+     * Set the handler to run via the @error directive.
+     *
+     * @param callable $handler
+     */
+    public function setErrorHandler(callable $handler): void
+    {
+        $this->errorHandler = $handler;
+    }
+
+    /**
+     * Return the current user's csrf token.
+     *
+     * @return string
+     */
+    public function getCsrfToken(): string
+    {
+        if ($this->csrfHandler === null) {
+            $this->csrfHandler = [$this, 'defaultCsrfHandler'];
+        }
+
+        return \call_user_func($this->csrfHandler);
     }
 
     /**
@@ -81,7 +128,7 @@ trait ProvidesHandlers
      * @param array $arguments
      * @return bool
      */
-    public function canHandlerAny($abilities, $arguments = []): bool
+    public function canAnyHandler($abilities, $arguments = []): bool
     {
         return collect($abilities)->contains(function ($ability) use ($arguments) {
             return $this->canHandler($ability, $arguments);
@@ -99,6 +146,31 @@ trait ProvidesHandlers
         }
 
         return \call_user_func($this->injectHandler, $service);
+    }
+
+    /**
+     * @param string $error
+     * @return mixed
+     */
+    public function errorHandler(string $error)
+    {
+        if ($this->errorHandler === null) {
+            $this->errorHandler = [$this, 'defaultErrorHandler'];
+        }
+
+        return \call_user_func($this->errorHandler, $error);
+    }
+
+    /**
+     * Default csrf token generation.
+     *
+     * A real implementation should save this value to the session or some other store to allow validation.
+     *
+     * @return string
+     */
+    public function defaultCsrfHandler(): string
+    {
+        return Str::random(40);
     }
 
     /**
@@ -133,5 +205,16 @@ trait ProvidesHandlers
     protected function defaultInjectHandler(string $service)
     {
         return "Injected {$service}";
+    }
+
+    /**
+     * Default error handler.
+     *
+     * @param string $error
+     * @return string|false
+     */
+    protected function defaultErrorHandler(string $error)
+    {
+        return false;
     }
 }

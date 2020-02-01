@@ -34,7 +34,7 @@ trait CompilesAuthorizations
      */
     protected function compileCanany($expression)
     {
-        return "<?php if (\$__env->canHandlerAny{$expression}): ?>";
+        return "<?php if (\$__env->canAnyHandler{$expression}): ?>";
     }
 
     /**
@@ -67,7 +67,7 @@ trait CompilesAuthorizations
      */
     protected function compileElsecanany($expression)
     {
-        return "<?php elseif (\$__env->canHandlerAny{$expression}): ?>";
+        return "<?php elseif (\$__env->canAnyHandler{$expression}): ?>";
     }
 
     /**

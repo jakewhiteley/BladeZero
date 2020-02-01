@@ -38,4 +38,16 @@ class BladeAuthTest extends AbstractBladeTestCase
             $this->getCompiled('auth.canany')
         );
     }
+
+    public function testElseCananyDirective()
+    {
+        $this->compiler->setCanHandler(function ($abilities, $arguments = []) {
+            return \in_array($abilities, []);
+        });
+
+        $this->assertEquals(
+            '',
+            $this->getCompiled('auth.canany')
+        );
+    }
 }

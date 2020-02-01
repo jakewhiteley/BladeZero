@@ -11,16 +11,16 @@ class BladeErrorTest extends AbstractBladeTestCase
     <span>{{ $message }}</span>
 @enderror';
         $expected = '
-<?php $__errorArgs = [\'email\'];
-$__bag = $errors->getBag($__errorArgs[1] ?? \'default\');
-if ($__bag->has($__errorArgs[0])) :
+<?php 
+
+if ($__env->errorHandler(\'email\')) :
 if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?>
+$message = $__env->errorHandler(\'email\'); ?>
     <span><?php echo e($message); ?></span>
 <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
-unset($__errorArgs, $__bag); ?>';
+ ?>';
 
         $this->assertEquals($expected, $this->compiler->compileString($string));
     }
@@ -32,16 +32,16 @@ unset($__errorArgs, $__bag); ?>';
     <span>{{ $message }}</span>
 @enderror';
         $expected = '
-<?php $__errorArgs = [\'email\', \'customBag\'];
-$__bag = $errors->getBag($__errorArgs[1] ?? \'default\');
-if ($__bag->has($__errorArgs[0])) :
+<?php 
+
+if ($__env->errorHandler(\'email\', \'customBag\')) :
 if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?>
+$message = $__env->errorHandler(\'email\', \'customBag\'); ?>
     <span><?php echo e($message); ?></span>
 <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
-unset($__errorArgs, $__bag); ?>';
+ ?>';
         $this->assertEquals($expected, $this->compiler->compileString($string));
     }
 }

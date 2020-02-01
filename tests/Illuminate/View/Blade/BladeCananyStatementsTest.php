@@ -11,9 +11,9 @@ breeze
 @elsecanany([\'delete\', \'approve\'], [$post])
 sneeze
 @endcan';
-        $expected = '<?php if ($__env->canHandlerAny([\'create\', \'update\'], [$post])): ?>
+        $expected = '<?php if ($__env->canAnyHandler([\'create\', \'update\'], [$post])): ?>
 breeze
-<?php elseif ($__env->canHandlerAny([\'delete\', \'approve\'], [$post])): ?>
+<?php elseif ($__env->canAnyHandler([\'delete\', \'approve\'], [$post])): ?>
 sneeze
 <?php endif; ?>';
         $this->assertEquals($expected, $this->compiler->compileString($string));
