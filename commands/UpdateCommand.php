@@ -125,8 +125,6 @@ class UpdateCommand extends Command
         $this->getSupport();
         $this->getViews();
         $this->getFilesystem();
-
-        return 0;
     }
 
     private function getSupport()
@@ -261,7 +259,7 @@ class UpdateCommand extends Command
     private function convertNamespace($response)
     {
         $rewrites = [
-            // Namepsace conversions
+            // Namespace conversions
             '\\Illuminate\\Support\\Arr::' => '\\Tightenco\\Collect\\Support\\Arr::',
             ' Arr::' => ' \\Tightenco\\Collect\\Support\\Arr::',
             'Illuminate\\Tests\\' => 'Unseenco\\Blade\\Tests\\',

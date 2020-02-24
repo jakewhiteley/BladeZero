@@ -19,7 +19,7 @@
         "ext-mbstring": "If you want to use Unseenco\\Blade\\Support\\Str in your application."
     },
     "require": {
-        "tightenco/collect": "^6.7",
+        "tightenco/collect": "^6.16",
         "symfony/finder": "^5.0"
     },
     "require-dev": {

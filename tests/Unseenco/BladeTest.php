@@ -170,4 +170,11 @@ class BladeTest extends AbstractBladeTestCase
 
         $this->assertArrayHasKey('xml', $this->compiler->getExtensions());
     }
+
+    public function testShare()
+    {
+        $this->assertNull($this->compiler->shared('foo'));
+        $this->compiler->share('foo', 'bar');
+        $this->assertEquals('bar', $this->compiler->shared('foo'));
+    }
 }

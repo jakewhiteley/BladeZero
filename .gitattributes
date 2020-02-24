@@ -3,3 +3,4 @@
 phpunit.xml export-ignore
 update export-ignore
 /tests export-ignore
+/commands export-ignore

@@ -162,7 +162,7 @@ trait ProvidesHandlers
     }
 
     /**
-     * Default csrf token generation.
+     * Default CSRF token generation.
      *
      * A real implementation should save this value to the session or some other store to allow validation.
      *
