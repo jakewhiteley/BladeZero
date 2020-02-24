@@ -3,19 +3,19 @@
 namespace Unseenco\Blade\Tests\Unseenco;
 
 use PHPUnit\Framework\TestCase;
-use Unseenco\Blade\Blade;
+use Unseenco\Blade\BladeFactory;
 use Symfony\Component\Filesystem\Filesystem;
 
 abstract class AbstractBladeTestCase extends TestCase
 {
     /**
-     * @var \Unseenco\Blade\Blade
+     * @var \Unseenco\Blade\BladeFactory
      */
     protected $compiler;
 
     protected function setUp(): void
     {
-        $this->compiler = new Blade(
+        $this->compiler = new BladeFactory(
             dirname(__FILE__) . '/fixtures/files',
             dirname(__FILE__) . '/fixtures/cache'
         );
