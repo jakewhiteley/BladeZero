@@ -273,7 +273,7 @@ class UpdateCommand extends Command
             'Unseenco\\Blade\\Contracts\\Support\\Arrayable' => 'Tightenco\\Collect\\Support\\Arrayable',
             'Unseenco\\Blade\\Support\\Traits\\Macroable' => 'Tightenco\\Collect\\Support\\Traits\\Macroable',
             '\\Tightenco\\Collect\\Support\\Arr::last' => 'Arr::last',
-            'Unseenco\\Blade\\View\\Factory' => 'Unseenco\\Blade\\BladeFactory',
+            'Unseenco\\Blade\\View\\Factory' => 'Unseenco\\Blade\\Factory',
 
             // Compiler amends
             '\Tightenco\Collect\Support\Arr::except(get_defined_vars(), [\'__data\', \'__path\']))->render()' => '\Tightenco\Collect\Support\Arr::except(get_defined_vars(), [\'__data\', \'__path\']))',

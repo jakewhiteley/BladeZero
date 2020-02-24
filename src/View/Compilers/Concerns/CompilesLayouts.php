@@ -2,7 +2,7 @@
 
 namespace Unseenco\Blade\View\Compilers\Concerns;
 
-use Unseenco\Blade\BladeFactory as ViewFactory;
+use Unseenco\Blade\Factory as ViewFactory;
 
 trait CompilesLayouts
 {

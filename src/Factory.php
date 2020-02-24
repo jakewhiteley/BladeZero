@@ -17,7 +17,7 @@ use Unseenco\Blade\View\FileViewFinder;
 use Unseenco\Blade\View\ViewFinderInterface;
 use Unseenco\Blade\View\ViewName;
 
-class BladeFactory
+class Factory
 {
     use Macroable;
     use View\Concerns\ManagesComponents;
@@ -381,7 +381,7 @@ class BladeFactory
      * @param string|array $hints
      * @return $this
      */
-    public function prependNamespace($namespace, $hints): BladeFactory
+    public function prependNamespace($namespace, $hints): Factory
     {
         $this->finder->prependNamespace($namespace, $hints);
 
@@ -395,7 +395,7 @@ class BladeFactory
      * @param string|array $hints
      * @return $this
      */
-    public function replaceNamespace($namespace, $hints): BladeFactory
+    public function replaceNamespace($namespace, $hints): Factory
     {
         $this->finder->replaceNamespace($namespace, $hints);
 
