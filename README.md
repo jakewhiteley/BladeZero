@@ -34,10 +34,39 @@ Use [Composer](https://getcomposer.org/):
 composer require jakewhiteley/bladezero
 ```
 
+After pulling the package down, you need to provide the full paths to your templates and cache directories:
+
+```php
+use Bladezero\Factory;
+
+$templatesPath = realpath('./files');
+$cachePath = realpath('./cache');
+
+$blade = new Factory($templatesPath, $cachePath);
+
+// Make and output a view with some data
+echo $blade->make('example', ['title' => 'It Works!']);
+```
+
+### Usage
+
+
+
+```php
+//$blade->addLocation(realpath('./second-files'));
+//$blade->addNamespace('derp', realpath('./second-files/deep'));
+$blade->component('components.alert', 'alert');
+$blade->directive('foo', function($expression) {
+            return "<?php echo 'foo' . $expression; ?>";
+        });
+$blade->include('php.raw', 'foo');
+$blade->share($key, $value = null);
+```
+
 ## Differences
 Even though the Blade compiler is 100% the same as it's Laravel twin, your application is not. 
 
-Because of this, BladeZero provides methods to easily 
+Because of this, BladeZero provides methods to easily provide
 
 
 ### csrf
