@@ -1,9 +1,9 @@
 <?php
 
-namespace Unseenco\Blade\Tests\Illuminate\View;
+namespace Bladezero\Tests\Illuminate\View;
 
-use Unseenco\Blade\Filesystem\Filesystem;
-use Unseenco\Blade\View\FileViewFinder;
+use Bladezero\Filesystem\Filesystem;
+use Bladezero\View\FileViewFinder;
 use InvalidArgumentException;
 use Mockery as m;
 use PHPUnit\Framework\TestCase;

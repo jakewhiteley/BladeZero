@@ -1,6 +1,6 @@
 <?php
 
-namespace Unseenco\Blade\View\Engines;
+namespace Bladezero\View\Engines;
 
 abstract class Engine
 {

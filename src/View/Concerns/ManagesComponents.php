@@ -1,6 +1,6 @@
 <?php
 
-namespace Unseenco\Blade\View\Concerns;
+namespace Bladezero\View\Concerns;
 
 use Tightenco\Collect\Support\Arr;
 use Tightenco\Collect\Support\HtmlString;

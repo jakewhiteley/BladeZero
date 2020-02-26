@@ -1,6 +1,6 @@
 <?php
 
-namespace Unseenco\Blade\Contracts\Filesystem;
+namespace Bladezero\Contracts\Filesystem;
 
 use Exception;
 

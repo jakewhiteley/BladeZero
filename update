@@ -3,7 +3,7 @@
 
 require __DIR__.'/vendor/autoload.php';
 
-use Unseenco\Blade\Commands\UpdateCommand;
+use Bladezero\Commands\UpdateCommand;
 use Symfony\Component\Console\Application;
 
 $application = new Application();

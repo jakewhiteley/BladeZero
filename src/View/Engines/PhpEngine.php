@@ -1,9 +1,9 @@
 <?php
 
-namespace Unseenco\Blade\View\Engines;
+namespace Bladezero\View\Engines;
 
 use Exception;
-use Unseenco\Blade\Contracts\View\Engine;
+use Bladezero\Contracts\View\Engine;
 
 use Throwable;
 

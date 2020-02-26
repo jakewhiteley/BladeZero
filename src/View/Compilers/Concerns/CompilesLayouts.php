@@ -1,8 +1,8 @@
 <?php
 
-namespace Unseenco\Blade\View\Compilers\Concerns;
+namespace Bladezero\View\Compilers\Concerns;
 
-use Unseenco\Blade\Factory as ViewFactory;
+use Bladezero\Factory as ViewFactory;
 
 trait CompilesLayouts
 {

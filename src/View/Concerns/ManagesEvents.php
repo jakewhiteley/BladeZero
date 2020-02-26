@@ -1,10 +1,10 @@
 <?php
 
-namespace Unseenco\Blade\View\Concerns;
+namespace Bladezero\View\Concerns;
 
 use Closure;
-use Unseenco\Blade\Contracts\View\View as ViewContract;
-use Unseenco\Blade\Support\Str;
+use Bladezero\Contracts\View\View as ViewContract;
+use Bladezero\Support\Str;
 
 trait ManagesEvents
 {
@@ -171,7 +171,7 @@ trait ManagesEvents
     /**
      * Call the composer for a given view.
      *
-     * @param  \Unseenco\Blade\Contracts\View\View  $view
+     * @param  \Bladezero\Contracts\View\View  $view
      * @return void
      */
     public function callComposer(ViewContract $view)
@@ -182,7 +182,7 @@ trait ManagesEvents
     /**
      * Call the creator for a given view.
      *
-     * @param  \Unseenco\Blade\Contracts\View\View  $view
+     * @param  \Bladezero\Contracts\View\View  $view
      * @return void
      */
     public function callCreator(ViewContract $view)

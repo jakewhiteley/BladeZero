@@ -1,8 +1,8 @@
 <?php
 
-namespace Unseenco\Blade\View\Engines;
+namespace Bladezero\View\Engines;
 
-use Unseenco\Blade\Contracts\View\Engine;
+use Bladezero\Contracts\View\Engine;
 
 class FileEngine implements Engine
 {

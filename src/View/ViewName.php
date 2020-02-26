@@ -1,6 +1,6 @@
 <?php
 
-namespace Unseenco\Blade\View;
+namespace Bladezero\View;
 
 class ViewName
 {

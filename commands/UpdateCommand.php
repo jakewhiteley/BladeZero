@@ -1,6 +1,6 @@
 <?php
 
-namespace Unseenco\Blade\Commands;
+namespace Bladezero\Commands;
 
 use Curl\Curl;
 use Curl\MultiCurl;
@@ -111,7 +111,7 @@ class UpdateCommand extends Command
             );
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->release = 'v' . $input->getOption('release');
         $this->input = $input;
@@ -125,6 +125,7 @@ class UpdateCommand extends Command
         $this->getSupport();
         $this->getViews();
         $this->getFilesystem();
+        return 0;
     }
 
     private function getSupport()
@@ -262,23 +263,23 @@ class UpdateCommand extends Command
             // Namespace conversions
             '\\Illuminate\\Support\\Arr::' => '\\Tightenco\\Collect\\Support\\Arr::',
             ' Arr::' => ' \\Tightenco\\Collect\\Support\\Arr::',
-            'Illuminate\\Tests\\' => 'Unseenco\\Blade\\Tests\\',
+            'Illuminate\\Tests\\' => 'Bladezero\\Tests\\',
             'Illuminate\\Support\\Arr' => 'Tightenco\\Collect\\Support\\Arr',
 
             '\\Illuminate\\\\' => '\\Unseenco\\\\Blade\\\\',
-            'Illuminate\\' => 'Unseenco\\Blade\\',
-            'Unseenco\\Blade\\Tests\\' => 'Unseenco\\Blade\\Tests\\Illuminate\\',
-            '\\Unseenco\\Blade\\Support\\Collection' => '\\Tightenco\\Collect\\Support\\Collection',
-            'Unseenco\\Blade\\Support\\HtmlString' => 'Tightenco\\Collect\\Support\\HtmlString',
-            'Unseenco\\Blade\\Contracts\\Support\\Arrayable' => 'Tightenco\\Collect\\Support\\Arrayable',
-            'Unseenco\\Blade\\Support\\Traits\\Macroable' => 'Tightenco\\Collect\\Support\\Traits\\Macroable',
+            'Illuminate\\' => 'Bladezero\\',
+            'Bladezero\\Tests\\' => 'Bladezero\\Tests\\Illuminate\\',
+            '\\Bladezero\\Support\\Collection' => '\\Tightenco\\Collect\\Support\\Collection',
+            'Bladezero\\Support\\HtmlString' => 'Tightenco\\Collect\\Support\\HtmlString',
+            'Bladezero\\Contracts\\Support\\Arrayable' => 'Tightenco\\Collect\\Support\\Arrayable',
+            'Bladezero\\Support\\Traits\\Macroable' => 'Tightenco\\Collect\\Support\\Traits\\Macroable',
             '\\Tightenco\\Collect\\Support\\Arr::last' => 'Arr::last',
-            'Unseenco\\Blade\\View\\Factory' => 'Unseenco\\Blade\\Factory',
+            'Bladezero\\View\\Factory' => 'Bladezero\\Factory',
 
             // Compiler amends
             '\Tightenco\Collect\Support\Arr::except(get_defined_vars(), [\'__data\', \'__path\']))->render()' => '\Tightenco\Collect\Support\Arr::except(get_defined_vars(), [\'__data\', \'__path\']))',
             "\Tightenco\Collect\Support\Arr::except(get_defined_vars(), [\'__data\', \'__path\']))->render()" => "\Tightenco\Collect\Support\Arr::except(get_defined_vars(), [\'__data\', \'__path\']))",
-            '\Unseenco\Blade\Support\Facades\Blade::check' => '\$__env->getCompiler()->check',
+            '\Bladezero\Support\Facades\Blade::check' => '\$__env->getCompiler()->check',
             '\$__env->getCompiler()->check(' . "\'custom\'" => '$__env->getCompiler()->check(' . "\'custom\'",
             '$this->componentData($name))->render()' => '$this->componentData($name))',
             'csrf_field();' => "\'" . '<input type="hidden" name="_token" value="' . "\'." . '$__env->getCsrfToken()' . ".\'" . '">' . "\';",

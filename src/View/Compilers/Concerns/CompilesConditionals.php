@@ -1,6 +1,6 @@
 <?php
 
-namespace Unseenco\Blade\View\Compilers\Concerns;
+namespace Bladezero\View\Compilers\Concerns;
 
 trait CompilesConditionals
 {

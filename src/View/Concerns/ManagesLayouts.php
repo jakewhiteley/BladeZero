@@ -1,8 +1,8 @@
 <?php
 
-namespace Unseenco\Blade\View\Concerns;
+namespace Bladezero\View\Concerns;
 
-use Unseenco\Blade\Contracts\View\View;
+use Bladezero\Contracts\View\View;
 use InvalidArgumentException;
 
 trait ManagesLayouts

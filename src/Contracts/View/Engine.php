@@ -1,6 +1,6 @@
 <?php
 
-namespace Unseenco\Blade\Contracts\View;
+namespace Bladezero\Contracts\View;
 
 interface Engine
 {

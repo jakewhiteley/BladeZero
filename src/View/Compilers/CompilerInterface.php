@@ -1,6 +1,6 @@
 <?php
 
-namespace Unseenco\Blade\View\Compilers;
+namespace Bladezero\View\Compilers;
 
 interface CompilerInterface
 {

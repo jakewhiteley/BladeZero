@@ -1,8 +1,8 @@
 <?php
 
-namespace Unseenco\Blade\View;
+namespace Bladezero\View;
 
-use Unseenco\Blade\Filesystem\Filesystem;
+use Bladezero\Filesystem\Filesystem;
 use InvalidArgumentException;
 
 class FileViewFinder implements ViewFinderInterface
@@ -10,7 +10,7 @@ class FileViewFinder implements ViewFinderInterface
     /**
      * The filesystem instance.
      *
-     * @var \Unseenco\Blade\Filesystem\Filesystem
+     * @var \Bladezero\Filesystem\Filesystem
      */
     protected $files;
 
@@ -45,7 +45,7 @@ class FileViewFinder implements ViewFinderInterface
     /**
      * Create a new file view loader instance.
      *
-     * @param  \Unseenco\Blade\Filesystem\Filesystem  $files
+     * @param  \Bladezero\Filesystem\Filesystem  $files
      * @param  array  $paths
      * @param  array|null  $extensions
      * @return void
@@ -270,7 +270,7 @@ class FileViewFinder implements ViewFinderInterface
     /**
      * Get the filesystem instance.
      *
-     * @return \Unseenco\Blade\Filesystem\Filesystem
+     * @return \Bladezero\Filesystem\Filesystem
      */
     public function getFilesystem()
     {

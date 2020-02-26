@@ -1,6 +1,6 @@
 <?php
 
-use Unseenco\Blade\Support\HigherOrderTapProxy;
+use Bladezero\Support\HigherOrderTapProxy;
 
 if (!function_exists('last')) {
     /**

@@ -1,17 +1,17 @@
 <?php
 
-namespace Unseenco\Blade\View\Engines;
+namespace Bladezero\View\Engines;
 
 use ErrorException;
 use Exception;
-use Unseenco\Blade\View\Compilers\CompilerInterface;
+use Bladezero\View\Compilers\CompilerInterface;
 
 class CompilerEngine extends PhpEngine
 {
     /**
      * The Blade compiler instance.
      *
-     * @var \Unseenco\Blade\View\Compilers\CompilerInterface
+     * @var \Bladezero\View\Compilers\CompilerInterface
      */
     protected $compiler;
 
@@ -25,7 +25,7 @@ class CompilerEngine extends PhpEngine
     /**
      * Create a new Blade view engine instance.
      *
-     * @param  \Unseenco\Blade\View\Compilers\CompilerInterface  $compiler
+     * @param  \Bladezero\View\Compilers\CompilerInterface  $compiler
      * @return void
      */
     public function __construct(CompilerInterface $compiler)
@@ -93,7 +93,7 @@ class CompilerEngine extends PhpEngine
     /**
      * Get the compiler implementation.
      *
-     * @return \Unseenco\Blade\View\Compilers\CompilerInterface
+     * @return \Bladezero\View\Compilers\CompilerInterface
      */
     public function getCompiler()
     {

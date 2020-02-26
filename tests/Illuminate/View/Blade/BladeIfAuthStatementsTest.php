@@ -1,6 +1,6 @@
 <?php
 
-namespace Unseenco\Blade\Tests\Illuminate\View\Blade;
+namespace Bladezero\Tests\Illuminate\View\Blade;
 
 class BladeIfAuthStatementsTest extends AbstractBladeTestCase
 {

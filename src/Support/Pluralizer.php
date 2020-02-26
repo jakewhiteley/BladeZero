@@ -1,6 +1,6 @@
 <?php
 
-namespace Unseenco\Blade\Support;
+namespace Bladezero\Support;
 
 use Doctrine\Common\Inflector\Inflector;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Unseenco\Blade\View\Concerns;
+namespace Bladezero\View\Concerns;
 
 use Countable;
 use Tightenco\Collect\Support\Arr;

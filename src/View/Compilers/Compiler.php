@@ -1,8 +1,8 @@
 <?php
 
-namespace Unseenco\Blade\View\Compilers;
+namespace Bladezero\View\Compilers;
 
-use Unseenco\Blade\Filesystem\Filesystem;
+use Bladezero\Filesystem\Filesystem;
 use InvalidArgumentException;
 
 abstract class Compiler
@@ -10,7 +10,7 @@ abstract class Compiler
     /**
      * The Filesystem instance.
      *
-     * @var \Unseenco\Blade\Filesystem\Filesystem
+     * @var \Bladezero\Filesystem\Filesystem
      */
     protected $files;
 
@@ -24,7 +24,7 @@ abstract class Compiler
     /**
      * Create a new compiler instance.
      *
-     * @param  \Unseenco\Blade\Filesystem\Filesystem  $files
+     * @param  \Bladezero\Filesystem\Filesystem  $files
      * @param  string  $cachePath
      * @return void
      *

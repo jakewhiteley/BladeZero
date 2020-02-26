@@ -1,5 +1,5 @@
 {
-    "name": "unseenco/blade",
+    "name": "jakewhiteley/bladezero",
     "description": "",
     "type": "library",
     "license": "MIT",
@@ -14,9 +14,9 @@
         }
     ],
     "suggest": {
-        "ramsey/uuid": "If you want to use Unseenco\\Blade\\Support\\Str uuid methods in your application.",
-        "doctrine/inflector": "If you want to use Unseenco\\Blade\\Support\\Str pluralize methods in your application.",
-        "ext-mbstring": "If you want to use Unseenco\\Blade\\Support\\Str in your application."
+        "ramsey/uuid": "If you want to use Bladezero\\Support\\Str uuid methods in your application.",
+        "doctrine/inflector": "If you want to use Bladezero\\Support\\Str pluralize methods in your application.",
+        "ext-mbstring": "If you want to use Bladezero\\Support\\Str in your application."
     },
     "require": {
         "tightenco/collect": "^6.16",
@@ -39,13 +39,13 @@
             "src/Support/helpers.php"
         ],
         "psr-4": {
-            "Unseenco\\Blade\\": "src"
+            "Bladezero\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Unseenco\\Blade\\Commands\\": "commands",
-            "Unseenco\\Blade\\Tests\\": "tests"
+            "Bladezero\\Commands\\": "commands",
+            "Bladezero\\Tests\\": "tests"
         }
     },
     "scripts": {

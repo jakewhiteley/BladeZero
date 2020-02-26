@@ -1,6 +1,6 @@
 <?php
 
-namespace Unseenco\Blade\Tests\Unseenco;
+namespace Bladezero\Tests\Bladezero;
 
 class BladeLayoutsTest extends AbstractBladeTestCase
 {

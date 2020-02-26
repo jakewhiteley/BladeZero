@@ -1,15 +1,15 @@
 <?php
 
-namespace Unseenco\Blade\Tests\Unseenco;
+namespace Bladezero\Tests\Bladezero;
 
 use PHPUnit\Framework\TestCase;
-use Unseenco\Blade\Factory;
+use Bladezero\Factory;
 use Symfony\Component\Filesystem\Filesystem;
 
 abstract class AbstractBladeTestCase extends TestCase
 {
     /**
-     * @var \Unseenco\Blade\Factory
+     * @var \Bladezero\Factory
      */
     protected $compiler;
 

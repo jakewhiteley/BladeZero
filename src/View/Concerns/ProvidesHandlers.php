@@ -1,9 +1,9 @@
 <?php
 
-namespace Unseenco\Blade\View\Concerns;
+namespace Bladezero\View\Concerns;
 
 
-use Unseenco\Blade\Support\Str;
+use Bladezero\Support\Str;
 
 trait ProvidesHandlers
 {

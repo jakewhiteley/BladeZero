@@ -1,8 +1,8 @@
 <?php
 
-namespace Unseenco\Blade\Tests\Illuminate\Support;
+namespace Bladezero\Tests\Illuminate\Support;
 
-use Unseenco\Blade\Support\Str;
+use Bladezero\Support\Str;
 use PHPUnit\Framework\TestCase;
 
 class SupportPluralizerTest extends TestCase

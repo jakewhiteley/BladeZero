@@ -1,6 +1,6 @@
 <?php
 
-namespace Unseenco\Blade\View\Concerns;
+namespace Bladezero\View\Concerns;
 
 trait ManagesTranslations
 {

@@ -1,8 +1,8 @@
 <?php
 
-namespace Unseenco\Blade\Tests\Illuminate\View;
+namespace Bladezero\Tests\Illuminate\View;
 
-use Unseenco\Blade\View\Engines\EngineResolver;
+use Bladezero\View\Engines\EngineResolver;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use stdClass;

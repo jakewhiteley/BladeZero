@@ -1,6 +1,6 @@
 <?php
 
-namespace Unseenco\Blade\View\Engines;
+namespace Bladezero\View\Engines;
 
 use Closure;
 use InvalidArgumentException;
@@ -41,7 +41,7 @@ class EngineResolver
      * Resolve an engine instance by name.
      *
      * @param  string  $engine
-     * @return \Unseenco\Blade\Contracts\View\Engine
+     * @return \Bladezero\Contracts\View\Engine
      *
      * @throws \InvalidArgumentException
      */

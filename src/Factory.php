@@ -1,21 +1,21 @@
 <?php
 
-namespace Unseenco\Blade;
+namespace Bladezero;
 
 use InvalidArgumentException;
 use Tightenco\Collect\Contracts\Support\Arrayable;
 use Tightenco\Collect\Support\Arr;
 use Tightenco\Collect\Support\Traits\Macroable;
-use Unseenco\Blade\Filesystem\Filesystem;
-use Unseenco\Blade\Support\Str;
-use Unseenco\Blade\View\Compilers\BladeCompiler;
-use Unseenco\Blade\View\Engines\CompilerEngine;
-use Unseenco\Blade\View\Engines\EngineResolver;
-use Unseenco\Blade\View\Engines\FileEngine;
-use Unseenco\Blade\View\Engines\PhpEngine;
-use Unseenco\Blade\View\FileViewFinder;
-use Unseenco\Blade\View\ViewFinderInterface;
-use Unseenco\Blade\View\ViewName;
+use Bladezero\Filesystem\Filesystem;
+use Bladezero\Support\Str;
+use Bladezero\View\Compilers\BladeCompiler;
+use Bladezero\View\Engines\CompilerEngine;
+use Bladezero\View\Engines\EngineResolver;
+use Bladezero\View\Engines\FileEngine;
+use Bladezero\View\Engines\PhpEngine;
+use Bladezero\View\FileViewFinder;
+use Bladezero\View\ViewFinderInterface;
+use Bladezero\View\ViewName;
 
 class Factory
 {
@@ -28,22 +28,22 @@ class Factory
     use View\Concerns\ProvidesHandlers;
 
     /**
-     * @var \Unseenco\Blade\Filesystem\Filesystem
+     * @var \Bladezero\Filesystem\Filesystem
      */
     protected $files;
 
     /**
-     * @var \Unseenco\Blade\View\Engines\EngineResolver
+     * @var \Bladezero\View\Engines\EngineResolver
      */
     protected $engines;
 
     /**
-     * @var \Unseenco\Blade\View\FileViewFinder
+     * @var \Bladezero\View\FileViewFinder
      */
     protected $finder;
 
     /**
-     * @var \Unseenco\Blade\View\Compilers\BladeCompiler
+     * @var \Bladezero\View\Compilers\BladeCompiler
      */
     protected $bladeCompiler;
 
@@ -271,7 +271,7 @@ class Factory
      * Get the appropriate view engine for the given path.
      *
      * @param string $path
-     * @return \Unseenco\Blade\Contracts\View\Engine
+     * @return \Bladezero\Contracts\View\Engine
      *
      * @throws \InvalidArgumentException
      */
@@ -509,7 +509,7 @@ class Factory
     /**
      * Get the engine resolver instance.
      *
-     * @return \Unseenco\Blade\View\Engines\EngineResolver
+     * @return \Bladezero\View\Engines\EngineResolver
      */
     public function getEngineResolver(): EngineResolver
     {
@@ -519,7 +519,7 @@ class Factory
     /**
      * Get the engine resolver instance.
      *
-     * @return \Unseenco\Blade\View\Compilers\BladeCompiler
+     * @return \Bladezero\View\Compilers\BladeCompiler
      */
     public function getCompiler(): BladeCompiler
     {
@@ -529,7 +529,7 @@ class Factory
     /**
      * Get the view finder instance.
      *
-     * @return \Unseenco\Blade\View\ViewFinderInterface
+     * @return \Bladezero\View\ViewFinderInterface
      */
     public function getFinder(): ViewFinderInterface
     {
@@ -549,7 +549,7 @@ class Factory
     /**
      * Set the view finder instance.
      *
-     * @param \Unseenco\Blade\View\ViewFinderInterface $finder
+     * @param \Bladezero\View\ViewFinderInterface $finder
      * @return void
      */
     public function setFinder(ViewFinderInterface $finder)

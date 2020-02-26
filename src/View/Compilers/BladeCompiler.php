@@ -1,9 +1,9 @@
 <?php
 
-namespace Unseenco\Blade\View\Compilers;
+namespace Bladezero\View\Compilers;
 
 use Tightenco\Collect\Support\Arr;
-use Unseenco\Blade\Support\Str;
+use Bladezero\Support\Str;
 use InvalidArgumentException;
 
 class BladeCompiler extends Compiler implements CompilerInterface
