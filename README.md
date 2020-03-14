@@ -34,6 +34,9 @@ Use [Composer](https://getcomposer.org/):
 composer require jakewhiteley/bladezero
 ```
 
+
+
+### Usage
 After pulling the package down, you need to provide the full paths to your templates and cache directories:
 
 ```php
@@ -48,18 +51,34 @@ $blade = new Factory($templatesPath, $cachePath);
 echo $blade->make('example', ['title' => 'It Works!']);
 ```
 
-### Usage
 
+As the `BladeZero\Factory` class is just a modifed `Illuminate\View\Factory`, all the methods you would expect are available:
 
 
 ```php
-//$blade->addLocation(realpath('./second-files'));
-//$blade->addNamespace('derp', realpath('./second-files/deep'));
+// Add a new templates directory
+$blade->addLocation(realpath('./second-files'));
+
+// Add a namespace
+$blade->addNamespace('derp', realpath('./second-files/deep'));
+
+// Register a component
 $blade->component('components.alert', 'alert');
+
+// Register a custom directive
 $blade->directive('foo', function($expression) {
-            return "<?php echo 'foo' . $expression; ?>";
-        });
+    return "<?php echo 'foo' . $expression; ?>";
+});
+
+// Register a custom if directive
+$blade->if('foo', function($bar) {
+    return $bar === 'foobar';
+});
+
+// Register a custom template alias
 $blade->include('php.raw', 'foo');
+
+// Add shared data
 $blade->share($key, $value = null);
 ```
 
