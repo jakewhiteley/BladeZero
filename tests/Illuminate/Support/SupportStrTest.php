@@ -460,7 +460,7 @@ class SupportStrTest extends TestCase
         return [
             ['not a valid uuid so we can test this'],
             ['zf6f8cb0-c57d-11e1-9b21-0800200c9a66'],
-            ['145a1e72-d11d-11e8-a8d5-f2801f1b9fd1'.PHP_EOL],
+            ['145a1e72-d11d-11e8-a8d5-f2801f1b9fd1'."\n"],
             ['145a1e72-d11d-11e8-a8d5-f2801f1b9fd1 '],
             [' 145a1e72-d11d-11e8-a8d5-f2801f1b9fd1'],
             ['145a1e72-d11d-11e8-a8d5-f2z01f1b9fd1'],

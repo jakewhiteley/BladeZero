@@ -339,6 +339,7 @@ class UpdateCommand extends Command
 
             'use Symfony\Component\Debug\Exception\FatalThrowableError;' => '',
             'FatalThrowableError' => 'Exception',
+            'PHP_EOL' => '"\n"',
         ];
 
         return \str_replace(array_keys($rewrites), \array_values($rewrites), $response);

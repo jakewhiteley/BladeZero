@@ -55,7 +55,7 @@ class BladeTest extends AbstractBladeTestCase
 
     public function testComponentAliasing()
     {
-        $this->markTestSkipped();
+        //$this->markTestSkipped();
 
         $this->compiler->component('components.alert', 'alert');
 
