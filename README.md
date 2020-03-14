@@ -17,7 +17,7 @@ There are a few instances of packages rewriting the entire Blade engine from scr
 
 BladeZero is a direct split from `laravel/framework` and only includes files directly needed to compile Blade templates - no Container, no View, no fuss.
 
-95% of the code is a perfect match for the code written by Taylor Otwell and the Laravel contributors meaning every single Blade feature is supported exactly as it should be.
+95% of the code is a perfect match for the code written by Taylor Otwell and the Laravel contributors, meaning every single Blade feature is supported exactly as it should be.
 
 
 ## Installation
