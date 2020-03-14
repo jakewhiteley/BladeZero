@@ -52,6 +52,8 @@ echo $blade->make('example', ['title' => 'It Works!']);
 ```
 
 
+### Extending BladeZero
+
 As the `BladeZero\Factory` class is just a modifed `Illuminate\View\Factory`, all the methods you would expect are available:
 
 
@@ -82,14 +84,14 @@ $blade->include('php.raw', 'foo');
 $blade->share($key, $value = null);
 ```
 
-As you can see, BladeZero supports all the Blade features you know such as [custom directives](https://laravel.com/docs/6.x/blade#extending-blade), [custom if statements](https://laravel.com/docs/6.x/blade#custom-if-statements), [components](https://laravel.com/docs/6.x/blade#components-and-slots).
+BladeZero supports all the Blade features you know such as [custom directives](https://laravel.com/docs/6.x/blade#extending-blade), [custom if statements](https://laravel.com/docs/6.x/blade#custom-if-statements), [components](https://laravel.com/docs/6.x/blade#components-and-slots).
 
-BladeZero lets you write your own View classes as this package is to provide the Blade rendering engine for your own projects - not include half of Laravel. In order to facilitate this, some functionality you would access vie the `View` facade is also available; such as [making data available to all views](https://laravel.com/docs/6.x/views#passing-data-to-views) and view namespaces
+BladeZero lets you write your own View classes as this package is to provide the Blade rendering engine for your own projects - not include half of Laravel. In order to facilitate this, some functionality you would access vie the `View` facade is also available; such as [making data available to all views](https://laravel.com/docs/6.x/views#passing-data-to-views), and view namespaces
 
 ## Differences
-Even though the Blade compiler is 100% the same as it's Laravel twin, your application is not. 
+Even though the Blade compiler is 100% the same as it's Laravel twin, *your application is not*. 
 
-Because of this, BladeZero provides methods to easily provide
+Because of this, BladeZero provides methods to easily get the Laravel-specific features of Blade working in your framework:
 
 
 ### csrf
@@ -103,6 +105,7 @@ $blade->setCsrfHandler(function(): string {
 ```
 
 ### auth
+Set how your application handles auth directives such as `@auth`, `@elseauth`, and `@guest`:
 ```php
 $blade->setAuthHandler(function(string $guard = null): bool {
     return MyUserClass::currentUserIs($guard);
@@ -110,6 +113,7 @@ $blade->setAuthHandler(function(string $guard = null): bool {
 ```
 
 ### can
+Set how your application handles permissions directives such as `@can`, `@cannot`, and `@canany`:
 ```php
 $blade->setcanHandler(function($abilities, $arguments = []): bool {
     return MyUserClass::currentUserCan($abilities, $arguments);
@@ -117,6 +121,7 @@ $blade->setcanHandler(function($abilities, $arguments = []): bool {
 ```
 
 ### inject
+If your application uses a [dependency injection Container](https://github.com/jakewhiteley/hodl), sepcify how services should be resolved via `@inject`:
 ```php
 $blade->setInjectHandler(function(string $service) {
     return MyContainer::resolveService($service);
@@ -125,16 +130,12 @@ $blade->setInjectHandler(function(string $service) {
 
 ### error
 
-Should return `string|false`
+Allwos you to provide how the `@error` directive should work.
+
+Your callback should return the first error string or `false`:
 
 ```php
 $blade->setErrorHandler(function(string $key) {
     return MyErrorBag::getErrorMessageFor($key);
 });
 ```
-
-
-
-
- ### Illuminate\View\Factory
- It's missing! 
