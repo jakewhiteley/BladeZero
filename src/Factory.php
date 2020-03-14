@@ -2,10 +2,6 @@
 
 namespace Bladezero;
 
-use InvalidArgumentException;
-use Tightenco\Collect\Contracts\Support\Arrayable;
-use Tightenco\Collect\Support\Arr;
-use Tightenco\Collect\Support\Traits\Macroable;
 use Bladezero\Filesystem\Filesystem;
 use Bladezero\Support\Str;
 use Bladezero\View\Compilers\BladeCompiler;
@@ -16,6 +12,10 @@ use Bladezero\View\Engines\PhpEngine;
 use Bladezero\View\FileViewFinder;
 use Bladezero\View\ViewFinderInterface;
 use Bladezero\View\ViewName;
+use InvalidArgumentException;
+use Tightenco\Collect\Contracts\Support\Arrayable;
+use Tightenco\Collect\Support\Arr;
+use Tightenco\Collect\Support\Traits\Macroable;
 
 class Factory
 {
@@ -28,22 +28,22 @@ class Factory
     use View\Concerns\ProvidesHandlers;
 
     /**
-     * @var \Bladezero\Filesystem\Filesystem
+     * @var Filesystem
      */
     protected $files;
 
     /**
-     * @var \Bladezero\View\Engines\EngineResolver
+     * @var EngineResolver
      */
     protected $engines;
 
     /**
-     * @var \Bladezero\View\FileViewFinder
+     * @var FileViewFinder
      */
     protected $finder;
 
     /**
-     * @var \Bladezero\View\Compilers\BladeCompiler
+     * @var BladeCompiler
      */
     protected $bladeCompiler;
 
@@ -77,7 +77,7 @@ class Factory
      * Blade constructor.
      *
      * @param string|array $viewPath
-     * @param string       $cachePath
+     * @param string $cachePath
      */
     public function __construct($viewPath, string $cachePath)
     {
@@ -97,8 +97,8 @@ class Factory
      * Get the evaluated view contents for the given view.
      *
      * @param string $path
-     * @param array  $data
-     * @param array  $mergeData
+     * @param array $data
+     * @param array $mergeData
      * @return string
      * @throws \Throwable
      */
@@ -113,8 +113,8 @@ class Factory
      * Get the evaluated view contents for the given view.
      *
      * @param string $view
-     * @param array  $data
-     * @param array  $mergeData
+     * @param array $data
+     * @param array $mergeData
      * @return string
      * @throws \Throwable
      */
@@ -132,6 +132,14 @@ class Factory
         return $this->render($path, $data);
     }
 
+    /**
+     * get string contents of a view.
+     *
+     * @param string $path
+     * @param array $data
+     * @return string
+     * @throws \Throwable
+     */
     protected function render(string $path, $data = []): string
     {
         try {
@@ -197,10 +205,10 @@ class Factory
     /**
      * Get the rendered content of the view based on a given condition.
      *
-     * @param bool   $condition
+     * @param bool $condition
      * @param string $view
-     * @param array  $data
-     * @param array  $mergeData
+     * @param array $data
+     * @param array $mergeData
      * @return string
      * @throws \Throwable
      */
@@ -217,7 +225,7 @@ class Factory
      * Get the rendered contents of a partial from a loop.
      *
      * @param string $view
-     * @param array  $data
+     * @param array $data
      * @param string $iterator
      * @param string $empty
      * @return string
@@ -305,7 +313,7 @@ class Factory
      * Add a piece of shared data to the environment.
      *
      * @param array|string $key
-     * @param mixed|null   $value
+     * @param mixed|null $value
      * @return mixed
      */
     public function share($key, $value = null)
@@ -363,7 +371,7 @@ class Factory
     /**
      * Add a new namespace to the loader.
      *
-     * @param string       $namespace
+     * @param string $namespace
      * @param string|array $hints
      * @return $this
      */
@@ -377,7 +385,7 @@ class Factory
     /**
      * Prepend a new namespace to the loader.
      *
-     * @param string       $namespace
+     * @param string $namespace
      * @param string|array $hints
      * @return $this
      */
@@ -391,7 +399,7 @@ class Factory
     /**
      * Replace the namespace hints for the given namespace.
      *
-     * @param string       $namespace
+     * @param string $namespace
      * @param string|array $hints
      * @return $this
      */
@@ -405,7 +413,7 @@ class Factory
     /**
      * Register an "if" statement directive.
      *
-     * @param string   $name
+     * @param string $name
      * @param callable $callback
      * @return void
      */
@@ -417,7 +425,7 @@ class Factory
     /**
      * Register a component alias directive.
      *
-     * @param string      $path
+     * @param string $path
      * @param string|null $alias
      * @return void
      */
@@ -429,7 +437,7 @@ class Factory
     /**
      * Register a handler for custom directives.
      *
-     * @param string   $name
+     * @param string $name
      * @param callable $handler
      * @return void
      */
@@ -441,7 +449,7 @@ class Factory
     /**
      * Register an include alias directive.
      *
-     * @param string      $path
+     * @param string $path
      * @param string|null $alias
      * @return void
      */
@@ -453,8 +461,8 @@ class Factory
     /**
      * Register a valid view extension and its engine.
      *
-     * @param string        $extension
-     * @param string        $engine
+     * @param string $extension
+     * @param string $engine
      * @param \Closure|null $resolver
      * @return void
      */
@@ -509,7 +517,7 @@ class Factory
     /**
      * Get the engine resolver instance.
      *
-     * @return \Bladezero\View\Engines\EngineResolver
+     * @return EngineResolver
      */
     public function getEngineResolver(): EngineResolver
     {
@@ -519,7 +527,7 @@ class Factory
     /**
      * Get the engine resolver instance.
      *
-     * @return \Bladezero\View\Compilers\BladeCompiler
+     * @return BladeCompiler
      */
     public function getCompiler(): BladeCompiler
     {
@@ -571,7 +579,7 @@ class Factory
      * Get an item from the shared data.
      *
      * @param string $key
-     * @param mixed  $default
+     * @param mixed $default
      * @return mixed
      */
     public function shared($key, $default = null)
@@ -611,6 +619,11 @@ class Factory
         return $data instanceof Arrayable ? $data->toArray() : $data;
     }
 
+    /**
+     * Register default engines.
+     *
+     * @param string $cachePath
+     */
     protected function registerEngines(string $cachePath)
     {
         $this->engines = new EngineResolver();
@@ -625,11 +638,11 @@ class Factory
         });
 
         $this->engines->register('php', function () {
-            return new PhpEngine;
+            return new PhpEngine();
         });
 
         $this->engines->register('file', function () {
-            return new FileEngine;
+            return new FileEngine();
         });
     }
 }
