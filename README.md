@@ -7,9 +7,7 @@ Import Laravel's Blade templating engine into non-Laravel applications **the rig
 
 All other standalone versions of blade require ~16 dependencies, and run the `Iluminate/Container` and `Illuminate/View` packages in your app. This adds a ton of complexity to your app, and is [considered a bad idea](https://mattallan.org/posts/dont-use-illuminate-support/).
 
-There are a few instances of packages rewriting the entire Blade engine from scratch.
-
-This creates the following typical issues:
+There are a few instances of packages rewriting the entire Blade engine from scratch, which creates the following typical issues:
 
 * No longer able to rely on the [Laravel docs](https://laravel.com/docs/6.x/blade) means documentation is often incorrect.
 * Features are often missing or implemented incorrectly.
