@@ -27,6 +27,8 @@ class Factory
     use View\Concerns\ManagesTranslations;
     use View\Concerns\ProvidesHandlers;
 
+    protected static $componentNamespace = 'Blade\Components';
+
     /**
      * @var Filesystem
      */
@@ -40,7 +42,7 @@ class Factory
     /**
      * @var FileViewFinder
      */
-    protected $finder;
+    protected static $finder;
 
     /**
      * @var BladeCompiler
@@ -85,7 +87,7 @@ class Factory
 
         $this->registerEngines($cachePath);
 
-        $this->finder = new FileViewFinder(
+        static::$finder = new FileViewFinder(
             $this->files,
             Arr::wrap($viewPath)
         );
@@ -120,7 +122,7 @@ class Factory
      */
     public function make($view, $data = [], $mergeData = [])
     {
-        $path = $this->finder->find(
+        $path = static::$finder->find(
             $view = $this->normalizeName($view)
         );
 
@@ -267,7 +269,7 @@ class Factory
     public function exists($view)
     {
         try {
-            $this->finder->find($view);
+            static::$finder->find($view);
         } catch (InvalidArgumentException $e) {
             return false;
         }
@@ -365,7 +367,7 @@ class Factory
      */
     public function addLocation($location)
     {
-        $this->finder->addLocation($location);
+        static::$finder->addLocation($location);
     }
 
     /**
@@ -377,7 +379,7 @@ class Factory
      */
     public function addNamespace($namespace, $hints)
     {
-        $this->finder->addNamespace($namespace, $hints);
+        static::$finder->addNamespace($namespace, $hints);
 
         return $this;
     }
@@ -391,7 +393,7 @@ class Factory
      */
     public function prependNamespace($namespace, $hints): Factory
     {
-        $this->finder->prependNamespace($namespace, $hints);
+        static::$finder->prependNamespace($namespace, $hints);
 
         return $this;
     }
@@ -405,7 +407,7 @@ class Factory
      */
     public function replaceNamespace($namespace, $hints): Factory
     {
-        $this->finder->replaceNamespace($namespace, $hints);
+        static::$finder->replaceNamespace($namespace, $hints);
 
         return $this;
     }
@@ -468,7 +470,7 @@ class Factory
      */
     public function addExtension($extension, $engine, $resolver = null): void
     {
-        $this->finder->addExtension($extension);
+        static::$finder->addExtension($extension);
 
         if (isset($resolver)) {
             $this->engines->register($engine, $resolver);
@@ -541,7 +543,7 @@ class Factory
      */
     public function getFinder(): ViewFinderInterface
     {
-        return $this->finder;
+        return static::$finder;
     }
 
     /**
@@ -562,7 +564,7 @@ class Factory
      */
     public function setFinder(ViewFinderInterface $finder)
     {
-        $this->finder = $finder;
+        static::$finder = $finder;
     }
 
     /**
@@ -645,4 +647,20 @@ class Factory
             return new FileEngine();
         });
     }
+
+    public static function getComponentNamespace()
+    {
+        return static::$componentNamespace;
+    }
+
+    public static function setComponentNamespace(string $namespace)
+    {
+        static::$componentNamespace = $namespace;
+    }
+
+    public static function getFinderStatic()
+    {
+        return static::$finder;
+    }
+
 }

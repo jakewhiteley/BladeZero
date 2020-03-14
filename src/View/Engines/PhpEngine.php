@@ -2,9 +2,7 @@
 
 namespace Bladezero\View\Engines;
 
-use Exception;
 use Bladezero\Contracts\View\Engine;
-
 use Throwable;
 
 class PhpEngine implements Engine
@@ -41,10 +39,8 @@ class PhpEngine implements Engine
         // an exception is thrown. This prevents any partial views from leaking.
         try {
             include $__path;
-        } catch (Exception $e) {
-            $this->handleViewException($e, $obLevel);
         } catch (Throwable $e) {
-            $this->handleViewException(new Exception($e), $obLevel);
+            $this->handleViewException($e, $obLevel);
         }
 
         return ltrim(ob_get_clean());
@@ -53,13 +49,13 @@ class PhpEngine implements Engine
     /**
      * Handle a view exception.
      *
-     * @param  \Exception  $e
+     * @param  \Throwable  $e
      * @param  int  $obLevel
      * @return void
      *
-     * @throws \Exception
+     * @throws \Throwable
      */
-    protected function handleViewException(Exception $e, $obLevel)
+    protected function handleViewException(Throwable $e, $obLevel)
     {
         while (ob_get_level() > $obLevel) {
             ob_end_clean();

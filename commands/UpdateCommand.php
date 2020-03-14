@@ -50,17 +50,23 @@ class UpdateCommand extends Command
         '/View/Compilers/Concerns/CompilesRawPhp.php',
         '/View/Compilers/Concerns/CompilesStacks.php',
         '/View/Compilers/Concerns/CompilesTranslations.php',
+        '/View/Compilers/Concerns/CompilesComponents.php',
         '/View/Concerns/ManagesComponents.php',
         '/View/Concerns/ManagesEvents.php',
         '/View/Concerns/ManagesLayouts.php',
         '/View/Concerns/ManagesLoops.php',
         '/View/Concerns/ManagesStacks.php',
         '/View/Concerns/ManagesTranslations.php',
+        '/View/Concerns/ManagesComponents.php',
         '/View/Engines/CompilerEngine.php',
         '/View/Engines/Engine.php',
         '/View/Engines/EngineResolver.php',
         '/View/Engines/FileEngine.php',
         '/View/Engines/PhpEngine.php',
+        '/View/Compilers/ComponentTagCompiler.php',
+        '/View/Component.php',
+        '/View/AnonymousComponent.php',
+        '/View/ComponentAttributeBag.php',
     ];
 
     const FS_FILES = [
@@ -312,6 +318,21 @@ class UpdateCommand extends Command
             'app(\\\\Unseenco\\\Blade\\\\Contracts\\\\Auth\\\\Access\\\\Gate::class)->check(' => '$__env->canHandler(',
             'app(\\\\Unseenco\\\Blade\\\\Contracts\\\\Auth\\\\Access\\\\Gate::class)->any(' => '$__env->canAnyHandler(',
             'app(\\\\Unseenco\\\Blade\\\\Contracts\\\\Auth\\\\Access\\\\Gate::class)->denies(' => '! $__env->canHandler(',
+
+
+            //components
+            '$namespace = Container::getInstance()
+                    ->make(Application::class)
+                    ->getNamespace();' . "\n" => '',
+            '$factory = Container::getInstance()->make(\'view\');'."\n" => '',
+            "\$namespace.'View\\\\Components\\\\'" => '\\Bladezero\\Factory::getComponentNamespace()',
+            'Container::getInstance()->make(Factory::class)
+                    ->exists' => '\\Bladezero\\Factory::getFinderStatic()->find',
+            '$factory->exists' => '\\Bladezero\\Factory::getFinderStatic()->find',
+            '$this->createBladeViewFromString($factory' => '$this->createBladeViewFromString(null',
+            'Bladezero\\Contracts\\Support\\Htmlable' => 'Tightenco\\Collect\\Contracts\\Support\\Htmlable',
+            'return $this->make($view, $this->componentData())->render();' => 'return $this->make($view, $this->componentData());',
+            "<?php \$component = \$__env->getContainer()->make('.Str::finish(\$component, '::class').', '.(\$data ?: '[]').'); ?>" => "<?php \$componentData = '.\$data.'; \$component = new '.\$component.'(\$componentData[\'view\'], (\$componentData[\'data\'] ?: [])); ?>",
 
             // inject rewrites
             'app(\'{$service}\')' => '\$__env->injectHandler(\'{$service}\')',
