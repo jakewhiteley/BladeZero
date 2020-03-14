@@ -57,10 +57,10 @@ As the `BladeZero\Factory` class is just a modifed `Illuminate\View\Factory`, al
 
 ```php
 // Add a new templates directory
-$blade->addLocation(realpath('./second-files'));
+$blade->addLocation(realpath('./shared/components'));
 
 // Add a namespace
-$blade->addNamespace('derp', realpath('./second-files/deep'));
+$blade->addNamespace('shared', realpath('./shared/components'));
 
 // Register a component
 $blade->component('components.alert', 'alert');
@@ -81,6 +81,10 @@ $blade->include('php.raw', 'foo');
 // Add shared data
 $blade->share($key, $value = null);
 ```
+
+As you can see, BladeZero supports all the Blade features you know such as [custom directives](https://laravel.com/docs/6.x/blade#extending-blade), [custom if statements](https://laravel.com/docs/6.x/blade#custom-if-statements), [components](https://laravel.com/docs/6.x/blade#components-and-slots).
+
+BladeZero lets you write your own View classes as this package is to provide the Blade rendering engine for your own projects - not include half of Laravel. In order to facilitate this, some functionality you would access vie the `View` facade is also available; such as [making data available to all views](https://laravel.com/docs/6.x/views#passing-data-to-views) and view namespaces
 
 ## Differences
 Even though the Blade compiler is 100% the same as it's Laravel twin, your application is not. 
