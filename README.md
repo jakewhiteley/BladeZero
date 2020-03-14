@@ -1,16 +1,12 @@
 # BladeZero
 
-Import Laravel's Blade templating engines into non-Laravel packages **the right way**.
+Import Laravel's Blade templating engine into non-Laravel applications **the right way**.
 
 
 ### The wrong way
 
-#### Dependency Hell
-All other standalone versions of blade require ~16 dependencies, and run the `Iluminate/Container` and `Illuminate/View` packages in your app.
- 
-Apart from the issues ([caused by puling in `Illuminate\Support` in framework-agnostic packages](https://mattallan.org/posts/dont-use-illuminate-support/)), this also adds a ton of overhead to your app.
+All other standalone versions of blade require ~16 dependencies, and run the `Iluminate/Container` and `Illuminate/View` packages in your app. This adds a ton of complexity to your app, and is considered ([a bad idea](https://mattallan.org/posts/dont-use-illuminate-support/)).
 
-#### Just not good enough
 There are a few instances of packages rewriting the entire Blade engine from scratch.
 
 This creates the following typical issues:
