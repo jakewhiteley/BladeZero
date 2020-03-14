@@ -94,7 +94,7 @@ Even though the Blade compiler is 100% the same as it's Laravel twin, *your appl
 Because of this, BladeZero provides methods to easily get the Laravel-specific features of Blade working in your framework:
 
 
-### csrf
+### @csrf
 
 Use the `setCsrfHandler` method to specify how to provide the `@csrf()` directive with the correct token:
 
@@ -104,7 +104,7 @@ $blade->setCsrfHandler(function(): string {
 });
 ```
 
-### auth
+### @auth
 Set how your application handles auth directives such as `@auth`, `@elseauth`, and `@guest`:
 ```php
 $blade->setAuthHandler(function(string $guard = null): bool {
@@ -112,7 +112,7 @@ $blade->setAuthHandler(function(string $guard = null): bool {
 });
 ```
 
-### can
+### @can
 Set how your application handles permissions directives such as `@can`, `@cannot`, and `@canany`:
 ```php
 $blade->setcanHandler(function($abilities, $arguments = []): bool {
@@ -120,7 +120,7 @@ $blade->setcanHandler(function($abilities, $arguments = []): bool {
 });
 ```
 
-### inject
+### @inject
 If your application uses a [dependency injection Container](https://github.com/jakewhiteley/hodl), sepcify how services should be resolved via `@inject`:
 ```php
 $blade->setInjectHandler(function(string $service) {
@@ -128,7 +128,7 @@ $blade->setInjectHandler(function(string $service) {
 });
 ```
 
-### error
+### @error
 
 Allwos you to provide how the `@error` directive should work.
 
