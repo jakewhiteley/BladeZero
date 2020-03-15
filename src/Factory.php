@@ -300,7 +300,7 @@ class Factory
      * @param string $path
      * @return string
      */
-    protected function getExtension($path)
+    public function getExtension($path)
     {
         $extensions = array_keys($this->extensions);
 
