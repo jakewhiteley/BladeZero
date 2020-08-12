@@ -27,7 +27,7 @@ class Factory
     use View\Concerns\ManagesTranslations;
     use View\Concerns\ProvidesHandlers;
 
-    protected static $componentNamespace = 'Blade\Components';
+    protected static $componentNamespace = 'App\View\Components\Alert';
 
     /**
      * @var Filesystem
@@ -425,15 +425,28 @@ class Factory
     }
 
     /**
+     * Register a class-based component alias directive.
+     *
+     * @param  string  $class
+     * @param  string|null  $alias
+     * @param  string  $prefix
+     * @return void
+     */
+    public function component($class, $alias = null, $prefix = ''): void
+    {
+        $this->bladeCompiler->component($class, $alias, $prefix);
+    }
+
+    /**
      * Register a component alias directive.
      *
      * @param string $path
      * @param string|null $alias
      * @return void
      */
-    public function component($path, $alias = null): void
+    public function aliasComponent($path, $alias = null): void
     {
-        $this->bladeCompiler->component($path, $alias);
+        $this->bladeCompiler->aliasComponent($path, $alias);
     }
 
     /**

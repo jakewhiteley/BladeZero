@@ -175,7 +175,7 @@ class UpdateCommand extends Command
             $crawler = new Crawler($curl->response);
 
             $links = $crawler
-                ->filter('.files a.js-navigation-open')
+                ->filter('.js-details-container a.js-navigation-open')
                 ->each(function (Crawler $node) {
                     if (\strpos($node->attr('title'), '.php') === false) {
                         return false;
@@ -281,6 +281,7 @@ class UpdateCommand extends Command
             'Bladezero\\Support\\Traits\\Macroable' => 'Tightenco\\Collect\\Support\\Traits\\Macroable',
             '\\Tightenco\\Collect\\Support\\Arr::last' => 'Arr::last',
             'Bladezero\\View\\Factory' => 'Bladezero\\Factory',
+            //'$componentNamespace = \'Blade\\Components\';' => '$componentNamespace = \'App\\View\\Components\\\';',
 
             // Compiler amends
             '\Tightenco\Collect\Support\Arr::except(get_defined_vars(), [\'__data\', \'__path\']))->render()' => '\Tightenco\Collect\Support\Arr::except(get_defined_vars(), [\'__data\', \'__path\']))',
