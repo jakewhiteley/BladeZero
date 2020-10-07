@@ -169,7 +169,7 @@ class UpdateCommand extends Command
             $crawler = new Crawler($curl->response);
 
             $links = $crawler
-                ->filter('.files a.js-navigation-open')
+                ->filter('.js-details-container a.js-navigation-open')
                 ->each(function (Crawler $node) {
                     if (\strpos($node->attr('title'), '.php') === false) {
                         return false;
