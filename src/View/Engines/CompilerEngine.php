@@ -2,8 +2,9 @@
 
 namespace Bladezero\View\Engines;
 
-use ErrorException;
+use Bladezero\Filesystem\Filesystem;
 use Bladezero\View\Compilers\CompilerInterface;
+use Bladezero\View\ViewException;
 use Throwable;
 
 class CompilerEngine extends PhpEngine
@@ -23,13 +24,16 @@ class CompilerEngine extends PhpEngine
     protected $lastCompiled = [];
 
     /**
-     * Create a new Blade view engine instance.
+     * Create a new compiler engine instance.
      *
      * @param  \Bladezero\View\Compilers\CompilerInterface  $compiler
+     * @param  \Bladezero\Filesystem\Filesystem|null  $files
      * @return void
      */
-    public function __construct(CompilerInterface $compiler)
+    public function __construct(CompilerInterface $compiler, Filesystem $files = null)
     {
+        parent::__construct($files ?: new Filesystem);
+
         $this->compiler = $compiler;
     }
 
@@ -72,7 +76,7 @@ class CompilerEngine extends PhpEngine
      */
     protected function handleViewException(Throwable $e, $obLevel)
     {
-        $e = new ErrorException($this->getMessage($e), 0, 1, $e->getFile(), $e->getLine(), $e);
+        $e = new ViewException($this->getMessage($e), 0, 1, $e->getFile(), $e->getLine(), $e);
 
         parent::handleViewException($e, $obLevel);
     }

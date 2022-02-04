@@ -2,13 +2,18 @@
 
 namespace Bladezero\View\Compilers;
 
+use Bladezero\Container\Container;
+use Bladezero\Contracts\View\Factory as ViewFactory;
 use Tightenco\Collect\Support\Arr;
 use Bladezero\Support\Str;
+use Bladezero\Support\Traits\ReflectsClosures;
+use Bladezero\View\Component;
 use InvalidArgumentException;
 
 class BladeCompiler extends Compiler implements CompilerInterface
 {
     use Concerns\CompilesAuthorizations,
+        Concerns\CompilesClasses,
         Concerns\CompilesComments,
         Concerns\CompilesComponents,
         Concerns\CompilesConditionals,
@@ -18,11 +23,13 @@ class BladeCompiler extends Compiler implements CompilerInterface
         Concerns\CompilesIncludes,
         Concerns\CompilesInjections,
         Concerns\CompilesJson,
+        Concerns\CompilesJs,
         Concerns\CompilesLayouts,
         Concerns\CompilesLoops,
         Concerns\CompilesRawPhp,
         Concerns\CompilesStacks,
-        Concerns\CompilesTranslations;
+        Concerns\CompilesTranslations,
+        ReflectsClosures;
 
     /**
      * All of the registered extensions.
@@ -62,7 +69,7 @@ class BladeCompiler extends Compiler implements CompilerInterface
     /**
      * All of the available compiler functions.
      *
-     * @var array
+     * @var string[]
      */
     protected $compilers = [
         // 'Comments',
@@ -74,21 +81,21 @@ class BladeCompiler extends Compiler implements CompilerInterface
     /**
      * Array of opening and closing tags for raw echos.
      *
-     * @var array
+     * @var string[]
      */
     protected $rawTags = ['{!!', '!!}'];
 
     /**
      * Array of opening and closing tags for regular echos.
      *
-     * @var array
+     * @var string[]
      */
     protected $contentTags = ['{{', '}}'];
 
     /**
      * Array of opening and closing tags for escaped echos.
      *
-     * @var array
+     * @var string[]
      */
     protected $escapedTags = ['{{{', '}}}'];
 
@@ -100,7 +107,7 @@ class BladeCompiler extends Compiler implements CompilerInterface
     protected $echoFormat = 'e(%s)';
 
     /**
-     * Array of footer lines to be added to template.
+     * Array of footer lines to be added to the template.
      *
      * @var array
      */
@@ -119,6 +126,13 @@ class BladeCompiler extends Compiler implements CompilerInterface
      * @var array
      */
     protected $classComponentAliases = [];
+
+    /**
+     * The array of class component namespaces to autoload from.
+     *
+     * @var array
+     */
+    protected $classComponentNamespaces = [];
 
     /**
      * Indicates if component tags should be compiled.
@@ -146,9 +160,11 @@ class BladeCompiler extends Compiler implements CompilerInterface
                 $contents = $this->appendFilePath($contents);
             }
 
-            $this->files->put(
-                $this->getCompiledPath($this->getPath()), $contents
+            $this->ensureCompiledDirectoryExists(
+                $compiledPath = $this->getCompiledPath($this->getPath())
             );
+
+            $this->files->put($compiledPath, $contents);
         }
     }
 
@@ -244,7 +260,50 @@ class BladeCompiler extends Compiler implements CompilerInterface
             $result = $this->addFooters($result);
         }
 
-        return $result;
+        if (! empty($this->echoHandlers)) {
+            $result = $this->addBladeCompilerVariable($result);
+        }
+
+        return str_replace(
+            ['##BEGIN-COMPONENT-CLASS##', '##END-COMPONENT-CLASS##'],
+            '',
+            $result);
+    }
+
+    /**
+     * Evaluate and render a Blade string to HTML.
+     *
+     * @param  string  $string
+     * @param  array  $data
+     * @param  bool  $deleteCachedView
+     * @return string
+     */
+    public static function render($string, $data = [], $deleteCachedView = false)
+    {
+        $component = new class($string) extends Component
+        {
+            protected $template;
+
+            public function __construct($template)
+            {
+                $this->template = $template;
+            }
+
+            public function render()
+            {
+                return $this->template;
+            }
+        };
+
+        $view = Container::getInstance()
+                    ->make(ViewFactory::class)
+                    ->make($component->resolveView(), $data);
+
+        return tap($view->render(), function () use ($view, $deleteCachedView) {
+            if ($deleteCachedView) {
+                unlink($view->getPath());
+            }
+        });
     }
 
     /**
@@ -318,7 +377,7 @@ class BladeCompiler extends Compiler implements CompilerInterface
         }
 
         return (new ComponentTagCompiler(
-            $this->classComponentAliases
+            $this->classComponentAliases, $this->classComponentNamespaces, $this
         ))->compile($value);
     }
 
@@ -439,6 +498,8 @@ class BladeCompiler extends Compiler implements CompilerInterface
      */
     protected function callCustomDirective($name, $value)
     {
+        $value = $value ?? '';
+
         if (Str::startsWith($value, '(') && Str::endsWith($value, ')')) {
             $value = Str::substr($value, 1, -1);
         }
@@ -568,9 +629,9 @@ class BladeCompiler extends Compiler implements CompilerInterface
     {
         foreach ($components as $key => $value) {
             if (is_numeric($key)) {
-                static::component($value, null, $prefix);
+                $this->component($value, null, $prefix);
             } else {
-                static::component($key, $value, $prefix);
+                $this->component($key, $value, $prefix);
             }
         }
     }
@@ -583,6 +644,28 @@ class BladeCompiler extends Compiler implements CompilerInterface
     public function getClassComponentAliases()
     {
         return $this->classComponentAliases;
+    }
+
+    /**
+     * Register a class-based component namespace.
+     *
+     * @param  string  $namespace
+     * @param  string  $prefix
+     * @return void
+     */
+    public function componentNamespace($namespace, $prefix)
+    {
+        $this->classComponentNamespaces[$prefix] = $namespace;
+    }
+
+    /**
+     * Get the registered class component namespaces.
+     *
+     * @return array
+     */
+    public function getClassComponentNamespaces()
+    {
+        return $this->classComponentNamespaces;
     }
 
     /**
@@ -616,7 +699,7 @@ class BladeCompiler extends Compiler implements CompilerInterface
      */
     public function include($path, $alias = null)
     {
-        return $this->aliasInclude($path, $alias);
+        $this->aliasInclude($path, $alias);
     }
 
     /**

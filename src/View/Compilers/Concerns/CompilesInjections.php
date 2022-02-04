@@ -12,12 +12,12 @@ trait CompilesInjections
      */
     protected function compileInject($expression)
     {
-        $segments = explode(',', preg_replace("/[\(\)\\\"\']/", '', $expression));
+        $segments = explode(',', preg_replace("/[\(\)]/", '', $expression));
 
-        $variable = trim($segments[0]);
+        $variable = trim($segments[0], " '\"");
 
         $service = trim($segments[1]);
 
-        return "<?php \${$variable} = \$__env->injectHandler('{$service}'); ?>";
+        return "<?php \${$variable} = app({$service}); ?>";
     }
 }

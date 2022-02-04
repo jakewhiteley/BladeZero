@@ -2,6 +2,7 @@
 
 namespace Bladezero\Commands;
 
+use Bladezero\Tests\Illuminate\Support\StringableObjectStub;
 use Curl\Curl;
 use Curl\MultiCurl;
 use Symfony\Component\Console\Command\Command;
@@ -23,12 +24,17 @@ class UpdateCommand extends Command
         '/View/ViewFileViewFinderTest.php',
         '/View/ViewEngineResolverTest.php',
         '/Support/SupportPluralizerTest.php',
+        '/Support/SupportStringableTest.php',
     ];
 
     const SUPPORT_FILES = [
         '/Support/Str.php',
         '/Support/Pluralizer.php',
         '/Support/HigherOrderTapProxy.php',
+        '/Support/Stringable.php',
+        '/Support/HtmlString.php',
+        '/Support/Traits/Conditionable.php',
+        '/Support/Traits/ReflectsClosures.php',
     ];
 
     const VIEW_FILES = [
@@ -38,6 +44,7 @@ class UpdateCommand extends Command
         '/View/Compilers/Concerns/CompilesAuthorizations.php',
         '/View/Compilers/Concerns/CompilesComments.php',
         '/View/Compilers/Concerns/CompilesAuthorizations.php',
+        '/View/Compilers/Concerns/CompilesClasses.php',
         '/View/Compilers/Concerns/CompilesConditionals.php',
         '/View/Compilers/Concerns/CompilesEchos.php',
         '/View/Compilers/Concerns/CompilesErrors.php',
@@ -45,6 +52,7 @@ class UpdateCommand extends Command
         '/View/Compilers/Concerns/CompilesIncludes.php',
         '/View/Compilers/Concerns/CompilesInjections.php',
         '/View/Compilers/Concerns/CompilesJson.php',
+        '/View/Compilers/Concerns/CompilesJs.php',
         '/View/Compilers/Concerns/CompilesLayouts.php',
         '/View/Compilers/Concerns/CompilesLoops.php',
         '/View/Compilers/Concerns/CompilesRawPhp.php',
@@ -276,11 +284,14 @@ class UpdateCommand extends Command
             'Illuminate\\' => 'Bladezero\\',
             'Bladezero\\Tests\\' => 'Bladezero\\Tests\\Illuminate\\',
             '\\Bladezero\\Support\\Collection' => '\\Tightenco\\Collect\\Support\\Collection',
-            'Bladezero\\Support\\HtmlString' => 'Tightenco\\Collect\\Support\\HtmlString',
+            'use Bladezero\\Support\\Collection' => 'use Tightenco\\Collect\\Support\\Collection',
+            //'Bladezero\\Support\\HtmlString' => 'Tightenco\\Collect\\Support\\HtmlString',
             'Bladezero\\Contracts\\Support\\Arrayable' => 'Tightenco\\Collect\\Support\\Arrayable',
             'Bladezero\\Support\\Traits\\Macroable' => 'Tightenco\\Collect\\Support\\Traits\\Macroable',
+            'Bladezero\\Support\\Traits\\Tappable' => 'Tightenco\\Collect\\Support\\Traits\\Tappable',
             '\\Tightenco\\Collect\\Support\\Arr::last' => 'Arr::last',
             'Bladezero\\View\\Factory' => 'Bladezero\\Factory',
+            'new StringableObjectStub' => 'new \\Bladezero\\Tests\\Stubs\\StringableObjectStub',
             //'$componentNamespace = \'Blade\\Components\';' => '$componentNamespace = \'App\\View\\Components\\\';',
 
             // Compiler amends

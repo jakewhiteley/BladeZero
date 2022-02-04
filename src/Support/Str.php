@@ -3,6 +3,7 @@
 namespace Bladezero\Support;
 
 use Tightenco\Collect\Support\Traits\Macroable;
+use League\CommonMark\GithubFlavoredMarkdownConverter;
 use Ramsey\Uuid\Codec\TimestampFirstCombCodec;
 use Ramsey\Uuid\Generator\CombGenerator;
 use Ramsey\Uuid\Uuid;
@@ -99,6 +100,19 @@ class Str
     }
 
     /**
+     * Transliterate a string to its closest ASCII representation.
+     *
+     * @param  string  $string
+     * @param  string|null  $unknown
+     * @param  bool|null  $strict
+     * @return string
+     */
+    public static function transliterate($string, $unknown = '?', $strict = false)
+    {
+        return ASCII::to_transliterate($string, $unknown, $strict);
+    }
+
+    /**
      * Get the portion of a string before the first occurrence of a given value.
      *
      * @param  string  $subject
@@ -107,7 +121,13 @@ class Str
      */
     public static function before($subject, $search)
     {
-        return $search === '' ? $subject : explode($search, $subject)[0];
+        if ($search === '') {
+            return $subject;
+        }
+
+        $result = strstr($subject, (string) $search, true);
+
+        return $result === false ? $subject : $result;
     }
 
     /**
@@ -210,7 +230,10 @@ class Str
     public static function endsWith($haystack, $needles)
     {
         foreach ((array) $needles as $needle) {
-            if (substr($haystack, -strlen($needle)) === (string) $needle) {
+            if (
+                $needle !== '' && $needle !== null
+                && substr($haystack, -strlen($needle)) === (string) $needle
+            ) {
                 return true;
             }
         }
@@ -243,11 +266,15 @@ class Str
     {
         $patterns = \Tightenco\Collect\Support\Arr::wrap($pattern);
 
+        $value = (string) $value;
+
         if (empty($patterns)) {
             return false;
         }
 
         foreach ($patterns as $pattern) {
+            $pattern = (string) $pattern;
+
             // If the given value is an exact match we can of course return true right
             // from the beginning. Otherwise, we will translate asterisks and do an
             // actual pattern match against the two strings to see if they match.
@@ -371,6 +398,127 @@ class Str
     }
 
     /**
+     * Converts GitHub flavored Markdown into HTML.
+     *
+     * @param  string  $string
+     * @param  array  $options
+     * @return string
+     */
+    public static function markdown($string, array $options = [])
+    {
+        $converter = new GithubFlavoredMarkdownConverter($options);
+
+        return (string) $converter->convertToHtml($string);
+    }
+
+    /**
+     * Masks a portion of a string with a repeated character.
+     *
+     * @param  string  $string
+     * @param  string  $character
+     * @param  int  $index
+     * @param  int|null  $length
+     * @param  string  $encoding
+     * @return string
+     */
+    public static function mask($string, $character, $index, $length = null, $encoding = 'UTF-8')
+    {
+        if ($character === '') {
+            return $string;
+        }
+
+        if (is_null($length) && PHP_MAJOR_VERSION < 8) {
+            $length = mb_strlen($string, $encoding);
+        }
+
+        $segment = mb_substr($string, $index, $length, $encoding);
+
+        if ($segment === '') {
+            return $string;
+        }
+
+        $start = mb_substr($string, 0, mb_strpos($string, $segment, 0, $encoding), $encoding);
+        $end = mb_substr($string, mb_strpos($string, $segment, 0, $encoding) + mb_strlen($segment, $encoding));
+
+        return $start.str_repeat(mb_substr($character, 0, 1, $encoding), mb_strlen($segment, $encoding)).$end;
+    }
+
+    /**
+     * Get the string matching the given pattern.
+     *
+     * @param  string  $pattern
+     * @param  string  $subject
+     * @return string
+     */
+    public static function match($pattern, $subject)
+    {
+        preg_match($pattern, $subject, $matches);
+
+        if (! $matches) {
+            return '';
+        }
+
+        return $matches[1] ?? $matches[0];
+    }
+
+    /**
+     * Get the string matching the given pattern.
+     *
+     * @param  string  $pattern
+     * @param  string  $subject
+     * @return \Tightenco\Collect\Support\Collection
+     */
+    public static function matchAll($pattern, $subject)
+    {
+        preg_match_all($pattern, $subject, $matches);
+
+        if (empty($matches[0])) {
+            return collect();
+        }
+
+        return collect($matches[1] ?? $matches[0]);
+    }
+
+    /**
+     * Pad both sides of a string with another.
+     *
+     * @param  string  $value
+     * @param  int  $length
+     * @param  string  $pad
+     * @return string
+     */
+    public static function padBoth($value, $length, $pad = ' ')
+    {
+        return str_pad($value, $length, $pad, STR_PAD_BOTH);
+    }
+
+    /**
+     * Pad the left side of a string with another.
+     *
+     * @param  string  $value
+     * @param  int  $length
+     * @param  string  $pad
+     * @return string
+     */
+    public static function padLeft($value, $length, $pad = ' ')
+    {
+        return str_pad($value, $length, $pad, STR_PAD_LEFT);
+    }
+
+    /**
+     * Pad the right side of a string with another.
+     *
+     * @param  string  $value
+     * @param  int  $length
+     * @param  string  $pad
+     * @return string
+     */
+    public static function padRight($value, $length, $pad = ' ')
+    {
+        return str_pad($value, $length, $pad, STR_PAD_RIGHT);
+    }
+
+    /**
      * Parse a Class[@]method style callback into class and method.
      *
      * @param  string  $callback
@@ -386,7 +534,7 @@ class Str
      * Get the plural form of an English word.
      *
      * @param  string  $value
-     * @param  int  $count
+     * @param  int|array|\Countable  $count
      * @return string
      */
     public static function plural($value, $count = 2)
@@ -398,7 +546,7 @@ class Str
      * Pluralize the last word of an English, studly caps case string.
      *
      * @param  string  $value
-     * @param  int  $count
+     * @param  int|array|\Countable  $count
      * @return string
      */
     public static function pluralStudly($value, $count = 2)
@@ -432,6 +580,18 @@ class Str
     }
 
     /**
+     * Repeat the given string.
+     *
+     * @param  string  $string
+     * @param  int  $times
+     * @return string
+     */
+    public static function repeat(string $string, int $times)
+    {
+        return str_repeat($string, $times);
+    }
+
+    /**
      * Replace a given value in the string sequentially with an array.
      *
      * @param  string  $search
@@ -453,6 +613,19 @@ class Str
     }
 
     /**
+     * Replace the given value in the given string.
+     *
+     * @param  string|string[]  $search
+     * @param  string|string[]  $replace
+     * @param  string|string[]  $subject
+     * @return string
+     */
+    public static function replace($search, $replace, $subject)
+    {
+        return str_replace($search, $replace, $subject);
+    }
+
+    /**
      * Replace the first occurrence of a given value in the string.
      *
      * @param  string  $search
@@ -462,7 +635,7 @@ class Str
      */
     public static function replaceFirst($search, $replace, $subject)
     {
-        if ($search == '') {
+        if ($search === '') {
             return $subject;
         }
 
@@ -485,6 +658,10 @@ class Str
      */
     public static function replaceLast($search, $replace, $subject)
     {
+        if ($search === '') {
+            return $subject;
+        }
+
         $position = strrpos($subject, $search);
 
         if ($position !== false) {
@@ -492,6 +669,34 @@ class Str
         }
 
         return $subject;
+    }
+
+    /**
+     * Remove any occurrence of the given string in the subject.
+     *
+     * @param  string|array<string>  $search
+     * @param  string  $subject
+     * @param  bool  $caseSensitive
+     * @return string
+     */
+    public static function remove($search, $subject, $caseSensitive = true)
+    {
+        $subject = $caseSensitive
+                    ? str_replace($search, '', $subject)
+                    : str_ireplace($search, '', $subject);
+
+        return $subject;
+    }
+
+    /**
+     * Reverse the given string.
+     *
+     * @param  string  $value
+     * @return string
+     */
+    public static function reverse(string $value)
+    {
+        return implode(array_reverse(mb_str_split($value)));
     }
 
     /**
@@ -528,6 +733,25 @@ class Str
     public static function title($value)
     {
         return mb_convert_case($value, MB_CASE_TITLE, 'UTF-8');
+    }
+
+    /**
+     * Convert the given string to title case for each word.
+     *
+     * @param  string  $value
+     * @return string
+     */
+    public static function headline($value)
+    {
+        $parts = explode(' ', $value);
+
+        $parts = count($parts) > 1
+            ? $parts = array_map([static::class, 'title'], $parts)
+            : $parts = array_map([static::class, 'title'], static::ucsplit(implode('_', $parts)));
+
+        $collapsed = static::replace(['-', '_', ' '], '_', implode('_', $parts));
+
+        return implode(' ', array_filter(explode('_', $collapsed)));
     }
 
     /**
@@ -604,7 +828,7 @@ class Str
     public static function startsWith($haystack, $needles)
     {
         foreach ((array) $needles as $needle) {
-            if ((string) $needle !== '' && substr($haystack, 0, strlen($needle)) === (string) $needle) {
+            if ((string) $needle !== '' && strncmp($haystack, $needle, strlen($needle)) === 0) {
                 return true;
             }
         }
@@ -626,13 +850,17 @@ class Str
             return static::$studlyCache[$key];
         }
 
-        $value = ucwords(str_replace(['-', '_'], ' ', $value));
+        $words = explode(' ', static::replace(['-', '_'], ' ', $value));
 
-        return static::$studlyCache[$key] = str_replace(' ', '', $value);
+        $studlyWords = array_map(function ($word) {
+            return static::ucfirst($word);
+        }, $words);
+
+        return static::$studlyCache[$key] = implode($studlyWords);
     }
 
     /**
-     * Returns the portion of string specified by the start and length parameters.
+     * Returns the portion of the string specified by the start and length parameters.
      *
      * @param  string  $string
      * @param  int  $start
@@ -645,6 +873,42 @@ class Str
     }
 
     /**
+     * Returns the number of substring occurrences.
+     *
+     * @param  string  $haystack
+     * @param  string  $needle
+     * @param  int  $offset
+     * @param  int|null  $length
+     * @return int
+     */
+    public static function substrCount($haystack, $needle, $offset = 0, $length = null)
+    {
+        if (! is_null($length)) {
+            return substr_count($haystack, $needle, $offset, $length);
+        } else {
+            return substr_count($haystack, $needle, $offset);
+        }
+    }
+
+    /**
+     * Replace text within a portion of a string.
+     *
+     * @param  string|array  $string
+     * @param  string|array  $replace
+     * @param  array|int  $offset
+     * @param  array|int|null  $length
+     * @return string|array
+     */
+    public static function substrReplace($string, $replace, $offset = 0, $length = null)
+    {
+        if ($length === null) {
+            $length = strlen($string);
+        }
+
+        return substr_replace($string, $replace, $offset, $length);
+    }
+
+    /**
      * Make a string's first character uppercase.
      *
      * @param  string  $string
@@ -653,6 +917,28 @@ class Str
     public static function ucfirst($string)
     {
         return static::upper(static::substr($string, 0, 1)).static::substr($string, 1);
+    }
+
+    /**
+     * Split a string into pieces by uppercase characters.
+     *
+     * @param  string  $string
+     * @return array
+     */
+    public static function ucsplit($string)
+    {
+        return preg_split('/(?=\p{Lu})/u', $string, -1, PREG_SPLIT_NO_EMPTY);
+    }
+
+    /**
+     * Get the number of words a string contains.
+     *
+     * @param  string  $string
+     * @return int
+     */
+    public static function wordCount($string)
+    {
+        return str_word_count($string);
     }
 
     /**
@@ -678,7 +964,7 @@ class Str
             return call_user_func(static::$uuidFactory);
         }
 
-        $factory = new UuidFactory();
+        $factory = new UuidFactory;
 
         $factory->setRandomGenerator(new CombGenerator(
             $factory->getRandomGenerator(),
@@ -711,5 +997,17 @@ class Str
     public static function createUuidsNormally()
     {
         static::$uuidFactory = null;
+    }
+
+    /**
+     * Remove all strings from the casing caches.
+     *
+     * @return void
+     */
+    public static function flushCache()
+    {
+        static::$snakeCache = [];
+        static::$camelCache = [];
+        static::$studlyCache = [];
     }
 }

@@ -5,93 +5,129 @@ namespace Bladezero\Tests\Illuminate\View\Blade;
 use Bladezero\Container\Container;
 use Bladezero\Contracts\Foundation\Application;
 use Bladezero\Contracts\View\Factory;
+use Bladezero\Database\Eloquent\Model;
 use Bladezero\View\Compilers\BladeCompiler;
 use Bladezero\View\Compilers\ComponentTagCompiler;
 use Bladezero\View\Component;
+use InvalidArgumentException;
 use Mockery;
 
 class BladeComponentTagCompilerTest extends AbstractBladeTestCase
 {
-    public function tearDown(): void
+    protected function tearDown(): void
     {
         Mockery::close();
     }
 
     public function testSlotsCanBeCompiled()
     {
-        $result = (new ComponentTagCompiler)->compileSlots('<x-slot name="foo">
+        $result = $this->compiler()->compileSlots('<x-slot name="foo">
 </x-slot>');
 
-        $this->assertSame("@slot('foo') \n @endslot", trim($result));
+        $this->assertSame("@slot('foo', null, []) \n".' @endslot', trim($result));
+    }
+
+    public function testDynamicSlotsCanBeCompiled()
+    {
+        $result = $this->compiler()->compileSlots('<x-slot :name="$foo">
+</x-slot>');
+
+        $this->assertSame("@slot(\$foo, null, []) \n".' @endslot', trim($result));
+    }
+
+    public function testSlotsWithAttributesCanBeCompiled()
+    {
+        $result = $this->compiler()->compileSlots('<x-slot name="foo" class="font-bold">
+</x-slot>');
+
+        $this->assertSame("@slot('foo', null, ['class' => 'font-bold']) \n".' @endslot', trim($result));
+    }
+
+    public function testSlotsWithDynamicAttributesCanBeCompiled()
+    {
+        $result = $this->compiler()->compileSlots('<x-slot name="foo" :class="$classes">
+</x-slot>');
+
+        $this->assertSame("@slot('foo', null, ['class' => \Bladezero\View\Compilers\BladeCompiler::sanitizeComponentAttribute(\$classes)]) \n".' @endslot', trim($result));
     }
 
     public function testBasicComponentParsing()
     {
-        $result = (new ComponentTagCompiler(['alert' => TestAlertComponent::class]))->compileTags('<div><x-alert type="foo" limit="5" @click="foo" required /><x-alert /></div>');
+        $this->mockViewFactory();
 
-        $this->assertSame("<div> @component('Bladezero\Tests\Illuminate\View\Blade\TestAlertComponent', [])
-<?php \$component->withAttributes(['type' => 'foo','limit' => '5','@click' => 'foo','required' => true]); ?>
-@endcomponentClass  @component('Bladezero\Tests\Illuminate\View\Blade\TestAlertComponent', [])
-<?php \$component->withAttributes([]); ?>
-@endcomponentClass </div>", trim($result));
+        $result = $this->compiler(['alert' => TestAlertComponent::class])->compileTags('<div><x-alert type="foo" limit="5" @click="foo" wire:click="changePlan(\'{{ $plan }}\')" required /><x-alert /></div>');
+
+        $this->assertSame("<div>##BEGIN-COMPONENT-CLASS##@component('Bladezero\Tests\Illuminate\View\Blade\TestAlertComponent', 'alert', [])
+<?php \$component->withAttributes(['type' => 'foo','limit' => '5','@click' => 'foo','wire:click' => 'changePlan(\''.e(\$plan).'\')','required' => true]); ?>\n".
+"@endComponentClass##END-COMPONENT-CLASS####BEGIN-COMPONENT-CLASS##@component('Bladezero\Tests\Illuminate\View\Blade\TestAlertComponent', 'alert', [])
+<?php \$component->withAttributes([]); ?>\n".
+'@endComponentClass##END-COMPONENT-CLASS##</div>', trim($result));
     }
 
     public function testBasicComponentWithEmptyAttributesParsing()
     {
-        $result = (new ComponentTagCompiler(['alert' => TestAlertComponent::class]))->compileTags('<div><x-alert type="" limit=\'\' @click="" required /></div>');
+        $result = $this->compiler(['alert' => TestAlertComponent::class])->compileTags('<div><x-alert type="" limit=\'\' @click="" required /></div>');
 
-        $this->assertSame("<div> @component('Bladezero\Tests\Illuminate\View\Blade\TestAlertComponent', [])
-<?php \$component->withAttributes(['type' => '','limit' => '','@click' => '','required' => true]); ?>
-@endcomponentClass </div>", trim($result));
+        $this->assertSame("<div>##BEGIN-COMPONENT-CLASS##@component('Bladezero\Tests\Illuminate\View\Blade\TestAlertComponent', 'alert', [])
+<?php \$component->withAttributes(['type' => '','limit' => '','@click' => '','required' => true]); ?>\n".
+'@endComponentClass##END-COMPONENT-CLASS##</div>', trim($result));
     }
 
     public function testDataCamelCasing()
     {
-        $result = (new ComponentTagCompiler(['profile' => TestProfileComponent::class]))->compileTags('<x-profile user-id="1"></x-profile>');
+        $result = $this->compiler(['profile' => TestProfileComponent::class])->compileTags('<x-profile user-id="1"></x-profile>');
 
-        $this->assertSame("@component('Bladezero\Tests\Illuminate\View\Blade\TestProfileComponent', ['userId' => '1'])
-<?php \$component->withAttributes([]); ?> @endcomponentClass", trim($result));
+        $this->assertSame("##BEGIN-COMPONENT-CLASS##@component('Bladezero\Tests\Illuminate\View\Blade\TestProfileComponent', 'profile', ['userId' => '1'])
+<?php \$component->withAttributes([]); ?> @endComponentClass##END-COMPONENT-CLASS##", trim($result));
     }
 
     public function testColonData()
     {
-        $result = (new ComponentTagCompiler(['profile' => TestProfileComponent::class]))->compileTags('<x-profile :user-id="1"></x-profile>');
+        $result = $this->compiler(['profile' => TestProfileComponent::class])->compileTags('<x-profile :user-id="1"></x-profile>');
 
-        $this->assertSame("@component('Bladezero\Tests\Illuminate\View\Blade\TestProfileComponent', ['userId' => 1])
-<?php \$component->withAttributes([]); ?> @endcomponentClass", trim($result));
+        $this->assertSame("##BEGIN-COMPONENT-CLASS##@component('Bladezero\Tests\Illuminate\View\Blade\TestProfileComponent', 'profile', ['userId' => 1])
+<?php \$component->withAttributes([]); ?> @endComponentClass##END-COMPONENT-CLASS##", trim($result));
+    }
+
+    public function testEscapedColonAttribute()
+    {
+        $result = $this->compiler(['profile' => TestProfileComponent::class])->compileTags('<x-profile :user-id="1" ::title="user.name"></x-profile>');
+
+        $this->assertSame("##BEGIN-COMPONENT-CLASS##@component('Bladezero\Tests\Illuminate\View\Blade\TestProfileComponent', 'profile', ['userId' => 1])
+<?php \$component->withAttributes([':title' => 'user.name']); ?> @endComponentClass##END-COMPONENT-CLASS##", trim($result));
     }
 
     public function testColonAttributesIsEscapedIfStrings()
     {
-        $result = (new ComponentTagCompiler(['profile' => TestProfileComponent::class]))->compileTags('<x-profile :src="\'foo\'"></x-profile>');
+        $result = $this->compiler(['profile' => TestProfileComponent::class])->compileTags('<x-profile :src="\'foo\'"></x-profile>');
 
-        $this->assertSame("@component('Bladezero\Tests\Illuminate\View\Blade\TestProfileComponent', [])
-<?php \$component->withAttributes(['src' => \Bladezero\View\Compilers\BladeCompiler::sanitizeComponentAttribute('foo')]); ?> @endcomponentClass", trim($result));
+        $this->assertSame("##BEGIN-COMPONENT-CLASS##@component('Bladezero\Tests\Illuminate\View\Blade\TestProfileComponent', 'profile', [])
+<?php \$component->withAttributes(['src' => \Bladezero\View\Compilers\BladeCompiler::sanitizeComponentAttribute('foo')]); ?> @endComponentClass##END-COMPONENT-CLASS##", trim($result));
     }
 
     public function testColonNestedComponentParsing()
     {
-        $result = (new ComponentTagCompiler(['foo:alert' => TestAlertComponent::class]))->compileTags('<x-foo:alert></x-foo:alert>');
+        $result = $this->compiler(['foo:alert' => TestAlertComponent::class])->compileTags('<x-foo:alert></x-foo:alert>');
 
-        $this->assertSame("@component('Bladezero\Tests\Illuminate\View\Blade\TestAlertComponent', [])
-<?php \$component->withAttributes([]); ?> @endcomponentClass", trim($result));
+        $this->assertSame("##BEGIN-COMPONENT-CLASS##@component('Bladezero\Tests\Illuminate\View\Blade\TestAlertComponent', 'foo:alert', [])
+<?php \$component->withAttributes([]); ?> @endComponentClass##END-COMPONENT-CLASS##", trim($result));
     }
 
     public function testColonStartingNestedComponentParsing()
     {
-        $result = (new ComponentTagCompiler(['foo:alert' => TestAlertComponent::class]))->compileTags('<x:foo:alert></x-foo:alert>');
+        $result = $this->compiler(['foo:alert' => TestAlertComponent::class])->compileTags('<x:foo:alert></x-foo:alert>');
 
-        $this->assertSame("@component('Bladezero\Tests\Illuminate\View\Blade\TestAlertComponent', [])
-<?php \$component->withAttributes([]); ?> @endcomponentClass", trim($result));
+        $this->assertSame("##BEGIN-COMPONENT-CLASS##@component('Bladezero\Tests\Illuminate\View\Blade\TestAlertComponent', 'foo:alert', [])
+<?php \$component->withAttributes([]); ?> @endComponentClass##END-COMPONENT-CLASS##", trim($result));
     }
 
     public function testSelfClosingComponentsCanBeCompiled()
     {
-        $result = (new ComponentTagCompiler(['alert' => TestAlertComponent::class]))->compileTags('<div><x-alert/></div>');
+        $result = $this->compiler(['alert' => TestAlertComponent::class])->compileTags('<div><x-alert/></div>');
 
-        $this->assertSame("<div> @component('Bladezero\Tests\Illuminate\View\Blade\TestAlertComponent', [])
-<?php \$component->withAttributes([]); ?>
-@endcomponentClass </div>", trim($result));
+        $this->assertSame("<div>##BEGIN-COMPONENT-CLASS##@component('Bladezero\Tests\Illuminate\View\Blade\TestAlertComponent', 'alert', [])
+<?php \$component->withAttributes([]); ?>\n".
+'@endComponentClass##END-COMPONENT-CLASS##</div>', trim($result));
     }
 
     public function testClassNamesCanBeGuessed()
@@ -101,7 +137,7 @@ class BladeComponentTagCompilerTest extends AbstractBladeTestCase
         $app->shouldReceive('getNamespace')->andReturn('App\\');
         Container::setInstance($container);
 
-        $result = (new ComponentTagCompiler([]))->guessClassName('alert');
+        $result = $this->compiler()->guessClassName('alert');
 
         $this->assertSame("App\View\Components\Alert", trim($result));
 
@@ -115,7 +151,7 @@ class BladeComponentTagCompilerTest extends AbstractBladeTestCase
         $app->shouldReceive('getNamespace')->andReturn('App\\');
         Container::setInstance($container);
 
-        $result = (new ComponentTagCompiler([]))->guessClassName('base.alert');
+        $result = $this->compiler()->guessClassName('base.alert');
 
         $this->assertSame("App\View\Components\Base\Alert", trim($result));
 
@@ -124,56 +160,78 @@ class BladeComponentTagCompilerTest extends AbstractBladeTestCase
 
     public function testComponentsCanBeCompiledWithHyphenAttributes()
     {
-        $result = (new ComponentTagCompiler(['alert' => TestAlertComponent::class]))->compileTags('<x-alert class="bar" wire:model="foo" x-on:click="bar" @click="baz" />');
+        $this->mockViewFactory();
 
-        $this->assertSame("@component('Bladezero\Tests\Illuminate\View\Blade\TestAlertComponent', [])
-<?php \$component->withAttributes(['class' => 'bar','wire:model' => 'foo','x-on:click' => 'bar','@click' => 'baz']); ?>
-@endcomponentClass", trim($result));
+        $result = $this->compiler(['alert' => TestAlertComponent::class])->compileTags('<x-alert class="bar" wire:model="foo" x-on:click="bar" @click="baz" />');
+
+        $this->assertSame("##BEGIN-COMPONENT-CLASS##@component('Bladezero\Tests\Illuminate\View\Blade\TestAlertComponent', 'alert', [])
+<?php \$component->withAttributes(['class' => 'bar','wire:model' => 'foo','x-on:click' => 'bar','@click' => 'baz']); ?>\n".
+'@endComponentClass##END-COMPONENT-CLASS##', trim($result));
     }
 
     public function testSelfClosingComponentsCanBeCompiledWithDataAndAttributes()
     {
-        $result = (new ComponentTagCompiler(['alert' => TestAlertComponent::class]))->compileTags('<x-alert title="foo" class="bar" wire:model="foo" />');
+        $result = $this->compiler(['alert' => TestAlertComponent::class])->compileTags('<x-alert title="foo" class="bar" wire:model="foo" />');
 
-        $this->assertSame("@component('Bladezero\Tests\Illuminate\View\Blade\TestAlertComponent', ['title' => 'foo'])
-<?php \$component->withAttributes(['class' => 'bar','wire:model' => 'foo']); ?>
-@endcomponentClass", trim($result));
+        $this->assertSame("##BEGIN-COMPONENT-CLASS##@component('Bladezero\Tests\Illuminate\View\Blade\TestAlertComponent', 'alert', ['title' => 'foo'])
+<?php \$component->withAttributes(['class' => 'bar','wire:model' => 'foo']); ?>\n".
+'@endComponentClass##END-COMPONENT-CLASS##', trim($result));
+    }
+
+    public function testComponentCanReceiveAttributeBag()
+    {
+        $this->mockViewFactory();
+        $result = $this->compiler(['profile' => TestProfileComponent::class])->compileTags('<x-profile class="bar" {{ $attributes }} wire:model="foo"></x-profile>');
+
+        $this->assertSame("##BEGIN-COMPONENT-CLASS##@component('Bladezero\Tests\Illuminate\View\Blade\TestProfileComponent', 'profile', [])
+<?php \$component->withAttributes(['class' => 'bar','attributes' => \Bladezero\View\Compilers\BladeCompiler::sanitizeComponentAttribute(\$attributes),'wire:model' => 'foo']); ?> @endComponentClass##END-COMPONENT-CLASS##", trim($result));
+    }
+
+    public function testSelfClosingComponentCanReceiveAttributeBag()
+    {
+        $this->mockViewFactory();
+
+        $result = $this->compiler(['alert' => TestAlertComponent::class])->compileTags('<div><x-alert title="foo" class="bar" {{ $attributes->merge([\'class\' => \'test\']) }} wire:model="foo" /></div>');
+
+        $this->assertSame("<div>##BEGIN-COMPONENT-CLASS##@component('Bladezero\Tests\Illuminate\View\Blade\TestAlertComponent', 'alert', ['title' => 'foo'])
+<?php \$component->withAttributes(['class' => 'bar','attributes' => \Bladezero\View\Compilers\BladeCompiler::sanitizeComponentAttribute(\$attributes->merge(['class' => 'test'])),'wire:model' => 'foo']); ?>\n".
+            '@endComponentClass##END-COMPONENT-CLASS##</div>', trim($result));
     }
 
     public function testComponentsCanHaveAttachedWord()
     {
-        $result = (new ComponentTagCompiler(['profile' => TestProfileComponent::class]))->compileTags('<x-profile></x-profile>Words');
+        $result = $this->compiler(['profile' => TestProfileComponent::class])->compileTags('<x-profile></x-profile>Words');
 
-        $this->assertSame("@component('Bladezero\Tests\Illuminate\View\Blade\TestProfileComponent', [])
-<?php \$component->withAttributes([]); ?> @endcomponentClass Words", trim($result));
+        $this->assertSame("##BEGIN-COMPONENT-CLASS##@component('Bladezero\Tests\Illuminate\View\Blade\TestProfileComponent', 'profile', [])
+<?php \$component->withAttributes([]); ?> @endComponentClass##END-COMPONENT-CLASS##Words", trim($result));
     }
 
     public function testSelfClosingComponentsCanHaveAttachedWord()
     {
-        $result = (new ComponentTagCompiler(['alert' => TestAlertComponent::class]))->compileTags('<x-alert/>Words');
+        $result = $this->compiler(['alert' => TestAlertComponent::class])->compileTags('<x-alert/>Words');
 
-        $this->assertSame("@component('Bladezero\Tests\Illuminate\View\Blade\TestAlertComponent', [])
-<?php \$component->withAttributes([]); ?>
-@endcomponentClass Words", trim($result));
+        $this->assertSame("##BEGIN-COMPONENT-CLASS##@component('Bladezero\Tests\Illuminate\View\Blade\TestAlertComponent', 'alert', [])
+<?php \$component->withAttributes([]); ?>\n".
+'@endComponentClass##END-COMPONENT-CLASS##Words', trim($result));
     }
 
     public function testSelfClosingComponentsCanBeCompiledWithBoundData()
     {
-        $result = (new ComponentTagCompiler(['alert' => TestAlertComponent::class]))->compileTags('<x-alert :title="$title" class="bar" />');
+        $result = $this->compiler(['alert' => TestAlertComponent::class])->compileTags('<x-alert :title="$title" class="bar" />');
 
-        $this->assertSame("@component('Bladezero\Tests\Illuminate\View\Blade\TestAlertComponent', ['title' => \$title])
-<?php \$component->withAttributes(['class' => 'bar']); ?>
-@endcomponentClass", trim($result));
+        $this->assertSame("##BEGIN-COMPONENT-CLASS##@component('Bladezero\Tests\Illuminate\View\Blade\TestAlertComponent', 'alert', ['title' => \$title])
+<?php \$component->withAttributes(['class' => 'bar']); ?>\n".
+'@endComponentClass##END-COMPONENT-CLASS##', trim($result));
     }
 
     public function testPairedComponentTags()
     {
-        $result = (new ComponentTagCompiler(['alert' => TestAlertComponent::class]))->compileTags('<x-alert>
+        $result = $this->compiler(['alert' => TestAlertComponent::class])->compileTags('<x-alert>
 </x-alert>');
 
-        $this->assertSame("@component('Bladezero\Tests\Illuminate\View\Blade\TestAlertComponent', [])
+        $this->assertSame("##BEGIN-COMPONENT-CLASS##@component('Bladezero\Tests\Illuminate\View\Blade\TestAlertComponent', 'alert', [])
 <?php \$component->withAttributes([]); ?>
- @endcomponentClass", trim($result));
+ @endComponentClass##END-COMPONENT-CLASS##", trim($result));
     }
 
     public function testClasslessComponents()
@@ -185,26 +243,105 @@ class BladeComponentTagCompilerTest extends AbstractBladeTestCase
         $factory->shouldReceive('exists')->andReturn(true);
         Container::setInstance($container);
 
-        $result = (new ComponentTagCompiler([]))->compileTags('<x-anonymous-component :name="\'Taylor\'" :age="31" wire:model="foo" />');
+        $result = $this->compiler()->compileTags('<x-anonymous-component :name="\'Taylor\'" :age="31" wire:model="foo" />');
 
-        $this->assertSame("@component('Bladezero\View\AnonymousComponent', ['view' => 'components.anonymous-component','data' => ['name' => 'Taylor','age' => 31,'wire:model' => 'foo']])
-<?php \$component->withAttributes(['name' => \Bladezero\View\Compilers\BladeCompiler::sanitizeComponentAttribute('Taylor'),'age' => 31,'wire:model' => 'foo']); ?>
-@endcomponentClass", trim($result));
+        $this->assertSame("##BEGIN-COMPONENT-CLASS##@component('Bladezero\View\AnonymousComponent', 'anonymous-component', ['view' => 'components.anonymous-component','data' => ['name' => 'Taylor','age' => 31,'wire:model' => 'foo']])
+<?php \$component->withAttributes(['name' => \Bladezero\View\Compilers\BladeCompiler::sanitizeComponentAttribute('Taylor'),'age' => 31,'wire:model' => 'foo']); ?>\n".
+'@endComponentClass##END-COMPONENT-CLASS##', trim($result));
+    }
+
+    public function testClasslessComponentsWithIndexView()
+    {
+        $container = new Container;
+        $container->instance(Application::class, $app = Mockery::mock(Application::class));
+        $container->instance(Factory::class, $factory = Mockery::mock(Factory::class));
+        $app->shouldReceive('getNamespace')->andReturn('App\\');
+        $factory->shouldReceive('exists')->andReturn(false, true);
+        Container::setInstance($container);
+
+        $result = $this->compiler()->compileTags('<x-anonymous-component :name="\'Taylor\'" :age="31" wire:model="foo" />');
+
+        $this->assertSame("##BEGIN-COMPONENT-CLASS##@component('Bladezero\View\AnonymousComponent', 'anonymous-component', ['view' => 'components.anonymous-component.index','data' => ['name' => 'Taylor','age' => 31,'wire:model' => 'foo']])
+<?php \$component->withAttributes(['name' => \Bladezero\View\Compilers\BladeCompiler::sanitizeComponentAttribute('Taylor'),'age' => 31,'wire:model' => 'foo']); ?>\n".
+'@endComponentClass##END-COMPONENT-CLASS##', trim($result));
+    }
+
+    public function testPackagesClasslessComponents()
+    {
+        $container = new Container;
+        $container->instance(Application::class, $app = Mockery::mock(Application::class));
+        $container->instance(Factory::class, $factory = Mockery::mock(Factory::class));
+        $app->shouldReceive('getNamespace')->andReturn('App\\');
+        $factory->shouldReceive('exists')->andReturn(true);
+        Container::setInstance($container);
+
+        $result = $this->compiler()->compileTags('<x-package::anonymous-component :name="\'Taylor\'" :age="31" wire:model="foo" />');
+
+        $this->assertSame("##BEGIN-COMPONENT-CLASS##@component('Bladezero\View\AnonymousComponent', 'package::anonymous-component', ['view' => 'package::components.anonymous-component','data' => ['name' => 'Taylor','age' => 31,'wire:model' => 'foo']])
+<?php \$component->withAttributes(['name' => \Bladezero\View\Compilers\BladeCompiler::sanitizeComponentAttribute('Taylor'),'age' => 31,'wire:model' => 'foo']); ?>\n".
+'@endComponentClass##END-COMPONENT-CLASS##', trim($result));
     }
 
     public function testAttributeSanitization()
     {
-        $class = new class {
+        $class = new class
+        {
             public function __toString()
             {
                 return '<hi>';
             }
         };
 
+        $model = new class extends Model {};
+
         $this->assertEquals(e('<hi>'), BladeCompiler::sanitizeComponentAttribute('<hi>'));
         $this->assertEquals(e('1'), BladeCompiler::sanitizeComponentAttribute('1'));
         $this->assertEquals(1, BladeCompiler::sanitizeComponentAttribute(1));
         $this->assertEquals(e('<hi>'), BladeCompiler::sanitizeComponentAttribute($class));
+        $this->assertSame($model, BladeCompiler::sanitizeComponentAttribute($model));
+    }
+
+    public function testItThrowsAnExceptionForNonExistingAliases()
+    {
+        $container = new Container;
+        $container->instance(Application::class, $app = Mockery::mock(Application::class));
+        $container->instance(Factory::class, $factory = Mockery::mock(Factory::class));
+        $app->shouldReceive('getNamespace')->andReturn('App\\');
+        $factory->shouldReceive('exists')->andReturn(false);
+        Container::setInstance($container);
+
+        $this->expectException(InvalidArgumentException::class);
+
+        $this->compiler(['alert' => 'foo.bar'])->compileTags('<x-alert />');
+    }
+
+    public function testItThrowsAnExceptionForNonExistingClass()
+    {
+        $container = new Container;
+        $container->instance(Application::class, $app = Mockery::mock(Application::class));
+        $container->instance(Factory::class, $factory = Mockery::mock(Factory::class));
+        $app->shouldReceive('getNamespace')->andReturn('App\\');
+        $factory->shouldReceive('exists')->andReturn(false);
+        Container::setInstance($container);
+
+        $this->expectException(InvalidArgumentException::class);
+
+        $this->compiler()->compileTags('<x-alert />');
+    }
+
+    protected function mockViewFactory($existsSucceeds = true)
+    {
+        $container = new Container;
+        $container->instance(Factory::class, $factory = Mockery::mock(Factory::class));
+        $factory->shouldReceive('exists')->andReturn($existsSucceeds);
+        Container::setInstance($container);
+    }
+
+    protected function compiler($aliases = [])
+    {
+        return new ComponentTagCompiler(
+            $aliases
+        );
     }
 }
 
