@@ -2,9 +2,9 @@
 
 namespace Bladezero\View\Compilers;
 
-use Bladezero\Container\Container;
+;
 use Bladezero\Contracts\Foundation\Application;
-use Bladezero\Contracts\View\Factory;
+use Bladezero\Factory;
 use Bladezero\Filesystem\Filesystem;
 use Bladezero\Support\Str;
 use Bladezero\View\AnonymousComponent;
@@ -244,14 +244,14 @@ class ComponentTagCompiler
      */
     public function componentClass(string $component)
     {
-        $viewFactory = Container::getInstance()->make(Factory::class);
+        
 
         if (isset($this->aliases[$component])) {
             if (class_exists($alias = $this->aliases[$component])) {
                 return $alias;
             }
 
-            if ($viewFactory->exists($alias)) {
+            if (Factory::exists($alias)) {
                 return $alias;
             }
 
@@ -268,11 +268,11 @@ class ComponentTagCompiler
             return $class;
         }
 
-        if ($viewFactory->exists($view = $this->guessViewName($component))) {
+        if (Factory::exists($view = $this->guessViewName($component))) {
             return $view;
         }
 
-        if ($viewFactory->exists($view = $this->guessViewName($component).'.index')) {
+        if (Factory::exists($view = $this->guessViewName($component).'.index')) {
             return $view;
         }
 
@@ -310,10 +310,7 @@ class ComponentTagCompiler
      */
     public function guessClassName(string $component)
     {
-        $namespace = Container::getInstance()
-                    ->make(Application::class)
-                    ->getNamespace();
-
+        
         $class = $this->formatClassName($component);
 
         return \Bladezero\Factory::getComponentNamespace().$class;

@@ -3,7 +3,7 @@
 namespace Bladezero\View;
 
 use Closure;
-use Bladezero\Container\Container;
+;
 use Tightenco\Collect\Contracts\Support\Htmlable;
 use Bladezero\Contracts\View\View as ViewContract;
 use Bladezero\Support\Str;

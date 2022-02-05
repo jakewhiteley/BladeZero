@@ -194,7 +194,7 @@ class Factory
     public function first(array $views, array $data = [], array $mergeData = [])
     {
         $view = Arr::first($views, function ($view) {
-            return $this->exists($view);
+            return self::exists($view);
         });
 
         if (!$view) {
@@ -266,7 +266,7 @@ class Factory
      * @param string $view
      * @return bool
      */
-    public function exists($view)
+    public static function exists($view)
     {
         try {
             static::$finder->find($view);

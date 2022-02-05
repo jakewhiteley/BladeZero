@@ -2,9 +2,9 @@
 
 namespace Bladezero\Tests\Illuminate\View\Blade;
 
-use Bladezero\Container\Container;
+;
 use Bladezero\Contracts\Foundation\Application;
-use Bladezero\Contracts\View\Factory;
+use Bladezero\Factory;
 use Bladezero\Database\Eloquent\Model;
 use Bladezero\View\Compilers\BladeCompiler;
 use Bladezero\View\Compilers\ComponentTagCompiler;

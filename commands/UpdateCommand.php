@@ -33,6 +33,7 @@ class UpdateCommand extends Command
         '/Support/HigherOrderTapProxy.php',
         '/Support/Stringable.php',
         '/Support/HtmlString.php',
+        '/Support/Optional.php',
         '/Support/Traits/Conditionable.php',
         '/Support/Traits/ReflectsClosures.php',
     ];
@@ -75,6 +76,7 @@ class UpdateCommand extends Command
         '/View/Component.php',
         '/View/AnonymousComponent.php',
         '/View/ComponentAttributeBag.php',
+        '/View/ViewException.php',
     ];
 
     const FS_FILES = [
@@ -292,6 +294,10 @@ class UpdateCommand extends Command
             '\\Tightenco\\Collect\\Support\\Arr::last' => 'Arr::last',
             'Bladezero\\View\\Factory' => 'Bladezero\\Factory',
             'new StringableObjectStub' => 'new \\Bladezero\\Tests\\Stubs\\StringableObjectStub',
+            'use Bladezero\\Contracts\\View\\Factory;' => 'use Bladezero\\Factory;',
+            'use Bladezero\Container\Container' => '',
+            '$viewFactory = Container::getInstance()->make(Factory::class);' => '',
+            '$viewFactory->exists' => 'Factory::exists',
             //'$componentNamespace = \'Blade\\Components\';' => '$componentNamespace = \'App\\View\\Components\\\';',
 
             // Compiler amends

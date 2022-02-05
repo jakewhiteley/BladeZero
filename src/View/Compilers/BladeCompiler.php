@@ -2,7 +2,7 @@
 
 namespace Bladezero\View\Compilers;
 
-use Bladezero\Container\Container;
+;
 use Bladezero\Contracts\View\Factory as ViewFactory;
 use Tightenco\Collect\Support\Arr;
 use Bladezero\Support\Str;
