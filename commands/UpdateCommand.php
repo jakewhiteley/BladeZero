@@ -75,6 +75,7 @@ class UpdateCommand extends Command
         '/View/Engines/PhpEngine.php',
         '/View/Compilers/ComponentTagCompiler.php',
         '/View/Component.php',
+        '/View/ComponentSlot.php',
         '/View/AnonymousComponent.php',
         '/View/ComponentAttributeBag.php',
         '/View/ViewException.php',
@@ -344,6 +345,33 @@ class UpdateCommand extends Command
             'app(\\\\Unseenco\\\Blade\\\\Contracts\\\\Auth\\\\Access\\\\Gate::class)->check(' => '$__env->canHandler(',
             'app(\\\\Unseenco\\\Blade\\\\Contracts\\\\Auth\\\\Access\\\\Gate::class)->any(' => '$__env->canAnyHandler(',
             'app(\\\\Unseenco\\\Blade\\\\Contracts\\\\Auth\\\\Access\\\\Gate::class)->denies(' => '! $__env->canHandler(',
+
+
+            // tests
+            '$this->mockViewFactory();' => '',
+            'Container::setInstance(null);' => '',
+            '$container = new Container;' => '',
+            '$container->instance(Application::class, $app = Mockery::mock(Application::class));' => '',
+            '$app->shouldReceive(\'getNamespace\')->andReturn(\'App\\\\\');' => '',
+            'Container::setInstance($container);' => '',
+            '$container->instance(Factory::class, $factory = Mockery::mock(Factory::class));' => '',
+            '$factory->shouldReceive(\'exists\')->andReturn(true);' => '',
+            '$factory->shouldReceive(\'exists\')->andReturn(false, true);' => '$result = $this->compiler()->compileTags(\'<x-anonymous-component-index :name="\\\'Taylor\\\'" :age="31" wire:model="foo" />\');',
+            'return new ComponentTagCompiler(' => '$factory = new Factory(__DIR__ . \'../../../../Bladezero/fixtures/files\', __DIR__ . \'../../../../Bladezero/fixtures/cache\');' . "\n". 'return new ComponentTagCompiler(',
+            '$result = $this->compiler()->compileTags(\'<x-anonymous-component-index :name="\\\'Taylor\\\'" :age="31" wire:model="foo" />\');
+        
+
+        $result = $this->compiler()->compileTags(\'<x-anonymous-component :name="\\\'Taylor\\\'" :age="31" wire:model="foo" />\');' => '$result = $this->compiler()->compileTags(\'<x-anonymous-component-index :name="\\\'Taylor\\\'" :age="31" wire:model="foo" />\');',
+            '\'anonymous-component\', [\'view\' => \'components.anonymous-component.index' => '\'anonymous-component-index\', [\'view\' => \'components.anonymous-component-index.index',
+            'public function testPackagesClasslessComponents()
+    {' => 'public function testPackagesClasslessComponents()
+    {' . "\n" . '        $this->markTestSkipped(\'We do not suport packages\');',
+            '$model = new class extends Model {};' => '',
+            '$this->assertSame($model, BladeCompiler::sanitizeComponentAttribute($model));' => '',
+            '$factory->shouldReceive(\'exists\')->andReturn(false);' => '',
+            'public function testItThrowsAnExceptionForNonExistingClass()
+    {' => 'public function testItThrowsAnExceptionForNonExistingClass()
+    {'. "\n" . '        $this->markTestSkipped();',
 
 
             //components

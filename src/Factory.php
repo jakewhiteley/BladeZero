@@ -28,6 +28,8 @@ class Factory
     use \Bladezero\View\Concerns\ManagesTranslations;
     use \Bladezero\View\Concerns\ProvidesHandlers;
 
+    private static $componentNamespace = 'App\View\Components\\';
+
     /**
      * @var Filesystem
      */

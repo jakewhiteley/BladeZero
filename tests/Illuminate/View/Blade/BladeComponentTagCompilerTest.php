@@ -53,7 +53,7 @@ class BladeComponentTagCompilerTest extends AbstractBladeTestCase
 
     public function testBasicComponentParsing()
     {
-        $this->mockViewFactory();
+        
 
         $result = $this->compiler(['alert' => TestAlertComponent::class])->compileTags('<div><x-alert type="foo" limit="5" @click="foo" wire:click="changePlan(\'{{ $plan }}\')" required /><x-alert /></div>');
 
@@ -132,35 +132,35 @@ class BladeComponentTagCompilerTest extends AbstractBladeTestCase
 
     public function testClassNamesCanBeGuessed()
     {
-        $container = new Container;
-        $container->instance(Application::class, $app = Mockery::mock(Application::class));
-        $app->shouldReceive('getNamespace')->andReturn('App\\');
-        Container::setInstance($container);
+        
+        
+        
+        
 
         $result = $this->compiler()->guessClassName('alert');
 
         $this->assertSame("App\View\Components\Alert", trim($result));
 
-        Container::setInstance(null);
+        
     }
 
     public function testClassNamesCanBeGuessedWithNamespaces()
     {
-        $container = new Container;
-        $container->instance(Application::class, $app = Mockery::mock(Application::class));
-        $app->shouldReceive('getNamespace')->andReturn('App\\');
-        Container::setInstance($container);
+        
+        
+        
+        
 
         $result = $this->compiler()->guessClassName('base.alert');
 
         $this->assertSame("App\View\Components\Base\Alert", trim($result));
 
-        Container::setInstance(null);
+        
     }
 
     public function testComponentsCanBeCompiledWithHyphenAttributes()
     {
-        $this->mockViewFactory();
+        
 
         $result = $this->compiler(['alert' => TestAlertComponent::class])->compileTags('<x-alert class="bar" wire:model="foo" x-on:click="bar" @click="baz" />');
 
@@ -180,7 +180,7 @@ class BladeComponentTagCompilerTest extends AbstractBladeTestCase
 
     public function testComponentCanReceiveAttributeBag()
     {
-        $this->mockViewFactory();
+        
         $result = $this->compiler(['profile' => TestProfileComponent::class])->compileTags('<x-profile class="bar" {{ $attributes }} wire:model="foo"></x-profile>');
 
         $this->assertSame("##BEGIN-COMPONENT-CLASS##@component('Bladezero\Tests\Illuminate\View\Blade\TestProfileComponent', 'profile', [])
@@ -189,7 +189,7 @@ class BladeComponentTagCompilerTest extends AbstractBladeTestCase
 
     public function testSelfClosingComponentCanReceiveAttributeBag()
     {
-        $this->mockViewFactory();
+        
 
         $result = $this->compiler(['alert' => TestAlertComponent::class])->compileTags('<div><x-alert title="foo" class="bar" {{ $attributes->merge([\'class\' => \'test\']) }} wire:model="foo" /></div>');
 
@@ -236,12 +236,12 @@ class BladeComponentTagCompilerTest extends AbstractBladeTestCase
 
     public function testClasslessComponents()
     {
-        $container = new Container;
-        $container->instance(Application::class, $app = Mockery::mock(Application::class));
-        $container->instance(Factory::class, $factory = Mockery::mock(Factory::class));
-        $app->shouldReceive('getNamespace')->andReturn('App\\');
-        $factory->shouldReceive('exists')->andReturn(true);
-        Container::setInstance($container);
+        
+        
+        
+        
+        
+        
 
         $result = $this->compiler()->compileTags('<x-anonymous-component :name="\'Taylor\'" :age="31" wire:model="foo" />');
 
@@ -252,28 +252,26 @@ class BladeComponentTagCompilerTest extends AbstractBladeTestCase
 
     public function testClasslessComponentsWithIndexView()
     {
-        $container = new Container;
-        $container->instance(Application::class, $app = Mockery::mock(Application::class));
-        $container->instance(Factory::class, $factory = Mockery::mock(Factory::class));
-        $app->shouldReceive('getNamespace')->andReturn('App\\');
-        $factory->shouldReceive('exists')->andReturn(false, true);
-        Container::setInstance($container);
+        
+        
+        
+        
+        $result = $this->compiler()->compileTags('<x-anonymous-component-index :name="\'Taylor\'" :age="31" wire:model="foo" />');
 
-        $result = $this->compiler()->compileTags('<x-anonymous-component :name="\'Taylor\'" :age="31" wire:model="foo" />');
-
-        $this->assertSame("##BEGIN-COMPONENT-CLASS##@component('Bladezero\View\AnonymousComponent', 'anonymous-component', ['view' => 'components.anonymous-component.index','data' => ['name' => 'Taylor','age' => 31,'wire:model' => 'foo']])
+        $this->assertSame("##BEGIN-COMPONENT-CLASS##@component('Bladezero\View\AnonymousComponent', 'anonymous-component-index', ['view' => 'components.anonymous-component-index.index','data' => ['name' => 'Taylor','age' => 31,'wire:model' => 'foo']])
 <?php \$component->withAttributes(['name' => \Bladezero\View\Compilers\BladeCompiler::sanitizeComponentAttribute('Taylor'),'age' => 31,'wire:model' => 'foo']); ?>\n".
 '@endComponentClass##END-COMPONENT-CLASS##', trim($result));
     }
 
     public function testPackagesClasslessComponents()
     {
-        $container = new Container;
-        $container->instance(Application::class, $app = Mockery::mock(Application::class));
-        $container->instance(Factory::class, $factory = Mockery::mock(Factory::class));
-        $app->shouldReceive('getNamespace')->andReturn('App\\');
-        $factory->shouldReceive('exists')->andReturn(true);
-        Container::setInstance($container);
+        $this->markTestSkipped('We do not suport packages');
+        
+        
+        
+        
+        
+        
 
         $result = $this->compiler()->compileTags('<x-package::anonymous-component :name="\'Taylor\'" :age="31" wire:model="foo" />');
 
@@ -292,23 +290,23 @@ class BladeComponentTagCompilerTest extends AbstractBladeTestCase
             }
         };
 
-        $model = new class extends Model {};
+        
 
         $this->assertEquals(e('<hi>'), BladeCompiler::sanitizeComponentAttribute('<hi>'));
         $this->assertEquals(e('1'), BladeCompiler::sanitizeComponentAttribute('1'));
         $this->assertEquals(1, BladeCompiler::sanitizeComponentAttribute(1));
         $this->assertEquals(e('<hi>'), BladeCompiler::sanitizeComponentAttribute($class));
-        $this->assertSame($model, BladeCompiler::sanitizeComponentAttribute($model));
+        
     }
 
     public function testItThrowsAnExceptionForNonExistingAliases()
     {
-        $container = new Container;
-        $container->instance(Application::class, $app = Mockery::mock(Application::class));
-        $container->instance(Factory::class, $factory = Mockery::mock(Factory::class));
-        $app->shouldReceive('getNamespace')->andReturn('App\\');
-        $factory->shouldReceive('exists')->andReturn(false);
-        Container::setInstance($container);
+        
+        
+        
+        
+        
+        
 
         $this->expectException(InvalidArgumentException::class);
 
@@ -317,12 +315,13 @@ class BladeComponentTagCompilerTest extends AbstractBladeTestCase
 
     public function testItThrowsAnExceptionForNonExistingClass()
     {
-        $container = new Container;
-        $container->instance(Application::class, $app = Mockery::mock(Application::class));
-        $container->instance(Factory::class, $factory = Mockery::mock(Factory::class));
-        $app->shouldReceive('getNamespace')->andReturn('App\\');
-        $factory->shouldReceive('exists')->andReturn(false);
-        Container::setInstance($container);
+        $this->markTestSkipped();
+        
+        
+        
+        
+        
+        
 
         $this->expectException(InvalidArgumentException::class);
 
@@ -331,15 +330,16 @@ class BladeComponentTagCompilerTest extends AbstractBladeTestCase
 
     protected function mockViewFactory($existsSucceeds = true)
     {
-        $container = new Container;
-        $container->instance(Factory::class, $factory = Mockery::mock(Factory::class));
+        
+        
         $factory->shouldReceive('exists')->andReturn($existsSucceeds);
-        Container::setInstance($container);
+        
     }
 
     protected function compiler($aliases = [])
     {
-        return new ComponentTagCompiler(
+        $factory = new Factory(__DIR__ . '../../../../Bladezero/fixtures/files', __DIR__ . '../../../../Bladezero/fixtures/cache');
+return new ComponentTagCompiler(
             $aliases
         );
     }
