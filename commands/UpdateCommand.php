@@ -41,6 +41,7 @@ class UpdateCommand extends Command
     const VIEW_FILES = [
         '/View/Compilers/BladeCompiler.php',
         '/View/Compilers/Compiler.php',
+        '/View/Compilers/ComponentTagCompiler.php',
         '/View/Compilers/CompilerInterface.php',
         '/View/Compilers/Concerns/CompilesAuthorizations.php',
         '/View/Compilers/Concerns/CompilesComments.php',
@@ -77,6 +78,11 @@ class UpdateCommand extends Command
         '/View/AnonymousComponent.php',
         '/View/ComponentAttributeBag.php',
         '/View/ViewException.php',
+        '/View/View.php',
+        '/Contracts/View/View.php',
+        '/Contracts/Support/MessageProvider.php',
+        '/Contracts/Support/Renderable.php',
+
     ];
 
     const FS_FILES = [
@@ -288,16 +294,18 @@ class UpdateCommand extends Command
             '\\Bladezero\\Support\\Collection' => '\\Tightenco\\Collect\\Support\\Collection',
             'use Bladezero\\Support\\Collection' => 'use Tightenco\\Collect\\Support\\Collection',
             //'Bladezero\\Support\\HtmlString' => 'Tightenco\\Collect\\Support\\HtmlString',
-            'Bladezero\\Contracts\\Support\\Arrayable' => 'Tightenco\\Collect\\Support\\Arrayable',
+            'Bladezero\\Contracts\\Support\\Arrayable' => 'Tightenco\\Collect\\Contracts\\Support\\Arrayable',
             'Bladezero\\Support\\Traits\\Macroable' => 'Tightenco\\Collect\\Support\\Traits\\Macroable',
             'Bladezero\\Support\\Traits\\Tappable' => 'Tightenco\\Collect\\Support\\Traits\\Tappable',
             '\\Tightenco\\Collect\\Support\\Arr::last' => 'Arr::last',
             'Bladezero\\View\\Factory' => 'Bladezero\\Factory',
             'new StringableObjectStub' => 'new \\Bladezero\\Tests\\Stubs\\StringableObjectStub',
             'use Bladezero\\Contracts\\View\\Factory;' => 'use Bladezero\\Factory;',
-            'use Bladezero\Container\Container' => '',
+            'use Bladezero\Container\Container;' => '',
             '$viewFactory = Container::getInstance()->make(Factory::class);' => '',
             '$viewFactory->exists' => 'Factory::exists',
+            '__construct(Factory $' => '__construct(\\BladeZero\\Factory $',
+            '$this->factory->callComposer($this);' => '',
             //'$componentNamespace = \'Blade\\Components\';' => '$componentNamespace = \'App\\View\\Components\\\';',
 
             // Compiler amends

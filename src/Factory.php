@@ -12,6 +12,7 @@ use Bladezero\View\Engines\PhpEngine;
 use Bladezero\View\FileViewFinder;
 use Bladezero\View\ViewFinderInterface;
 use Bladezero\View\ViewName;
+use Bladezero\View\View;
 use InvalidArgumentException;
 use Tightenco\Collect\Contracts\Support\Arrayable;
 use Tightenco\Collect\Support\Arr;
@@ -20,14 +21,12 @@ use Tightenco\Collect\Support\Traits\Macroable;
 class Factory
 {
     use Macroable;
-    use View\Concerns\ManagesComponents;
-    use View\Concerns\ManagesLayouts;
-    use View\Concerns\ManagesLoops;
-    use View\Concerns\ManagesStacks;
-    use View\Concerns\ManagesTranslations;
-    use View\Concerns\ProvidesHandlers;
-
-    protected static $componentNamespace = 'App\View\Components\Alert';
+    use \Bladezero\View\Concerns\ManagesComponents;
+    use \Bladezero\View\Concerns\ManagesLayouts;
+    use \Bladezero\View\Concerns\ManagesLoops;
+    use \Bladezero\View\Concerns\ManagesStacks;
+    use \Bladezero\View\Concerns\ManagesTranslations;
+    use \Bladezero\View\Concerns\ProvidesHandlers;
 
     /**
      * @var Filesystem
@@ -131,7 +130,7 @@ class Factory
         // the caller for rendering or performing other view manipulations on this.
         $data = array_merge($this->getShared(), $mergeData, $this->parseData($data));
 
-        return $this->render($path, $data);
+        return $this->viewInstance($view, $path, $data);
     }
 
     /**
@@ -632,6 +631,19 @@ class Factory
     protected function parseData($data)
     {
         return $data instanceof Arrayable ? $data->toArray() : $data;
+    }
+
+    /**
+     * Create a new view instance from the given arguments.
+     *
+     * @param  string  $view
+     * @param  string  $path
+     * @param  Arrayable|array  $data
+     * @return \Bladezero\View\View
+     */
+    protected function viewInstance($view, $path, $data)
+    {
+        return new View($this, $this->getEngineFromPath($path), $view, $path, $data);
     }
 
     /**

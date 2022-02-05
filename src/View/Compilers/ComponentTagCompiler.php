@@ -2,7 +2,7 @@
 
 namespace Bladezero\View\Compilers;
 
-;
+
 use Bladezero\Contracts\Foundation\Application;
 use Bladezero\Factory;
 use Bladezero\Filesystem\Filesystem;
@@ -310,7 +310,10 @@ class ComponentTagCompiler
      */
     public function guessClassName(string $component)
     {
-        
+        $namespace = Container::getInstance()
+                    ->make(Application::class)
+                    ->getNamespace();
+
         $class = $this->formatClassName($component);
 
         return \Bladezero\Factory::getComponentNamespace().$class;

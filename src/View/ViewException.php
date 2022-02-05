@@ -3,7 +3,7 @@
 namespace Bladezero\View;
 
 use ErrorException;
-;
+
 use Bladezero\Support\Reflector;
 
 class ViewException extends ErrorException

@@ -2,7 +2,7 @@
 
 namespace Bladezero\Tests\Illuminate\View\Blade;
 
-;
+
 use Bladezero\Contracts\Foundation\Application;
 use Bladezero\Factory;
 use Bladezero\Database\Eloquent\Model;
