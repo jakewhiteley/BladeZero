@@ -6,7 +6,7 @@ class BladeHelpersTest extends AbstractBladeTestCase
 {
     public function testDefaultCsrfDirective()
     {
-        $this->assertRegExp(
+        $this->assertMatchesRegularExpression(
             '<input type="hidden" name="_token" value="[a-zA-Z0-9]{40,}">',
             $this->getCompiled('helpers.csrf')
         );

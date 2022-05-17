@@ -2,7 +2,7 @@
 
 namespace Bladezero\Tests\Bladezero;
 
-class BladeInjectTestTest extends AbstractBladeTestCase
+class BladeInjectTest extends AbstractBladeTestCase
 {
     public function testInjectDirective()
     {

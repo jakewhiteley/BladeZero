@@ -5,6 +5,7 @@ namespace Bladezero;
 use Bladezero\Filesystem\Filesystem;
 use Bladezero\Support\Str;
 use Bladezero\View\Compilers\BladeCompiler;
+use Bladezero\View\DynamicComponent;
 use Bladezero\View\Engines\CompilerEngine;
 use Bladezero\View\Engines\EngineResolver;
 use Bladezero\View\Engines\FileEngine;
@@ -12,6 +13,7 @@ use Bladezero\View\Engines\PhpEngine;
 use Bladezero\View\FileViewFinder;
 use Bladezero\View\ViewFinderInterface;
 use Bladezero\View\ViewName;
+use Bladezero\View\View;
 use InvalidArgumentException;
 use Tightenco\Collect\Contracts\Support\Arrayable;
 use Tightenco\Collect\Support\Arr;
@@ -20,12 +22,14 @@ use Tightenco\Collect\Support\Traits\Macroable;
 class Factory
 {
     use Macroable;
-    use View\Concerns\ManagesComponents;
-    use View\Concerns\ManagesLayouts;
-    use View\Concerns\ManagesLoops;
-    use View\Concerns\ManagesStacks;
-    use View\Concerns\ManagesTranslations;
-    use View\Concerns\ProvidesHandlers;
+    use \Bladezero\View\Concerns\ManagesComponents;
+    use \Bladezero\View\Concerns\ManagesLayouts;
+    use \Bladezero\View\Concerns\ManagesLoops;
+    use \Bladezero\View\Concerns\ManagesStacks;
+    use \Bladezero\View\Concerns\ManagesTranslations;
+    use \Bladezero\View\Concerns\ProvidesHandlers;
+
+    private static $componentNamespace = 'App\View\Components\\';
 
     /**
      * @var Filesystem
@@ -40,12 +44,17 @@ class Factory
     /**
      * @var FileViewFinder
      */
-    protected $finder;
+    protected static $finder;
 
     /**
      * @var BladeCompiler
      */
-    protected $bladeCompiler;
+    protected static $bladeCompiler;
+
+    /**
+     * @var string
+     */
+    protected static $compiledPath;
 
     /**
      * Data that should be available to all templates.
@@ -74,6 +83,13 @@ class Factory
     protected $renderCount = 0;
 
     /**
+     * The "once" block IDs that have been rendered.
+     *
+     * @var array
+     */
+    protected $renderedOnce = [];
+
+    /**
      * Blade constructor.
      *
      * @param string|array $viewPath
@@ -85,12 +101,15 @@ class Factory
 
         $this->registerEngines($cachePath);
 
-        $this->finder = new FileViewFinder(
+        static::$finder = new FileViewFinder(
             $this->files,
             Arr::wrap($viewPath)
         );
 
+        static::$compiledPath = $cachePath;
+
         $this->share('__env', $this);
+        $this->component('dynamic-component', DynamicComponent::class);
     }
 
     /**
@@ -120,7 +139,7 @@ class Factory
      */
     public function make($view, $data = [], $mergeData = [])
     {
-        $path = $this->finder->find(
+        $path = static::$finder->find(
             $view = $this->normalizeName($view)
         );
 
@@ -129,7 +148,7 @@ class Factory
         // the caller for rendering or performing other view manipulations on this.
         $data = array_merge($this->getShared(), $mergeData, $this->parseData($data));
 
-        return $this->render($path, $data);
+        return $this->viewInstance($view, $path, $data);
     }
 
     /**
@@ -192,7 +211,7 @@ class Factory
     public function first(array $views, array $data = [], array $mergeData = [])
     {
         $view = Arr::first($views, function ($view) {
-            return $this->exists($view);
+            return self::exists($view);
         });
 
         if (!$view) {
@@ -200,6 +219,20 @@ class Factory
         }
 
         return $this->make($view, $this->parseData($data), $mergeData);
+    }
+
+    /**
+     * Get the rendered content of the view based on the negation of a given condition.
+     *
+     * @param  bool  $condition
+     * @param  string  $view
+     * @param  \Illuminate\Contracts\Support\Arrayable|array  $data
+     * @param  array  $mergeData
+     * @return string
+     */
+    public function renderUnless($condition, $view, $data = [], $mergeData = [])
+    {
+        return $this->renderWhen(! $condition, $view, $data, $mergeData);
     }
 
     /**
@@ -264,10 +297,10 @@ class Factory
      * @param string $view
      * @return bool
      */
-    public function exists($view)
+    public static function exists($view)
     {
         try {
-            $this->finder->find($view);
+            static::$finder->find($view);
         } catch (InvalidArgumentException $e) {
             return false;
         }
@@ -358,6 +391,28 @@ class Factory
     }
 
     /**
+     * Determine if the given once token has been rendered.
+     *
+     * @param  string  $id
+     * @return bool
+     */
+    public function hasRenderedOnce(string $id)
+    {
+        return isset($this->renderedOnce[$id]);
+    }
+
+    /**
+     * Mark the given once token as having been rendered.
+     *
+     * @param  string  $id
+     * @return void
+     */
+    public function markAsRenderedOnce(string $id)
+    {
+        $this->renderedOnce[$id] = true;
+    }
+
+    /**
      * Add a location to the array of view locations.
      *
      * @param string $location
@@ -365,7 +420,7 @@ class Factory
      */
     public function addLocation($location)
     {
-        $this->finder->addLocation($location);
+        static::$finder->addLocation($location);
     }
 
     /**
@@ -377,7 +432,7 @@ class Factory
      */
     public function addNamespace($namespace, $hints)
     {
-        $this->finder->addNamespace($namespace, $hints);
+        static::$finder->addNamespace($namespace, $hints);
 
         return $this;
     }
@@ -391,7 +446,7 @@ class Factory
      */
     public function prependNamespace($namespace, $hints): Factory
     {
-        $this->finder->prependNamespace($namespace, $hints);
+        static::$finder->prependNamespace($namespace, $hints);
 
         return $this;
     }
@@ -405,7 +460,7 @@ class Factory
      */
     public function replaceNamespace($namespace, $hints): Factory
     {
-        $this->finder->replaceNamespace($namespace, $hints);
+        static::$finder->replaceNamespace($namespace, $hints);
 
         return $this;
     }
@@ -419,7 +474,20 @@ class Factory
      */
     public function if($name, callable $callback): void
     {
-        $this->bladeCompiler->if($name, $callback);
+        self::$bladeCompiler->if($name, $callback);
+    }
+
+    /**
+     * Register a class-based component alias directive.
+     *
+     * @param  string  $class
+     * @param  string|null  $alias
+     * @param  string  $prefix
+     * @return void
+     */
+    public function component($class, $alias = null, $prefix = ''): void
+    {
+        self::$bladeCompiler->component($class, $alias, $prefix);
     }
 
     /**
@@ -429,9 +497,9 @@ class Factory
      * @param string|null $alias
      * @return void
      */
-    public function component($path, $alias = null): void
+    public function aliasComponent($path, $alias = null): void
     {
-        $this->bladeCompiler->component($path, $alias);
+        self::$bladeCompiler->aliasComponent($path, $alias);
     }
 
     /**
@@ -443,7 +511,7 @@ class Factory
      */
     public function directive($name, callable $handler): void
     {
-        $this->bladeCompiler->directive($name, $handler);
+        self::$bladeCompiler->directive($name, $handler);
     }
 
     /**
@@ -455,7 +523,7 @@ class Factory
      */
     public function include($path, $alias = null): void
     {
-        $this->bladeCompiler->include($path, $alias);
+        self::$bladeCompiler->include($path, $alias);
     }
 
     /**
@@ -468,7 +536,7 @@ class Factory
      */
     public function addExtension($extension, $engine, $resolver = null): void
     {
-        $this->finder->addExtension($extension);
+        static::$finder->addExtension($extension);
 
         if (isset($resolver)) {
             $this->engines->register($engine, $resolver);
@@ -487,9 +555,11 @@ class Factory
     public function flushState(): void
     {
         $this->renderCount = 0;
+        $this->renderedOnce = [];
 
         $this->flushSections();
         $this->flushStacks();
+        $this->flushComponents();
     }
 
     /**
@@ -529,9 +599,9 @@ class Factory
      *
      * @return BladeCompiler
      */
-    public function getCompiler(): BladeCompiler
+    public static function getCompiler(): BladeCompiler
     {
-        return $this->bladeCompiler;
+        return self::$bladeCompiler;
     }
 
     /**
@@ -541,7 +611,7 @@ class Factory
      */
     public function getFinder(): ViewFinderInterface
     {
-        return $this->finder;
+        return static::$finder;
     }
 
     /**
@@ -562,7 +632,7 @@ class Factory
      */
     public function setFinder(ViewFinderInterface $finder)
     {
-        $this->finder = $finder;
+        static::$finder = $finder;
     }
 
     /**
@@ -620,6 +690,19 @@ class Factory
     }
 
     /**
+     * Create a new view instance from the given arguments.
+     *
+     * @param  string  $view
+     * @param  string  $path
+     * @param  Arrayable|array  $data
+     * @return \Bladezero\View\View
+     */
+    protected function viewInstance($view, $path, $data)
+    {
+        return new View($this, $this->getEngineFromPath($path), $view, $path, $data);
+    }
+
+    /**
      * Register default engines.
      *
      * @param string $cachePath
@@ -628,21 +711,46 @@ class Factory
     {
         $this->engines = new EngineResolver();
 
-        $this->bladeCompiler = new BladeCompiler(
+        self::$bladeCompiler = new BladeCompiler(
             $this->files,
             $cachePath
         );
 
         $this->engines->register('blade', function () {
-            return new CompilerEngine($this->bladeCompiler);
+            return new CompilerEngine(self::$bladeCompiler);
         });
 
         $this->engines->register('php', function () {
-            return new PhpEngine();
+            return new PhpEngine($this->files);
         });
 
         $this->engines->register('file', function () {
-            return new FileEngine();
+            return new FileEngine($this->files);
         });
+    }
+
+    public static function getComponentNamespace()
+    {
+        return static::$componentNamespace;
+    }
+
+    public static function setComponentNamespace(string $namespace)
+    {
+        static::$componentNamespace = $namespace;
+    }
+
+    public static function getFinderStatic()
+    {
+        return static::$finder;
+    }
+
+    public static function getBladeCompilerStatic()
+    {
+        return static::$bladeCompiler;
+    }
+
+    public static function getCompiledPath()
+    {
+        return self::$compiledPath;
     }
 }

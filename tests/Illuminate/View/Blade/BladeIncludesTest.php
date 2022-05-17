@@ -28,6 +28,12 @@ class BladeIncludesTest extends AbstractBladeTestCase
         $this->assertSame('<?php echo $__env->renderWhen(true, \'foo\', \Tightenco\Collect\Support\Arr::except(get_defined_vars(), [\'__data\', \'__path\'])); ?>', $this->compiler->compileString('@includeWhen(true, \'foo\')'));
     }
 
+    public function testIncludeUnlessesAreCompiled()
+    {
+        $this->assertSame('<?php echo $__env->renderUnless(true, \'foo\', ["foo" => "bar"], \Tightenco\Collect\Support\Arr::except(get_defined_vars(), [\'__data\', \'__path\'])); ?>', $this->compiler->compileString('@includeUnless(true, \'foo\', ["foo" => "bar"])'));
+        $this->assertSame('<?php echo $__env->renderUnless($undefined ?? true, \'foo\', \Tightenco\Collect\Support\Arr::except(get_defined_vars(), [\'__data\', \'__path\'])); ?>', $this->compiler->compileString('@includeUnless($undefined ?? true, \'foo\')'));
+    }
+
     public function testIncludeFirstsAreCompiled()
     {
         $this->assertSame('<?php echo $__env->first(["one", "two"], \Tightenco\Collect\Support\Arr::except(get_defined_vars(), [\'__data\', \'__path\'])); ?>', $this->compiler->compileString('@includeFirst(["one", "two"])'));

@@ -55,12 +55,25 @@ class BladeTest extends AbstractBladeTestCase
 
     public function testComponentAliasing()
     {
-        $this->compiler->component('components.alert', 'alert');
+        $this->compiler->aliasComponent('components.alert', 'alert');
 
         $this->assertEquals(
             'title<div>foo</div>',
             $this->getCompiled('general.components')
         );
+    }
+
+    public function testAutoBladeXRegistration()
+    {
+        $this->assertEquals(
+            'blade x title<div>foo</div>',
+            $this->getCompiled('general.bladex')
+        );
+    }
+
+    public function testBladeXClassResgistration()
+    {
+        $this->markTestSkipped();
     }
 
     public function testCustomDirectives()

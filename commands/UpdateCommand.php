@@ -2,6 +2,7 @@
 
 namespace Bladezero\Commands;
 
+use Bladezero\Tests\Illuminate\Support\StringableObjectStub;
 use Curl\Curl;
 use Curl\MultiCurl;
 use Symfony\Component\Console\Command\Command;
@@ -23,21 +24,31 @@ class UpdateCommand extends Command
         '/View/ViewFileViewFinderTest.php',
         '/View/ViewEngineResolverTest.php',
         '/Support/SupportPluralizerTest.php',
+        '/Support/SupportStringableTest.php',
     ];
 
     const SUPPORT_FILES = [
         '/Support/Str.php',
         '/Support/Pluralizer.php',
         '/Support/HigherOrderTapProxy.php',
+        '/Support/Stringable.php',
+        '/Support/HtmlString.php',
+        '/Support/Optional.php',
+        '/Collections/Enumerable.php',
+        '/Support/Reflector.php',
+        '/Support/Traits/Conditionable.php',
+        '/Support/Traits/ReflectsClosures.php',
     ];
 
     const VIEW_FILES = [
         '/View/Compilers/BladeCompiler.php',
         '/View/Compilers/Compiler.php',
+        '/View/Compilers/ComponentTagCompiler.php',
         '/View/Compilers/CompilerInterface.php',
         '/View/Compilers/Concerns/CompilesAuthorizations.php',
         '/View/Compilers/Concerns/CompilesComments.php',
         '/View/Compilers/Concerns/CompilesAuthorizations.php',
+        '/View/Compilers/Concerns/CompilesClasses.php',
         '/View/Compilers/Concerns/CompilesConditionals.php',
         '/View/Compilers/Concerns/CompilesEchos.php',
         '/View/Compilers/Concerns/CompilesErrors.php',
@@ -45,22 +56,40 @@ class UpdateCommand extends Command
         '/View/Compilers/Concerns/CompilesIncludes.php',
         '/View/Compilers/Concerns/CompilesInjections.php',
         '/View/Compilers/Concerns/CompilesJson.php',
+        '/View/Compilers/Concerns/CompilesJs.php',
         '/View/Compilers/Concerns/CompilesLayouts.php',
         '/View/Compilers/Concerns/CompilesLoops.php',
         '/View/Compilers/Concerns/CompilesRawPhp.php',
         '/View/Compilers/Concerns/CompilesStacks.php',
         '/View/Compilers/Concerns/CompilesTranslations.php',
+        '/View/Compilers/Concerns/CompilesComponents.php',
         '/View/Concerns/ManagesComponents.php',
         '/View/Concerns/ManagesEvents.php',
         '/View/Concerns/ManagesLayouts.php',
         '/View/Concerns/ManagesLoops.php',
         '/View/Concerns/ManagesStacks.php',
         '/View/Concerns/ManagesTranslations.php',
+        '/View/Concerns/ManagesComponents.php',
         '/View/Engines/CompilerEngine.php',
         '/View/Engines/Engine.php',
         '/View/Engines/EngineResolver.php',
         '/View/Engines/FileEngine.php',
         '/View/Engines/PhpEngine.php',
+        '/View/Compilers/ComponentTagCompiler.php',
+        '/View/AppendableAttributeValue.php',
+        '/View/Component.php',
+        '/View/DynamicComponent.php',
+        '/View/ComponentSlot.php',
+        '/View/AnonymousComponent.php',
+        '/View/InvokableComponentVariable.php',
+        '/View/ComponentAttributeBag.php',
+        '/View/ViewException.php',
+        '/View/View.php',
+        '/Contracts/View/View.php',
+        '/Contracts/Support/MessageProvider.php',
+        '/Contracts/Support/DeferringDisplayableValue.php',
+        '/Contracts/Support/Renderable.php',
+        '/Contracts/Support/CanBeEscapedWhenCastToString.php',
     ];
 
     const FS_FILES = [
@@ -169,7 +198,7 @@ class UpdateCommand extends Command
             $crawler = new Crawler($curl->response);
 
             $links = $crawler
-                ->filter('.files a.js-navigation-open')
+                ->filter('.js-details-container a.js-navigation-open')
                 ->each(function (Crawler $node) {
                     if (\strpos($node->attr('title'), '.php') === false) {
                         return false;
@@ -270,11 +299,21 @@ class UpdateCommand extends Command
             'Illuminate\\' => 'Bladezero\\',
             'Bladezero\\Tests\\' => 'Bladezero\\Tests\\Illuminate\\',
             '\\Bladezero\\Support\\Collection' => '\\Tightenco\\Collect\\Support\\Collection',
-            'Bladezero\\Support\\HtmlString' => 'Tightenco\\Collect\\Support\\HtmlString',
-            'Bladezero\\Contracts\\Support\\Arrayable' => 'Tightenco\\Collect\\Support\\Arrayable',
+            'use Bladezero\\Support\\Collection' => 'use Tightenco\\Collect\\Support\\Collection',
+            //'Bladezero\\Support\\HtmlString' => 'Tightenco\\Collect\\Support\\HtmlString',
+            'Bladezero\\Contracts\\Support\\Arrayable' => 'Tightenco\\Collect\\Contracts\\Support\\Arrayable',
             'Bladezero\\Support\\Traits\\Macroable' => 'Tightenco\\Collect\\Support\\Traits\\Macroable',
+            'Bladezero\\Support\\Traits\\Tappable' => 'Tightenco\\Collect\\Support\\Traits\\Tappable',
             '\\Tightenco\\Collect\\Support\\Arr::last' => 'Arr::last',
             'Bladezero\\View\\Factory' => 'Bladezero\\Factory',
+            'new StringableObjectStub' => 'new \\Bladezero\\Tests\\Stubs\\StringableObjectStub',
+            'use Bladezero\\Contracts\\View\\Factory;' => 'use Bladezero\\Factory;',
+            'use Bladezero\Container\Container;' => '',
+            '$viewFactory = Container::getInstance()->make(Factory::class);' => '',
+            '$viewFactory->exists' => 'Factory::exists',
+            '__construct(Factory $' => '__construct(\\BladeZero\\Factory $',
+            '$this->factory->callComposer($this);' => '',
+            //'$componentNamespace = \'Blade\\Components\';' => '$componentNamespace = \'App\\View\\Components\\\';',
 
             // Compiler amends
             '\Tightenco\Collect\Support\Arr::except(get_defined_vars(), [\'__data\', \'__path\']))->render()' => '\Tightenco\Collect\Support\Arr::except(get_defined_vars(), [\'__data\', \'__path\']))',
@@ -313,11 +352,83 @@ class UpdateCommand extends Command
             'app(\\\\Unseenco\\\Blade\\\\Contracts\\\\Auth\\\\Access\\\\Gate::class)->any(' => '$__env->canAnyHandler(',
             'app(\\\\Unseenco\\\Blade\\\\Contracts\\\\Auth\\\\Access\\\\Gate::class)->denies(' => '! $__env->canHandler(',
 
+
+            // tests
+            '$this->mockViewFactory();' => '',
+            'Container::setInstance(null);' => '',
+            '$container = new Container;' => '',
+            '$container->instance(Application::class, $app = Mockery::mock(Application::class));' => '',
+            '$app->shouldReceive(\'getNamespace\')->andReturn(\'App\\\\\');' => '',
+            'Container::setInstance($container);' => '',
+            '$container->instance(Factory::class, $factory = Mockery::mock(Factory::class));' => '',
+            '$factory->shouldReceive(\'exists\')->andReturn(true);' => '',
+            '$factory->shouldReceive(\'exists\')->andReturn(false, true);' => '$result = $this->compiler()->compileTags(\'<x-anonymous-component-index :name="\\\'Taylor\\\'" :age="31" wire:model="foo" />\');',
+            'return new ComponentTagCompiler(' => '$factory = new Factory(__DIR__ . \'../../../../Bladezero/fixtures/files\', __DIR__ . \'../../../../Bladezero/fixtures/cache\');' . "\n". 'return new ComponentTagCompiler(',
+            '$result = $this->compiler()->compileTags(\'<x-anonymous-component-index :name="\\\'Taylor\\\'" :age="31" wire:model="foo" />\');
+        
+
+        $result = $this->compiler()->compileTags(\'<x-anonymous-component :name="\\\'Taylor\\\'" :age="31" wire:model="foo" />\');' => '$result = $this->compiler()->compileTags(\'<x-anonymous-component-index :name="\\\'Taylor\\\'" :age="31" wire:model="foo" />\');',
+            '\'anonymous-component\', [\'view\' => \'components.anonymous-component.index' => '\'anonymous-component-index\', [\'view\' => \'components.anonymous-component-index.index',
+            'public function testPackagesClasslessComponents()
+    {' => 'public function testPackagesClasslessComponents()
+    {' . "\n" . '        $this->markTestSkipped(\'We do not suport packages\');',
+            '$model = new class extends Model {};' => '',
+            '$this->assertSame($model, BladeCompiler::sanitizeComponentAttribute($model));' => '',
+            '$factory->shouldReceive(\'exists\')->andReturn(false);' => '',
+            'public function testItThrowsAnExceptionForNonExistingClass()
+    {' => 'public function testItThrowsAnExceptionForNonExistingClass()
+    {'. "\n" . '        $this->markTestSkipped();',
+            '$component = $__env->getContainer()->make(Test::class, ["foo" => "bar"]); ?>' => '$componentData = ["foo" => "bar"]; $component = new Test::class($componentData[\\\'view\\\'], ($componentData[\\\'data\\\'] ?: [])); ?>',
+
+
+            //components
+            '$namespace = Container::getInstance()
+                    ->make(Application::class)
+                    ->getNamespace();' . "\n" => '',
+            '$factory = Container::getInstance()->make(\'view\');'."\n" => '',
+            "\$namespace.'View\\\\Components\\\\'" => '\\Bladezero\\Factory::getComponentNamespace()',
+            'Container::getInstance()->make(Factory::class)
+                    ->exists' => '\\Bladezero\\Factory::exists',
+            '$factory->exists' => '\\Bladezero\\Factory::exists',
+            '$this->createBladeViewFromString($factory' => '$this->createBladeViewFromString(null',
+            'Bladezero\\Contracts\\Support\\Htmlable' => 'Tightenco\\Collect\\Contracts\\Support\\Htmlable',
+            'return $this->make($view, $this->componentData())->render();' => 'return $this->make($view, $this->componentData());',
+            "<?php \$component = \$__env->getContainer()->make('.Str::finish(\$component, '::class').', '.(\$data ?: '[]').'); ?>" => "<?php \$componentData = '.\$data.'; \$component = new '.\$component.'('. \$params .'); ?>",
+            "public static function compileClassComponentOpening(string \$component, string \$alias, string \$data, string \$hash)
+    {" => "public static function compileClassComponentOpening(string \$component, string \$alias, string \$data, string \$hash)
+    {
+        if (\$component === 'Bladezero\View\AnonymousComponent') {
+            \$params = '\$componentData[\'view\'], (\$componentData[\'data\'] ?: [])';
+        } elseif (\$component === 'Bladezero\View\DynamicComponent') {
+            \$params = '\$componentData[\'component\']';
+        }  elseif (class_exists(\$component) && is_subclass_of(\$component, \Bladezero\View\Component::class)) {
+            \$params = '...' . (\$data ?: '[]');
+        } else {
+            \$params = (\$data ?: '[]');
+        }",
+
+            // dynamic component fixes
+            '$view = value($view, $data);' => '$view = $view instanceof \Closure ? $view($data) : value($view, $data);',
+            '$factory->addNamespace(
+            \'__components\',
+            $directory = Container::getInstance()[\'config\']->get(\'view.compiled\')
+        );' => '\\Bladezero\\Factory::getFinderStatic()->addNamespace(
+	        \'__components\',
+	        $directory = \\Bladezero\\Factory::getCompiledPath()
+        );',
+            'app(\'blade.compiler\')' => '\\Bladezero\\Factory::getCompiler()',
+
             // inject rewrites
             'app(\'{$service}\')' => '\$__env->injectHandler(\'{$service}\')',
+            'app({$service})' => '\$__env->injectHandler({$service})',
+            'app(\'SomeNamespace\\SomeClass\')' => '\$__env->injectHandler(\'SomeNamespace\\SomeClass\')',
+            'app("SomeNamespace\\SomeClass")' => '$__env->injectHandler("SomeNamespace\\SomeClass")',
+            'app(SomeNamespace\\SomeClass::class)' => '\$__env->injectHandler(SomeNamespace\\SomeClass::class)',
+            'Container::getInstance()->make(\'blade.compiler\')' => '\\Bladezero\\Factory::getBladeCompilerStatic()',
 
             'use Symfony\Component\Debug\Exception\FatalThrowableError;' => '',
             'FatalThrowableError' => 'Exception',
+            'PHP_EOL' => '"\n"',
         ];
 
         return \str_replace(array_keys($rewrites), \array_values($rewrites), $response);

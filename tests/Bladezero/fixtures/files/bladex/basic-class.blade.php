@@ -1,0 +1,1 @@
+<x-basic :type="$type" />

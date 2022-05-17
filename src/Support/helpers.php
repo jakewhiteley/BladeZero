@@ -1,6 +1,10 @@
 <?php
 
 use Bladezero\Support\HigherOrderTapProxy;
+use Bladezero\Support\HtmlString;
+use Bladezero\Support\Optional;
+use Tightenco\Collect\Contracts\Support\Htmlable;
+
 
 if (!function_exists('last')) {
     /**
@@ -15,17 +19,21 @@ if (!function_exists('last')) {
     }
 }
 
-if (!function_exists('e')) {
+if (! function_exists('e')) {
     /**
      * Encode HTML special characters in a string.
      *
-     * @param string $value
-     * @param bool   $doubleEncode
+     * @param  \Tightenco\Collect\Contracts\Support\Htmlable|string|null  $value
+     * @param  bool  $doubleEncode
      * @return string
      */
     function e($value, $doubleEncode = true)
     {
-        return htmlspecialchars($value, ENT_QUOTES, 'UTF-8', $doubleEncode);
+        if ($value instanceof Htmlable) {
+            return $value->toHtml();
+        }
+
+        return htmlspecialchars($value ?? '', ENT_QUOTES, 'UTF-8', $doubleEncode);
     }
 }
 
@@ -54,10 +62,41 @@ if (! function_exists('method_field')) {
      * Generate a form field to spoof the HTTP verb used by forms.
      *
      * @param  string  $method
-     * @return \Tightenco\Collect\Support\HtmlString
+     * @return HtmlString
      */
     function method_field($method)
     {
-        return new Tightenco\Collect\Support\HtmlString('<input type="hidden" name="_method" value="'.$method.'">');
+        return new HtmlString('<input type="hidden" name="_method" value="'.$method.'">');
+    }
+}
+
+if (! function_exists('optional')) {
+    /**
+     * Provide access to optional objects.
+     *
+     * @param  mixed  $value
+     * @param  callable|null  $callback
+     * @return mixed
+     */
+    function optional($value = null, callable $callback = null)
+    {
+        if (is_null($callback)) {
+            return new Optional($value);
+        } elseif (! is_null($value)) {
+            return $callback($value);
+        }
+    }
+}
+
+if (! function_exists('value')) {
+    /**
+     * Return the default value of the given value.
+     *
+     * @param  mixed  $value
+     * @return mixed
+     */
+    function value($value, ...$args)
+    {
+        return $value instanceof Closure ? $value(...$args) : $value;
     }
 }

@@ -16,9 +16,11 @@ abstract class AbstractBladeTestCase extends TestCase
     protected function setUp(): void
     {
         $this->compiler = new Factory(
-            dirname(__FILE__) . '/fixtures/files',
-            dirname(__FILE__) . '/fixtures/cache'
+            __DIR__ . '/fixtures/files',
+            __DIR__ . '/fixtures/cache'
         );
+
+        Factory::setComponentNamespace('\\Bladezero\\Tests\\Bladezero\\Components\\');
 
         parent::setUp();
     }
@@ -28,8 +30,8 @@ abstract class AbstractBladeTestCase extends TestCase
         $fs = new Filesystem();
 
         // clean cached files
-        $fs->remove(dirname(__FILE__) . '/fixtures/cache/');
-        $fs->mkdir(dirname(__FILE__) . '/fixtures/cache/');
+       $fs->remove(__DIR__ . '/fixtures/cache/');
+       $fs->mkdir(__DIR__ . '/fixtures/cache/');
 
         parent::tearDown();
     }

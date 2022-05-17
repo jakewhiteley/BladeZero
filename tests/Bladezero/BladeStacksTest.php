@@ -11,4 +11,12 @@ class BladeStacksTest extends AbstractBladeTestCase
             $this->getCompiled('stacks.stack')
         );
     }
+
+    public function testOnceDirective()
+    {
+        $this->assertEquals(
+            'first',
+            $this->getCompiled('stacks.once')
+        );
+    }
 }

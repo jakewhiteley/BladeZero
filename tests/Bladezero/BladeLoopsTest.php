@@ -70,6 +70,14 @@ class BladeLoopsTest extends AbstractBladeTestCase
         );
     }
 
+    public function testLoopVariable()
+    {
+        $this->assertEquals(
+            '10 2 1 odd first 10 2 1 even last',
+            $this->getCompiled('loops.loop', ['data' => ['a', 'b']])
+        );
+    }
+
     public function emptyProvider()
     {
         return [
