@@ -5,6 +5,7 @@ namespace Bladezero;
 use Bladezero\Filesystem\Filesystem;
 use Bladezero\Support\Str;
 use Bladezero\View\Compilers\BladeCompiler;
+use Bladezero\View\DynamicComponent;
 use Bladezero\View\Engines\CompilerEngine;
 use Bladezero\View\Engines\EngineResolver;
 use Bladezero\View\Engines\FileEngine;
@@ -48,7 +49,12 @@ class Factory
     /**
      * @var BladeCompiler
      */
-    protected $bladeCompiler;
+    protected static $bladeCompiler;
+
+    /**
+     * @var string
+     */
+    protected static $compiledPath;
 
     /**
      * Data that should be available to all templates.
@@ -77,6 +83,13 @@ class Factory
     protected $renderCount = 0;
 
     /**
+     * The "once" block IDs that have been rendered.
+     *
+     * @var array
+     */
+    protected $renderedOnce = [];
+
+    /**
      * Blade constructor.
      *
      * @param string|array $viewPath
@@ -93,7 +106,10 @@ class Factory
             Arr::wrap($viewPath)
         );
 
+        static::$compiledPath = $cachePath;
+
         $this->share('__env', $this);
+        $this->component('dynamic-component', DynamicComponent::class);
     }
 
     /**
@@ -203,6 +219,20 @@ class Factory
         }
 
         return $this->make($view, $this->parseData($data), $mergeData);
+    }
+
+    /**
+     * Get the rendered content of the view based on the negation of a given condition.
+     *
+     * @param  bool  $condition
+     * @param  string  $view
+     * @param  \Illuminate\Contracts\Support\Arrayable|array  $data
+     * @param  array  $mergeData
+     * @return string
+     */
+    public function renderUnless($condition, $view, $data = [], $mergeData = [])
+    {
+        return $this->renderWhen(! $condition, $view, $data, $mergeData);
     }
 
     /**
@@ -361,6 +391,28 @@ class Factory
     }
 
     /**
+     * Determine if the given once token has been rendered.
+     *
+     * @param  string  $id
+     * @return bool
+     */
+    public function hasRenderedOnce(string $id)
+    {
+        return isset($this->renderedOnce[$id]);
+    }
+
+    /**
+     * Mark the given once token as having been rendered.
+     *
+     * @param  string  $id
+     * @return void
+     */
+    public function markAsRenderedOnce(string $id)
+    {
+        $this->renderedOnce[$id] = true;
+    }
+
+    /**
      * Add a location to the array of view locations.
      *
      * @param string $location
@@ -422,7 +474,7 @@ class Factory
      */
     public function if($name, callable $callback): void
     {
-        $this->bladeCompiler->if($name, $callback);
+        self::$bladeCompiler->if($name, $callback);
     }
 
     /**
@@ -435,7 +487,7 @@ class Factory
      */
     public function component($class, $alias = null, $prefix = ''): void
     {
-        $this->bladeCompiler->component($class, $alias, $prefix);
+        self::$bladeCompiler->component($class, $alias, $prefix);
     }
 
     /**
@@ -447,7 +499,7 @@ class Factory
      */
     public function aliasComponent($path, $alias = null): void
     {
-        $this->bladeCompiler->aliasComponent($path, $alias);
+        self::$bladeCompiler->aliasComponent($path, $alias);
     }
 
     /**
@@ -459,7 +511,7 @@ class Factory
      */
     public function directive($name, callable $handler): void
     {
-        $this->bladeCompiler->directive($name, $handler);
+        self::$bladeCompiler->directive($name, $handler);
     }
 
     /**
@@ -471,7 +523,7 @@ class Factory
      */
     public function include($path, $alias = null): void
     {
-        $this->bladeCompiler->include($path, $alias);
+        self::$bladeCompiler->include($path, $alias);
     }
 
     /**
@@ -503,9 +555,11 @@ class Factory
     public function flushState(): void
     {
         $this->renderCount = 0;
+        $this->renderedOnce = [];
 
         $this->flushSections();
         $this->flushStacks();
+        $this->flushComponents();
     }
 
     /**
@@ -545,9 +599,9 @@ class Factory
      *
      * @return BladeCompiler
      */
-    public function getCompiler(): BladeCompiler
+    public static function getCompiler(): BladeCompiler
     {
-        return $this->bladeCompiler;
+        return self::$bladeCompiler;
     }
 
     /**
@@ -657,21 +711,21 @@ class Factory
     {
         $this->engines = new EngineResolver();
 
-        $this->bladeCompiler = new BladeCompiler(
+        self::$bladeCompiler = new BladeCompiler(
             $this->files,
             $cachePath
         );
 
         $this->engines->register('blade', function () {
-            return new CompilerEngine($this->bladeCompiler);
+            return new CompilerEngine(self::$bladeCompiler);
         });
 
         $this->engines->register('php', function () {
-            return new PhpEngine();
+            return new PhpEngine($this->files);
         });
 
         $this->engines->register('file', function () {
-            return new FileEngine();
+            return new FileEngine($this->files);
         });
     }
 
@@ -690,4 +744,13 @@ class Factory
         return static::$finder;
     }
 
+    public static function getBladeCompilerStatic()
+    {
+        return static::$bladeCompiler;
+    }
+
+    public static function getCompiledPath()
+    {
+        return self::$compiledPath;
+    }
 }

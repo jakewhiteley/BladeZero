@@ -101,6 +101,22 @@ class BladeConditionalsTest extends AbstractBladeTestCase
         );
     }
 
+    public function testClassDirective()
+    {
+        $this->assertEquals(
+            '<div class="foo bar">content</div>',
+            $this->getCompiled('conditionals.class', ['foo' => true, 'bar' => 'bar', 'foobar' => false])
+        );
+    }
+
+    public function testSectionMissingDirective()
+    {
+        $this->assertEquals(
+            'has no foo passed',
+            $this->getCompiled('conditionals.sectionmissing')
+        );
+    }
+
     public function testAuthDirective()
     {
         $this->assertEquals(

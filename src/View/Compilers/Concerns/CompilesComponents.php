@@ -62,9 +62,18 @@ trait CompilesComponents
      */
     public static function compileClassComponentOpening(string $component, string $alias, string $data, string $hash)
     {
+        if ($component === 'Bladezero\View\AnonymousComponent') {
+            $params = '$componentData[\'view\'], ($componentData[\'data\'] ?: [])';
+        } elseif ($component === 'Bladezero\View\DynamicComponent') {
+            $params = '$componentData[\'component\']';
+        }  elseif (class_exists($component) && is_subclass_of($component, \Bladezero\View\Component::class)) {
+            $params = '...' . ($data ?: '[]');
+        } else {
+            $params = ($data ?: '[]');
+        }
         return implode("\n", [
             '<?php if (isset($component)) { $__componentOriginal'.$hash.' = $component; } ?>',
-            '<?php $componentData = '.$data.'; $component = new '.$component.'($componentData[\'view\'], ($componentData[\'data\'] ?: [])); ?>',
+            '<?php $componentData = '.$data.'; $component = new '.$component.'('. $params .'); ?>',
             '<?php $component->withName('.$alias.'); ?>',
             '<?php if ($component->shouldRender()): ?>',
             '<?php $__env->startComponent($component->resolveView(), $component->data()); ?>',

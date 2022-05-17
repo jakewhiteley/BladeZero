@@ -130,7 +130,7 @@ trait CompilesEchos
      */
     protected function addBladeCompilerVariable($result)
     {
-        return "<?php \$__bladeCompiler = app('blade.compiler'); ?>".$result;
+        return "<?php \$__bladeCompiler = \Bladezero\Factory::getCompiler(); ?>".$result;
     }
 
     /**

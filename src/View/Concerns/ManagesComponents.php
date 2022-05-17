@@ -94,7 +94,7 @@ trait ManagesComponents
         );
 
         try {
-            $view = value($view, $data);
+            $view = $view instanceof \Closure ? $view($data) : value($view, $data);
 
             if ($view instanceof View) {
                 return $view->with($data)->render();

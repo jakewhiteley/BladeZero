@@ -34,6 +34,8 @@ class UpdateCommand extends Command
         '/Support/Stringable.php',
         '/Support/HtmlString.php',
         '/Support/Optional.php',
+        '/Collections/Enumerable.php',
+        '/Support/Reflector.php',
         '/Support/Traits/Conditionable.php',
         '/Support/Traits/ReflectsClosures.php',
     ];
@@ -74,16 +76,20 @@ class UpdateCommand extends Command
         '/View/Engines/FileEngine.php',
         '/View/Engines/PhpEngine.php',
         '/View/Compilers/ComponentTagCompiler.php',
+        '/View/AppendableAttributeValue.php',
         '/View/Component.php',
+        '/View/DynamicComponent.php',
         '/View/ComponentSlot.php',
         '/View/AnonymousComponent.php',
+        '/View/InvokableComponentVariable.php',
         '/View/ComponentAttributeBag.php',
         '/View/ViewException.php',
         '/View/View.php',
         '/Contracts/View/View.php',
         '/Contracts/Support/MessageProvider.php',
+        '/Contracts/Support/DeferringDisplayableValue.php',
         '/Contracts/Support/Renderable.php',
-
+        '/Contracts/Support/CanBeEscapedWhenCastToString.php',
     ];
 
     const FS_FILES = [
@@ -372,6 +378,7 @@ class UpdateCommand extends Command
             'public function testItThrowsAnExceptionForNonExistingClass()
     {' => 'public function testItThrowsAnExceptionForNonExistingClass()
     {'. "\n" . '        $this->markTestSkipped();',
+            '$component = $__env->getContainer()->make(Test::class, ["foo" => "bar"]); ?>' => '$componentData = ["foo" => "bar"]; $component = new Test::class($componentData[\\\'view\\\'], ($componentData[\\\'data\\\'] ?: [])); ?>',
 
 
             //components
@@ -381,15 +388,43 @@ class UpdateCommand extends Command
             '$factory = Container::getInstance()->make(\'view\');'."\n" => '',
             "\$namespace.'View\\\\Components\\\\'" => '\\Bladezero\\Factory::getComponentNamespace()',
             'Container::getInstance()->make(Factory::class)
-                    ->exists' => '\\Bladezero\\Factory::getFinderStatic()->find',
-            '$factory->exists' => '\\Bladezero\\Factory::getFinderStatic()->find',
+                    ->exists' => '\\Bladezero\\Factory::exists',
+            '$factory->exists' => '\\Bladezero\\Factory::exists',
             '$this->createBladeViewFromString($factory' => '$this->createBladeViewFromString(null',
             'Bladezero\\Contracts\\Support\\Htmlable' => 'Tightenco\\Collect\\Contracts\\Support\\Htmlable',
             'return $this->make($view, $this->componentData())->render();' => 'return $this->make($view, $this->componentData());',
-            "<?php \$component = \$__env->getContainer()->make('.Str::finish(\$component, '::class').', '.(\$data ?: '[]').'); ?>" => "<?php \$componentData = '.\$data.'; \$component = new '.\$component.'(\$componentData[\'view\'], (\$componentData[\'data\'] ?: [])); ?>",
+            "<?php \$component = \$__env->getContainer()->make('.Str::finish(\$component, '::class').', '.(\$data ?: '[]').'); ?>" => "<?php \$componentData = '.\$data.'; \$component = new '.\$component.'('. \$params .'); ?>",
+            "public static function compileClassComponentOpening(string \$component, string \$alias, string \$data, string \$hash)
+    {" => "public static function compileClassComponentOpening(string \$component, string \$alias, string \$data, string \$hash)
+    {
+        if (\$component === 'Bladezero\View\AnonymousComponent') {
+            \$params = '\$componentData[\'view\'], (\$componentData[\'data\'] ?: [])';
+        } elseif (\$component === 'Bladezero\View\DynamicComponent') {
+            \$params = '\$componentData[\'component\']';
+        }  elseif (class_exists(\$component) && is_subclass_of(\$component, \Bladezero\View\Component::class)) {
+            \$params = '...' . (\$data ?: '[]');
+        } else {
+            \$params = (\$data ?: '[]');
+        }",
+
+            // dynamic component fixes
+            '$view = value($view, $data);' => '$view = $view instanceof \Closure ? $view($data) : value($view, $data);',
+            '$factory->addNamespace(
+            \'__components\',
+            $directory = Container::getInstance()[\'config\']->get(\'view.compiled\')
+        );' => '\\Bladezero\\Factory::getFinderStatic()->addNamespace(
+	        \'__components\',
+	        $directory = \\Bladezero\\Factory::getCompiledPath()
+        );',
+            'app(\'blade.compiler\')' => '\\Bladezero\\Factory::getCompiler()',
 
             // inject rewrites
             'app(\'{$service}\')' => '\$__env->injectHandler(\'{$service}\')',
+            'app({$service})' => '\$__env->injectHandler({$service})',
+            'app(\'SomeNamespace\\SomeClass\')' => '\$__env->injectHandler(\'SomeNamespace\\SomeClass\')',
+            'app("SomeNamespace\\SomeClass")' => '$__env->injectHandler("SomeNamespace\\SomeClass")',
+            'app(SomeNamespace\\SomeClass::class)' => '\$__env->injectHandler(SomeNamespace\\SomeClass::class)',
+            'Container::getInstance()->make(\'blade.compiler\')' => '\\Bladezero\\Factory::getBladeCompilerStatic()',
 
             'use Symfony\Component\Debug\Exception\FatalThrowableError;' => '',
             'FatalThrowableError' => 'Exception',

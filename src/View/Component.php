@@ -74,7 +74,7 @@ abstract class Component
 
         $resolver = function ($view) {
             
-            return \Bladezero\Factory::getFinderStatic()->find($view)
+            return strlen($view) <= PHP_MAXPATHLEN && \Bladezero\Factory::exists($view)
                         ? $view
                         : $this->createBladeViewFromString(null, $view);
         };
@@ -94,9 +94,9 @@ abstract class Component
      */
     protected function createBladeViewFromString($factory, $contents)
     {
-        $factory->addNamespace(
-            '__components',
-            $directory = Container::getInstance()['config']->get('view.compiled')
+        \Bladezero\Factory::getFinderStatic()->addNamespace(
+	        '__components',
+	        $directory = \Bladezero\Factory::getCompiledPath()
         );
 
         if (! is_file($viewFile = $directory.'/'.sha1($contents).'.blade.php')) {
