@@ -6,7 +6,7 @@ use ErrorException;
 use FilesystemIterator;
 use Bladezero\Contracts\Filesystem\FileNotFoundException;
 use Bladezero\Support\LazyCollection;
-use Tightenco\Collect\Support\Traits\Macroable;
+use \Illuminate\Support\Traits\Macroable;
 use RuntimeException;
 use SplFileObject;
 use Symfony\Component\Filesystem\Filesystem as SymfonyFilesystem;

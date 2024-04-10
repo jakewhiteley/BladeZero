@@ -4,8 +4,8 @@ namespace Bladezero\Support;
 
 use Closure;
 use Bladezero\Support\Traits\Conditionable;
-use Tightenco\Collect\Support\Traits\Macroable;
-use Tightenco\Collect\Support\Traits\Tappable;
+use \Illuminate\Support\Traits\Macroable;
+use Bladezero\Support\Traits\Tappable;
 use JsonSerializable;
 use Symfony\Component\VarDumper\VarDumper;
 
@@ -200,7 +200,7 @@ class Stringable implements JsonSerializable
      *
      * @param  string  $delimiter
      * @param  int  $limit
-     * @return \Tightenco\Collect\Support\Collection
+     * @return \Illuminate\Support\Collection
      */
     public function explode($delimiter, $limit = PHP_INT_MAX)
     {
@@ -213,7 +213,7 @@ class Stringable implements JsonSerializable
      * @param  string|int  $pattern
      * @param  int  $limit
      * @param  int  $flags
-     * @return \Tightenco\Collect\Support\Collection
+     * @return \Illuminate\Support\Collection
      */
     public function split($pattern, $limit = -1, $flags = 0)
     {
@@ -371,7 +371,7 @@ class Stringable implements JsonSerializable
      * Get the string matching the given pattern.
      *
      * @param  string  $pattern
-     * @return \Tightenco\Collect\Support\Collection
+     * @return \Illuminate\Support\Collection
      */
     public function matchAll($pattern)
     {
@@ -582,7 +582,7 @@ class Stringable implements JsonSerializable
      * Parse input from a string to a collection, according to a format.
      *
      * @param  string  $format
-     * @return \Tightenco\Collect\Support\Collection
+     * @return \Illuminate\Support\Collection
      */
     public function scan($format)
     {
@@ -790,7 +790,7 @@ class Stringable implements JsonSerializable
     /**
      * Split a string by uppercase characters.
      *
-     * @return \Tightenco\Collect\Support\Collection
+     * @return \Illuminate\Support\Collection
      */
     public function ucsplit()
     {

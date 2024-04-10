@@ -2,7 +2,7 @@
 
 namespace Bladezero\Tests\Illuminate\Support;
 
-use Tightenco\Collect\Support\Collection;
+use Illuminate\Support\Collection;
 use Bladezero\Support\HtmlString;
 use Bladezero\Support\Stringable;
 use PHPUnit\Framework\TestCase;

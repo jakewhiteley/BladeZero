@@ -2,7 +2,7 @@
 
 namespace Bladezero\Support;
 
-use Tightenco\Collect\Support\Traits\Macroable;
+use \Illuminate\Support\Traits\Macroable;
 use League\CommonMark\GithubFlavoredMarkdownConverter;
 use Ramsey\Uuid\Codec\TimestampFirstCombCodec;
 use Ramsey\Uuid\Generator\CombGenerator;
@@ -264,7 +264,7 @@ class Str
      */
     public static function is($pattern, $value)
     {
-        $patterns = \Tightenco\Collect\Support\Arr::wrap($pattern);
+        $patterns = \Illuminate\Support\Arr::wrap($pattern);
 
         $value = (string) $value;
 
@@ -437,10 +437,18 @@ class Str
             return $string;
         }
 
-        $start = mb_substr($string, 0, mb_strpos($string, $segment, 0, $encoding), $encoding);
-        $end = mb_substr($string, mb_strpos($string, $segment, 0, $encoding) + mb_strlen($segment, $encoding));
+        $strlen = mb_strlen($string, $encoding);
+        $startIndex = $index;
 
-        return $start.str_repeat(mb_substr($character, 0, 1, $encoding), mb_strlen($segment, $encoding)).$end;
+        if ($index < 0) {
+            $startIndex = $index < -$strlen ? 0 : $strlen + $index;
+        }
+
+        $start = mb_substr($string, 0, $startIndex, $encoding);
+        $segmentLen = mb_strlen($segment, $encoding);
+        $end = mb_substr($string, $startIndex + $segmentLen);
+
+        return $start.str_repeat(mb_substr($character, 0, 1, $encoding), $segmentLen).$end;
     }
 
     /**
@@ -466,7 +474,7 @@ class Str
      *
      * @param  string  $pattern
      * @param  string  $subject
-     * @return \Tightenco\Collect\Support\Collection
+     * @return \Illuminate\Support\Collection
      */
     public static function matchAll($pattern, $subject)
     {

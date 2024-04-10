@@ -4,15 +4,15 @@ namespace Bladezero\View;
 
 use ArrayAccess;
 use BadMethodCallException;
-use Tightenco\Collect\Contracts\Support\Arrayable;
-use Tightenco\Collect\Contracts\Support\Htmlable;
+use Bladezero\Contracts\Support\Arrayable;
+use Bladezero\Contracts\Support\Htmlable;
 use Bladezero\Contracts\Support\MessageProvider;
 use Bladezero\Contracts\Support\Renderable;
 use Bladezero\Contracts\View\Engine;
 use Bladezero\Contracts\View\View as ViewContract;
 use Bladezero\Support\MessageBag;
 use Bladezero\Support\Str;
-use Tightenco\Collect\Support\Traits\Macroable;
+use \Illuminate\Support\Traits\Macroable;
 use Bladezero\Support\ViewErrorBag;
 use Throwable;
 

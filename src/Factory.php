@@ -15,9 +15,9 @@ use Bladezero\View\ViewFinderInterface;
 use Bladezero\View\ViewName;
 use Bladezero\View\View;
 use InvalidArgumentException;
-use Tightenco\Collect\Contracts\Support\Arrayable;
-use Tightenco\Collect\Support\Arr;
-use Tightenco\Collect\Support\Traits\Macroable;
+use Illuminate\Contracts\Support\Arrayable;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Traits\Macroable;
 
 class Factory
 {

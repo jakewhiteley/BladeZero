@@ -3,7 +3,7 @@
 namespace Bladezero\Support;
 
 use Countable;
-use Tightenco\Collect\Contracts\Support\Arrayable;
+use Bladezero\Contracts\Support\Arrayable;
 use Bladezero\Contracts\Support\Jsonable;
 use IteratorAggregate;
 use JsonSerializable;
@@ -996,7 +996,7 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
     /**
      * Collect the values into a collection.
      *
-     * @return \Tightenco\Collect\Support\Collection
+     * @return \Illuminate\Support\Collection
      */
     public function collect();
 

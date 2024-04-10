@@ -2,7 +2,7 @@
 
 namespace Bladezero\Support;
 
-use Tightenco\Collect\Contracts\Support\Htmlable;
+use Bladezero\Contracts\Support\Htmlable;
 
 class HtmlString implements Htmlable
 {

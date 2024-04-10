@@ -2,7 +2,7 @@
 
 namespace Bladezero\View;
 
-use Tightenco\Collect\Contracts\Support\Htmlable;
+use Bladezero\Contracts\Support\Htmlable;
 
 class ComponentSlot implements Htmlable
 {

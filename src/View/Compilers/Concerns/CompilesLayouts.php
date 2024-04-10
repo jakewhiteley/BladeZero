@@ -21,7 +21,7 @@ trait CompilesLayouts
     {
         $expression = $this->stripParentheses($expression);
 
-        $echo = "<?php echo \$__env->make({$expression}, \Tightenco\Collect\Support\Arr::except(get_defined_vars(), ['__data', '__path'])); ?>";
+        $echo = "<?php echo \$__env->make({$expression}, \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>";
 
         $this->footer[] = $echo;
 
@@ -38,7 +38,7 @@ trait CompilesLayouts
     {
         $expression = $this->stripParentheses($expression);
 
-        $echo = "<?php echo \$__env->first({$expression}, \Tightenco\Collect\Support\Arr::except(get_defined_vars(), ['__data', '__path'])); ?>";
+        $echo = "<?php echo \$__env->first({$expression}, \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>";
 
         $this->footer[] = $echo;
 

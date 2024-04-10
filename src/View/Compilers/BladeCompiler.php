@@ -3,10 +3,10 @@
 namespace Bladezero\View\Compilers;
 
 
-use Tightenco\Collect\Contracts\Support\Htmlable;
+use Bladezero\Contracts\Support\Htmlable;
 use Bladezero\Contracts\View\Factory as ViewFactory;
 use Bladezero\Contracts\View\View;
-use Tightenco\Collect\Support\Arr;
+use Illuminate\Support\Arr;
 use Bladezero\Support\Str;
 use Bladezero\Support\Traits\ReflectsClosures;
 use Bladezero\View\Component;
@@ -191,7 +191,7 @@ class BladeCompiler extends Compiler implements CompilerInterface
      * Get the open and closing PHP tag tokens from the given string.
      *
      * @param  string  $contents
-     * @return \Tightenco\Collect\Support\Collection
+     * @return \Illuminate\Support\Collection
      */
     protected function getOpenAndClosingPhpTokens($contents)
     {
@@ -507,7 +507,7 @@ class BladeCompiler extends Compiler implements CompilerInterface
         if (Str::contains($match[1], '@')) {
             $match[0] = isset($match[3]) ? $match[1].$match[3] : $match[1];
         } elseif (isset($this->customDirectives[$match[1]])) {
-            $match[0] = $this->callCustomDirective($match[1], \Tightenco\Collect\Support\Arr::get($match, 3));
+            $match[0] = $this->callCustomDirective($match[1], \Illuminate\Support\Arr::get($match, 3));
         } elseif (method_exists($this, $method = 'compile'.ucfirst($match[1]))) {
             $match[0] = $this->$method(Arr::get($match, 3));
         }
@@ -703,7 +703,7 @@ class BladeCompiler extends Compiler implements CompilerInterface
      */
     public function aliasComponent($path, $alias = null)
     {
-        $alias = $alias ?: Arr::last(explode('.', $path));
+        $alias = $alias ?: \Illuminate\Support\Arr::last(explode('.', $path));
 
         $this->directive($alias, function ($expression) use ($path) {
             return $expression
@@ -737,12 +737,12 @@ class BladeCompiler extends Compiler implements CompilerInterface
      */
     public function aliasInclude($path, $alias = null)
     {
-        $alias = $alias ?: Arr::last(explode('.', $path));
+        $alias = $alias ?: \Illuminate\Support\Arr::last(explode('.', $path));
 
         $this->directive($alias, function ($expression) use ($path) {
             $expression = $this->stripParentheses($expression) ?: '[]';
 
-            return "<?php echo \$__env->make('{$path}', {$expression}, \Tightenco\Collect\Support\Arr::except(get_defined_vars(), ['__data', '__path'])); ?>";
+            return "<?php echo \$__env->make('{$path}', {$expression}, \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>";
         });
     }
 
