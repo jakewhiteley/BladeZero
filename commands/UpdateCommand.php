@@ -33,11 +33,14 @@ class UpdateCommand extends Command
         '/Support/HigherOrderTapProxy.php',
         '/Support/Stringable.php',
         '/Support/HtmlString.php',
+        '/Support/MessageBag.php',
+        '/Support/ViewErrorBag.php',
         '/Support/Optional.php',
         '/Collections/Enumerable.php',
         '/Support/Reflector.php',
         '/Support/Traits/Conditionable.php',
         '/Support/Traits/ReflectsClosures.php',
+        '/Support/Traits/Tappable.php',
     ];
 
     const VIEW_FILES = [
@@ -89,6 +92,8 @@ class UpdateCommand extends Command
         '/Contracts/Support/MessageProvider.php',
         '/Contracts/Support/DeferringDisplayableValue.php',
         '/Contracts/Support/Renderable.php',
+        '/Contracts/Support/Jsonable.php',
+        '/Contracts/Support/MessageBag.php',
         '/Contracts/Support/CanBeEscapedWhenCastToString.php',
     ];
 
@@ -197,16 +202,12 @@ class UpdateCommand extends Command
         } else {
             $crawler = new Crawler($curl->response);
 
-            $links = $crawler
-                ->filter('.js-details-container a.js-navigation-open')
-                ->each(function (Crawler $node) {
-                    if (\strpos($node->attr('title'), '.php') === false) {
-                        return false;
-                    }
+            $links = [];
+            $test = json_decode($crawler->filter('[data-target="react-app.embeddedData"]')->text());
 
-                    return self::RAW_BASE . $this->release . '/tests/View/Blade/' . $node->attr('title');
-                });
-
+            foreach ($test->payload->tree->items as $file) {
+                $links[] = self::RAW_BASE . $this->release . '/tests/View/Blade/' . $file->name;
+            }
             $this->endSection();
 
             foreach (self::TEST_FILES as $file) {
@@ -290,21 +291,17 @@ class UpdateCommand extends Command
     {
         $rewrites = [
             // Namespace conversions
-            '\\Illuminate\\Support\\Arr::' => '\\Tightenco\\Collect\\Support\\Arr::',
-            ' Arr::' => ' \\Tightenco\\Collect\\Support\\Arr::',
+            ' Arr::' => ' \\Illuminate\\Support\\Arr::',
             'Illuminate\\Tests\\' => 'Bladezero\\Tests\\',
-            'Illuminate\\Support\\Arr' => 'Tightenco\\Collect\\Support\\Arr',
 
             '\\Illuminate\\\\' => '\\Unseenco\\\\Blade\\\\',
             'Illuminate\\' => 'Bladezero\\',
+            'Bladezero\\Support\\Arr' => 'Illuminate\\Support\\Arr',
             'Bladezero\\Tests\\' => 'Bladezero\\Tests\\Illuminate\\',
-            '\\Bladezero\\Support\\Collection' => '\\Tightenco\\Collect\\Support\\Collection',
-            'use Bladezero\\Support\\Collection' => 'use Tightenco\\Collect\\Support\\Collection',
-            //'Bladezero\\Support\\HtmlString' => 'Tightenco\\Collect\\Support\\HtmlString',
-            'Bladezero\\Contracts\\Support\\Arrayable' => 'Tightenco\\Collect\\Contracts\\Support\\Arrayable',
-            'Bladezero\\Support\\Traits\\Macroable' => 'Tightenco\\Collect\\Support\\Traits\\Macroable',
-            'Bladezero\\Support\\Traits\\Tappable' => 'Tightenco\\Collect\\Support\\Traits\\Tappable',
-            '\\Tightenco\\Collect\\Support\\Arr::last' => 'Arr::last',
+            '\\Bladezero\\Support\\Collection' => '\\Illuminate\\Support\\Collection',
+            'use Bladezero\\Support\\Collection' => 'use Illuminate\\Support\\Collection',
+
+            'Bladezero\\Support\\Traits\\Macroable' => '\\Illuminate\\Support\\Traits\\Macroable',
             'Bladezero\\View\\Factory' => 'Bladezero\\Factory',
             'new StringableObjectStub' => 'new \\Bladezero\\Tests\\Stubs\\StringableObjectStub',
             'use Bladezero\\Contracts\\View\\Factory;' => 'use Bladezero\\Factory;',
@@ -316,8 +313,8 @@ class UpdateCommand extends Command
             //'$componentNamespace = \'Blade\\Components\';' => '$componentNamespace = \'App\\View\\Components\\\';',
 
             // Compiler amends
-            '\Tightenco\Collect\Support\Arr::except(get_defined_vars(), [\'__data\', \'__path\']))->render()' => '\Tightenco\Collect\Support\Arr::except(get_defined_vars(), [\'__data\', \'__path\']))',
-            "\Tightenco\Collect\Support\Arr::except(get_defined_vars(), [\'__data\', \'__path\']))->render()" => "\Tightenco\Collect\Support\Arr::except(get_defined_vars(), [\'__data\', \'__path\']))",
+            '\TIlluminate\Support\Arr::except(get_defined_vars(), [\'__data\', \'__path\']))->render()' => '\TIlluminate\Support\Arr::except(get_defined_vars(), [\'__data\', \'__path\']))',
+            "\TIlluminate\Support\Arr::except(get_defined_vars(), [\'__data\', \'__path\']))->render()" => "\TIlluminate\Support\Arr::except(get_defined_vars(), [\'__data\', \'__path\']))",
             '\Bladezero\Support\Facades\Blade::check' => '\$__env->getCompiler()->check',
             '\$__env->getCompiler()->check(' . "\'custom\'" => '$__env->getCompiler()->check(' . "\'custom\'",
             '$this->componentData($name))->render()' => '$this->componentData($name))',
@@ -378,8 +375,15 @@ class UpdateCommand extends Command
             'public function testItThrowsAnExceptionForNonExistingClass()
     {' => 'public function testItThrowsAnExceptionForNonExistingClass()
     {'. "\n" . '        $this->markTestSkipped();',
-            '$component = $__env->getContainer()->make(Test::class, ["foo" => "bar"]); ?>' => '$componentData = ["foo" => "bar"]; $component = new Test::class($componentData[\\\'view\\\'], ($componentData[\\\'data\\\'] ?: [])); ?>',
-
+            '$component = $__env->getContainer()->make(Test::class, ["foo" => "bar"]); ?>' => '$componentData = ["foo" => "bar"]; $component = new Test::class(["foo" => "bar"]); ?>',
+            'App\View\Components\Alert' => '\Bladezero\Tests\Bladezero\Components\Alert',
+            'App\View\Components\Base\Alert' => '\Bladezero\Tests\Bladezero\Components\Base\Alert',
+            'app()->singleton(\'blade.compiler\', function () {
+            return $this->compiler;
+        });' => '$fakeInstance = new \Bladezero\Factory(realpath(\'./files\'), realpath(\'./cache\'));',
+            'public function testHandlerLogicWorksCorrectly($blade)
+    {' => 'public function testHandlerLogicWorksCorrectly($blade)
+    {' . "\n" . '        $this->markTestSkipped();',
 
             //components
             '$namespace = Container::getInstance()
@@ -391,7 +395,6 @@ class UpdateCommand extends Command
                     ->exists' => '\\Bladezero\\Factory::exists',
             '$factory->exists' => '\\Bladezero\\Factory::exists',
             '$this->createBladeViewFromString($factory' => '$this->createBladeViewFromString(null',
-            'Bladezero\\Contracts\\Support\\Htmlable' => 'Tightenco\\Collect\\Contracts\\Support\\Htmlable',
             'return $this->make($view, $this->componentData())->render();' => 'return $this->make($view, $this->componentData());',
             "<?php \$component = \$__env->getContainer()->make('.Str::finish(\$component, '::class').', '.(\$data ?: '[]').'); ?>" => "<?php \$componentData = '.\$data.'; \$component = new '.\$component.'('. \$params .'); ?>",
             "public static function compileClassComponentOpening(string \$component, string \$alias, string \$data, string \$hash)

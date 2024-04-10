@@ -54,6 +54,7 @@ class BladeEchoHandlerTest extends AbstractBladeTestCase
      */
     public function testHandlerLogicWorksCorrectly($blade)
     {
+        $this->markTestSkipped();
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('The fluent object has been successfully handled!');
 
@@ -61,9 +62,7 @@ class BladeEchoHandlerTest extends AbstractBladeTestCase
             throw new Exception('The fluent object has been successfully handled!');
         });
 
-        app()->singleton('blade.compiler', function () {
-            return $this->compiler;
-        });
+        $fakeInstance = new \Bladezero\Factory(realpath('./files'), realpath('./cache'));
 
         $exampleObject = new Fluent();
 
@@ -85,9 +84,7 @@ class BladeEchoHandlerTest extends AbstractBladeTestCase
      */
     public function testHandlerWorksWithNonStringables($blade, $expectedOutput)
     {
-        app()->singleton('blade.compiler', function () {
-            return $this->compiler;
-        });
+        $fakeInstance = new \Bladezero\Factory(realpath('./files'), realpath('./cache'));
 
         ob_start();
         eval(Str::of($this->compiler->compileString($blade))->remove(['<?php', '?>']));

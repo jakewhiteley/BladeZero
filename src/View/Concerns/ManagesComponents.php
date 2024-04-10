@@ -2,9 +2,9 @@
 
 namespace Bladezero\View\Concerns;
 
-use Tightenco\Collect\Contracts\Support\Htmlable;
+use Bladezero\Contracts\Support\Htmlable;
 use Bladezero\Contracts\View\View;
-use Tightenco\Collect\Support\Arr;
+use Illuminate\Support\Arr;
 use Bladezero\Support\HtmlString;
 use Bladezero\View\ComponentSlot;
 
@@ -48,7 +48,7 @@ trait ManagesComponents
     /**
      * Start a component rendering process.
      *
-     * @param  \Bladezero\Contracts\View\View|\Tightenco\Collect\Contracts\Support\Htmlable|\Closure|string  $view
+     * @param  \Bladezero\Contracts\View\View|\Bladezero\Contracts\Support\Htmlable|\Closure|string  $view
      * @param  array  $data
      * @return void
      */
@@ -72,7 +72,7 @@ trait ManagesComponents
      */
     public function startComponentFirst(array $names, array $data = [])
     {
-        $name = \Tightenco\Collect\Support\Arr::first($names, function ($item) {
+        $name = \Illuminate\Support\Arr::first($names, function ($item) {
             return $this->exists($item);
         });
 

@@ -4,7 +4,7 @@ namespace Bladezero\Support;
 
 use ArrayAccess;
 use ArrayObject;
-use Tightenco\Collect\Support\Traits\Macroable;
+use \Illuminate\Support\Traits\Macroable;
 
 class Optional implements ArrayAccess
 {
@@ -71,7 +71,7 @@ class Optional implements ArrayAccess
     #[\ReturnTypeWillChange]
     public function offsetExists($key)
     {
-        return \Tightenco\Collect\Support\Arr::accessible($this->value) && \Tightenco\Collect\Support\Arr::exists($this->value, $key);
+        return \Illuminate\Support\Arr::accessible($this->value) && \Illuminate\Support\Arr::exists($this->value, $key);
     }
 
     /**
@@ -83,7 +83,7 @@ class Optional implements ArrayAccess
     #[\ReturnTypeWillChange]
     public function offsetGet($key)
     {
-        return \Tightenco\Collect\Support\Arr::get($this->value, $key);
+        return \Illuminate\Support\Arr::get($this->value, $key);
     }
 
     /**

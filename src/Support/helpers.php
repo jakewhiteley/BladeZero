@@ -3,7 +3,7 @@
 use Bladezero\Support\HigherOrderTapProxy;
 use Bladezero\Support\HtmlString;
 use Bladezero\Support\Optional;
-use Tightenco\Collect\Contracts\Support\Htmlable;
+use Bladezero\Contracts\Support\Htmlable;
 
 
 if (!function_exists('last')) {
@@ -98,5 +98,20 @@ if (! function_exists('value')) {
     function value($value, ...$args)
     {
         return $value instanceof Closure ? $value(...$args) : $value;
+    }
+}
+
+if (! function_exists('class_basename')) {
+    /**
+     * Get the class "basename" of the given object / class.
+     *
+     * @param  string|object  $class
+     * @return string
+     */
+    function class_basename($class)
+    {
+        $class = is_object($class) ? get_class($class) : $class;
+
+        return basename(str_replace('\\', '/', $class));
     }
 }

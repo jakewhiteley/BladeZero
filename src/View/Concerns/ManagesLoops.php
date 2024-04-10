@@ -3,7 +3,7 @@
 namespace Bladezero\View\Concerns;
 
 use Countable;
-use Tightenco\Collect\Support\Arr;
+use Illuminate\Support\Arr;
 
 trait ManagesLoops
 {
@@ -24,7 +24,7 @@ trait ManagesLoops
     {
         $length = is_array($data) || $data instanceof Countable ? count($data) : null;
 
-        $parent = Arr::last($this->loopsStack);
+        $parent = \Illuminate\Support\Arr::last($this->loopsStack);
 
         $this->loopsStack[] = [
             'iteration' => 0,
@@ -77,7 +77,7 @@ trait ManagesLoops
      */
     public function getLastLoop()
     {
-        if ($last = Arr::last($this->loopsStack)) {
+        if ($last = \Illuminate\Support\Arr::last($this->loopsStack)) {
             return (object) $last;
         }
     }

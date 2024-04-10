@@ -139,7 +139,7 @@ class BladeComponentTagCompilerTest extends AbstractBladeTestCase
 
         $result = $this->compiler()->guessClassName('alert');
 
-        $this->assertSame("App\View\Components\Alert", trim($result));
+        $this->assertSame("\Bladezero\Tests\Bladezero\Components\Alert", trim($result));
 
         
     }
@@ -153,7 +153,7 @@ class BladeComponentTagCompilerTest extends AbstractBladeTestCase
 
         $result = $this->compiler()->guessClassName('base.alert');
 
-        $this->assertSame("App\View\Components\Base\Alert", trim($result));
+        $this->assertSame("\Bladezero\Tests\Bladezero\Components\Base\Alert", trim($result));
 
         
     }

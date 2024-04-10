@@ -4,12 +4,12 @@ namespace Bladezero\View;
 
 use ArrayAccess;
 use ArrayIterator;
-use Tightenco\Collect\Contracts\Support\Htmlable;
-use Tightenco\Collect\Support\Arr;
+use Bladezero\Contracts\Support\Htmlable;
+use Illuminate\Support\Arr;
 use Bladezero\Support\HtmlString;
 use Bladezero\Support\Str;
 use Bladezero\Support\Traits\Conditionable;
-use Tightenco\Collect\Support\Traits\Macroable;
+use \Illuminate\Support\Traits\Macroable;
 use IteratorAggregate;
 
 class ComponentAttributeBag implements ArrayAccess, Htmlable, IteratorAggregate
@@ -79,9 +79,9 @@ class ComponentAttributeBag implements ArrayAccess, Htmlable, IteratorAggregate
         if (is_null($keys)) {
             $values = $this->attributes;
         } else {
-            $keys = \Tightenco\Collect\Support\Arr::wrap($keys);
+            $keys = \Illuminate\Support\Arr::wrap($keys);
 
-            $values = \Tightenco\Collect\Support\Arr::only($this->attributes, $keys);
+            $values = \Illuminate\Support\Arr::only($this->attributes, $keys);
         }
 
         return new static($values);
@@ -98,9 +98,9 @@ class ComponentAttributeBag implements ArrayAccess, Htmlable, IteratorAggregate
         if (is_null($keys)) {
             $values = $this->attributes;
         } else {
-            $keys = \Tightenco\Collect\Support\Arr::wrap($keys);
+            $keys = \Illuminate\Support\Arr::wrap($keys);
 
-            $values = \Tightenco\Collect\Support\Arr::except($this->attributes, $keys);
+            $values = \Illuminate\Support\Arr::except($this->attributes, $keys);
         }
 
         return new static($values);
@@ -182,9 +182,9 @@ class ComponentAttributeBag implements ArrayAccess, Htmlable, IteratorAggregate
      */
     public function class($classList)
     {
-        $classList = \Tightenco\Collect\Support\Arr::wrap($classList);
+        $classList = \Illuminate\Support\Arr::wrap($classList);
 
-        return $this->merge(['class' => \Tightenco\Collect\Support\Arr::toCssClasses($classList)]);
+        return $this->merge(['class' => \Illuminate\Support\Arr::toCssClasses($classList)]);
     }
 
     /**

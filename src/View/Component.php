@@ -4,7 +4,7 @@ namespace Bladezero\View;
 
 use Closure;
 
-use Tightenco\Collect\Contracts\Support\Htmlable;
+use Bladezero\Contracts\Support\Htmlable;
 use Bladezero\Contracts\View\View as ViewContract;
 use Bladezero\Support\Str;
 use ReflectionClass;
@@ -51,14 +51,14 @@ abstract class Component
     /**
      * Get the view / view contents that represent the component.
      *
-     * @return \Bladezero\Contracts\View\View|\Tightenco\Collect\Contracts\Support\Htmlable|\Closure|string
+     * @return \Bladezero\Contracts\View\View|\Bladezero\Contracts\Support\Htmlable|\Closure|string
      */
     abstract public function render();
 
     /**
      * Resolve the Blade view or view file that should be used when rendering the component.
      *
-     * @return \Bladezero\Contracts\View\View|\Tightenco\Collect\Contracts\Support\Htmlable|\Closure|string
+     * @return \Bladezero\Contracts\View\View|\Bladezero\Contracts\Support\Htmlable|\Closure|string
      */
     public function resolveView()
     {
