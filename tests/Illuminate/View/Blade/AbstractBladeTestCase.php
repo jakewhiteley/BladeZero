@@ -2,8 +2,10 @@
 
 namespace Bladezero\Tests\Illuminate\View\Blade;
 
+
 use Bladezero\Filesystem\Filesystem;
 use Bladezero\View\Compilers\BladeCompiler;
+use Bladezero\View\Component;
 use Mockery as m;
 use PHPUnit\Framework\TestCase;
 
@@ -16,12 +18,18 @@ abstract class AbstractBladeTestCase extends TestCase
 
     protected function setUp(): void
     {
-        $this->compiler = new BladeCompiler($this->getFiles(), __DIR__);
         parent::setUp();
+
+        $this->compiler = new BladeCompiler($this->getFiles(), __DIR__);
     }
 
     protected function tearDown(): void
     {
+        
+        Component::flushCache();
+        Component::forgetComponentsResolver();
+        Component::forgetFactory();
+
         m::close();
 
         parent::tearDown();

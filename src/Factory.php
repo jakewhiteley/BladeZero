@@ -31,6 +31,8 @@ class Factory
 
     private static $componentNamespace = 'App\View\Components\\';
 
+    private static $instance = null;
+
     /**
      * @var Filesystem
      */
@@ -110,6 +112,8 @@ class Factory
 
         $this->share('__env', $this);
         $this->component('dynamic-component', DynamicComponent::class);
+
+        self::$instance = $this;
     }
 
     /**
@@ -602,6 +606,14 @@ class Factory
     public static function getCompiler(): BladeCompiler
     {
         return self::$bladeCompiler;
+    }
+
+    /**
+     * Get teh factory instance.
+     */
+    public static function getInstance(): self
+    {
+        return self::$instance;
     }
 
     /**

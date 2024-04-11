@@ -28,7 +28,7 @@ class ViewException extends ErrorException
      * Render the exception into an HTTP response.
      *
      * @param  \Bladezero\Http\Request  $request
-     * @return \Bladezero\Http\Response
+     * @return \Bladezero\Http\Response|null
      */
     public function render($request)
     {

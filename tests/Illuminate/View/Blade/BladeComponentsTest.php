@@ -2,6 +2,10 @@
 
 namespace Bladezero\Tests\Illuminate\View\Blade;
 
+use Bladezero\View\Component;
+use Bladezero\View\ComponentAttributeBag;
+use Mockery as m;
+
 class BladeComponentsTest extends AbstractBladeTestCase
 {
     public function testComponentsAreCompiled()
@@ -12,11 +16,11 @@ class BladeComponentsTest extends AbstractBladeTestCase
 
     public function testClassComponentsAreCompiled()
     {
-        $this->assertSame('<?php if (isset($component)) { $__componentOriginal35bda42cbf6f9717b161c4f893644ac7a48b0d98 = $component; } ?>
-<?php $componentData = ["foo" => "bar"]; $component = new Test::class(["foo" => "bar"]); ?>
+        $this->assertSame('<?php if (isset($component)) { $__componentOriginal32877a641c21ac6579f6376333c8770674a6058f = $component; } ?>
+<?php $component = Bladezero\Tests\Illuminate\View\Blade\ComponentStub::class::resolve(["foo" => "bar"] + (isset($attributes) && $attributes instanceof Bladezero\View\ComponentAttributeBag ? (array) $attributes->getIterator() : [])); ?>
 <?php $component->withName(\'test\'); ?>
 <?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>', $this->compiler->compileString('@component(\'Test::class\', \'test\', ["foo" => "bar"])'));
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>', $this->compiler->compileString('@component(\'Bladezero\Tests\Illuminate\View\Blade\ComponentStub::class\', \'test\', ["foo" => "bar"])'));
     }
 
     public function testEndComponentsAreCompiled()
@@ -47,5 +51,30 @@ class BladeComponentsTest extends AbstractBladeTestCase
     public function testEndSlotsAreCompiled()
     {
         $this->assertSame('<?php $__env->endSlot(); ?>', $this->compiler->compileString('@endslot'));
+    }
+
+    public function testPropsAreExtractedFromParentAttributesCorrectlyForClassComponents()
+    {
+        $attributes = new ComponentAttributeBag(['foo' => 'baz', 'other' => 'ok']);
+
+        $component = m::mock(Component::class);
+        $component->shouldReceive('withName', 'test');
+        $component->shouldReceive('shouldRender')->andReturn(false);
+
+        Component::resolveComponentsUsing(fn () => $component);
+
+        $template = $this->compiler->compileString('@component(\'Bladezero\Tests\Illuminate\View\Blade\ComponentStub::class\', \'test\', ["foo" => "bar"])');
+
+        ob_start();
+        eval(" ?> $template <?php endif; ");
+        ob_get_clean();
+    }
+}
+
+class ComponentStub extends Component
+{
+    public function render()
+    {
+        return '';
     }
 }
