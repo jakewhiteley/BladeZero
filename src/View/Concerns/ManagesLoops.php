@@ -2,8 +2,8 @@
 
 namespace Bladezero\View\Concerns;
 
-use Countable;
 use Illuminate\Support\Arr;
+use Bladezero\Support\LazyCollection;
 
 trait ManagesLoops
 {
@@ -22,7 +22,9 @@ trait ManagesLoops
      */
     public function addLoop($data)
     {
-        $length = is_array($data) || $data instanceof Countable ? count($data) : null;
+        $length = is_countable($data) && ! $data instanceof LazyCollection
+                            ? count($data)
+                            : null;
 
         $parent = \Illuminate\Support\Arr::last($this->loopsStack);
 

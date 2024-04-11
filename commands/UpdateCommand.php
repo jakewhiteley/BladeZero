@@ -38,7 +38,6 @@ class UpdateCommand extends Command
         '/Support/Optional.php',
         '/Collections/Enumerable.php',
         '/Support/Reflector.php',
-        '/Support/Traits/Conditionable.php',
         '/Support/Traits/ReflectsClosures.php',
         '/Support/Traits/Tappable.php',
     ];
@@ -66,6 +65,8 @@ class UpdateCommand extends Command
         '/View/Compilers/Concerns/CompilesStacks.php',
         '/View/Compilers/Concerns/CompilesTranslations.php',
         '/View/Compilers/Concerns/CompilesComponents.php',
+        '/View/Compilers/Concerns/CompilesFragments.php',
+        '/View/Compilers/Concerns/CompilesStyles.php',
         '/View/Concerns/ManagesComponents.php',
         '/View/Concerns/ManagesEvents.php',
         '/View/Concerns/ManagesLayouts.php',
@@ -89,6 +90,7 @@ class UpdateCommand extends Command
         '/View/ViewException.php',
         '/View/View.php',
         '/Contracts/View/View.php',
+        '/Contracts/View/Factory.php',
         '/Contracts/Support/MessageProvider.php',
         '/Contracts/Support/DeferringDisplayableValue.php',
         '/Contracts/Support/Renderable.php',
@@ -306,10 +308,12 @@ class UpdateCommand extends Command
             'new StringableObjectStub' => 'new \\Bladezero\\Tests\\Stubs\\StringableObjectStub',
             'use Bladezero\\Contracts\\View\\Factory;' => 'use Bladezero\\Factory;',
             'use Bladezero\Container\Container;' => '',
-            '$viewFactory = Container::getInstance()->make(Factory::class);' => '',
+            '$viewFactory = Container::getInstance()->make(Factory::class);' => '$viewFactory = \\Bladezero\\Factory::getInstance();',
             '$viewFactory->exists' => 'Factory::exists',
             '__construct(Factory $' => '__construct(\\BladeZero\\Factory $',
             '$this->factory->callComposer($this);' => '',
+            'Container::getInstance()->make(\'view\')' => '\\Bladezero\\Factory::getInstance()',
+            'return Container::getInstance()->make(static::class, $data);' => 'return new static(...$data);',
             //'$componentNamespace = \'Blade\\Components\';' => '$componentNamespace = \'App\\View\\Components\\\';',
 
             // Compiler amends
@@ -389,7 +393,7 @@ class UpdateCommand extends Command
             '$namespace = Container::getInstance()
                     ->make(Application::class)
                     ->getNamespace();' . "\n" => '',
-            '$factory = Container::getInstance()->make(\'view\');'."\n" => '',
+            //'$factory = Container::getInstance()->make(\'view\');'."\n" => '',
             "\$namespace.'View\\\\Components\\\\'" => '\\Bladezero\\Factory::getComponentNamespace()',
             'Container::getInstance()->make(Factory::class)
                     ->exists' => '\\Bladezero\\Factory::exists',

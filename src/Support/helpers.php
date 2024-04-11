@@ -4,6 +4,7 @@ use Bladezero\Support\HigherOrderTapProxy;
 use Bladezero\Support\HtmlString;
 use Bladezero\Support\Optional;
 use Bladezero\Contracts\Support\Htmlable;
+use Bladezero\Support\Str;
 
 
 if (!function_exists('last')) {
@@ -23,7 +24,7 @@ if (! function_exists('e')) {
     /**
      * Encode HTML special characters in a string.
      *
-     * @param  \Tightenco\Collect\Contracts\Support\Htmlable|string|null  $value
+     * @param  \Illuminate\Contracts\Support\Htmlable|string|null  $value
      * @param  bool  $doubleEncode
      * @return string
      */
@@ -105,13 +106,41 @@ if (! function_exists('class_basename')) {
     /**
      * Get the class "basename" of the given object / class.
      *
-     * @param  string|object  $class
+     * @param object|string $class
      * @return string
      */
-    function class_basename($class)
+    function class_basename(object|string $class): string
     {
         $class = is_object($class) ? get_class($class) : $class;
 
         return basename(str_replace('\\', '/', $class));
+    }
+}
+
+if (! function_exists('str')) {
+    /**
+     * Get a new stringable object from the given string.
+     *
+     * @param  string|null  $string
+     * @return \Bladezero\Support\Stringable|mixed
+     */
+    function str($string = null): mixed
+    {
+        if (func_num_args() === 0) {
+            return new class
+            {
+                public function __call($method, $parameters)
+                {
+                    return Str::$method(...$parameters);
+                }
+
+                public function __toString()
+                {
+                    return '';
+                }
+            };
+        }
+
+        return Str::of($string);
     }
 }
